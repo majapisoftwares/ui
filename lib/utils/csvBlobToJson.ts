@@ -19,7 +19,19 @@ export default async function csvBlobToJson(
 
   const rows = csv.trim().split("\r\n");
 
-  const headers = rows.shift()?.split(";");
+  const headers = rows
+    .shift()
+    ?.split(";")
+    .reduce<string[]>((acc, header) => {
+      // existing header concatenate amount of headers with the same name
+      if (acc.includes(header)) {
+        const amount = acc.filter((h) => h === header).length;
+        acc.push(`${header} ${amount + 1}`);
+      } else {
+        acc.push(header);
+      }
+      return acc;
+    }, []);
 
   if (!headers) {
     return null;
