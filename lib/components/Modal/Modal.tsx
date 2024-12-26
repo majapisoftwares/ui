@@ -172,7 +172,14 @@ function ModalActions({
 
 Modal.Icon = ModalIcon;
 
-function ModalIcon({ children }: { children?: ReactElement }) {
+function ModalIcon({
+  children,
+}: {
+  children?: ReactElement<{
+    className?: string;
+    "aria-hidden"?: string;
+  }>;
+}) {
   return (
     <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100 dark:bg-green-800">
       {children &&

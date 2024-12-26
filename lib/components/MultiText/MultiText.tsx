@@ -1,8 +1,7 @@
 import {
   ChangeEventHandler,
   FocusEventHandler,
-  ForwardedRef,
-  forwardRef,
+  Ref,
   useEffect,
   useId,
   useRef,
@@ -31,34 +30,33 @@ export interface MultiTextProps {
   loading?: boolean;
   type?: string;
   required?: boolean;
+  ref?: Ref<HTMLInputElement>;
 }
 
 function defaultFormat(item: string) {
   return item;
 }
 
-function MultiText(
-  {
-    value,
-    onChangeValue,
-    onChange,
-    onBlur,
-    name,
-    id,
-    className,
-    helpText,
-    label,
-    validate,
-    invalidHelpText,
-    error,
-    format = defaultFormat,
-    readOnly,
-    loading,
-    type,
-    required,
-  }: MultiTextProps,
-  ref: ForwardedRef<HTMLDivElement>,
-) {
+function MultiText({
+  value,
+  onChangeValue,
+  onChange,
+  onBlur,
+  name,
+  id,
+  className,
+  helpText,
+  label,
+  validate,
+  invalidHelpText,
+  error,
+  format = defaultFormat,
+  readOnly,
+  loading,
+  type,
+  required,
+  ref,
+}: MultiTextProps) {
   const innerId = useId();
   id = id || innerId;
   const inputRef = useRef<HTMLInputElement>(null);
@@ -198,4 +196,4 @@ function MultiText(
   );
 }
 
-export default forwardRef(MultiText);
+export default MultiText;

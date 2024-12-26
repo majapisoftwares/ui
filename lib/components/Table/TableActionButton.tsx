@@ -27,6 +27,8 @@ export default function TableActionButton<
     onClick?.(e);
   };
 
+  const child = children as ReactElement<{ className?: string }>;
+
   const button = (
     <Button
       icon
@@ -35,11 +37,8 @@ export default function TableActionButton<
       onClick={handleClick}
       {...props}
     >
-      {cloneElement(children as ReactElement, {
-        className: clsx(
-          "!h-[20px] !w-[20px]",
-          (children as ReactElement)?.props?.className,
-        ),
+      {cloneElement(child, {
+        className: clsx("!h-[20px] !w-[20px]", child.props.className),
       })}
     </Button>
   );

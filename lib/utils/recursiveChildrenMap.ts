@@ -6,22 +6,24 @@ import {
   ReactNode,
 } from "react";
 
-export default function recursiveChildrenMap(
+export default function recursiveChildrenMap<P>(
   children: ReactNode,
-  fn: (child: ReactElement) => ReactElement
+  fn: (child: ReactElement<P>) => ReactElement<P>,
 ): ReactNode {
   return Children.map(children, (child) => {
     if (!isValidElement(child)) {
       return child;
     }
 
-    if (child.props.children) {
+    const childProps = child.props as { children?: ReactNode } | undefined;
+
+    if (childProps?.children) {
       child = cloneElement(child, {
-        children: recursiveChildrenMap(child.props.children, fn),
+        children: recursiveChildrenMap(childProps.children, fn),
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
     }
 
-    return fn(child);
+    return fn(child as ReactElement<P>);
   });
 }

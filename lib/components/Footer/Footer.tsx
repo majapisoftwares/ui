@@ -8,7 +8,10 @@ export type FooterProps = {
   social?: {
     name: string;
     href: string;
-    icon: ReactElement;
+    icon: ReactElement<{
+      className: string;
+      "aria-hidden": string;
+    }>;
   }[];
   companyName: ReactNode;
   allRightsReserved?: string;
@@ -26,7 +29,7 @@ export default function Footer({
 }: FooterProps) {
   return (
     <>
-      <div className="flex min-h-screen flex-col flex-col">{children}</div>
+      <div className="flex min-h-screen flex-col">{children}</div>
       <footer className="border-t border-slate-900/5 bg-white dark:border-slate-50/5 dark:bg-zinc-900">
         <div className="mx-auto max-w-7xl overflow-hidden px-4 py-12 sm:px-6 lg:px-8">
           {main && (

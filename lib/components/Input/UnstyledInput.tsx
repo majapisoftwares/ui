@@ -1,8 +1,6 @@
 import {
   ComponentType,
   DetailedHTMLProps,
-  ForwardedRef,
-  forwardRef,
   InputHTMLAttributes,
   ReactNode,
   useId,
@@ -39,31 +37,28 @@ export type UnstyledInputProps<Select extends boolean | undefined> =
           HTMLInputElement
         >);
 
-function UnstyledInput<Select extends boolean | undefined>(
-  {
-    id,
-    label,
-    className,
-    inputClassName,
-    labelClassName,
-    helpTextClassName,
-    trailingClassName,
-    trailingInputClassName,
-    leadingClassName,
-    leadingInputClassName,
-    helpText,
-    type = "text",
-    leading,
-    trailing,
-    select,
-    children,
-    as,
-    innerClassName,
-    value,
-    ...props
-  }: UnstyledInputProps<Select>,
-  ref: ForwardedRef<Select extends true ? HTMLSelectElement : HTMLInputElement>,
-) {
+function UnstyledInput<Select extends boolean | undefined>({
+  id,
+  label,
+  className,
+  inputClassName,
+  labelClassName,
+  helpTextClassName,
+  trailingClassName,
+  trailingInputClassName,
+  leadingClassName,
+  leadingInputClassName,
+  helpText,
+  type = "text",
+  leading,
+  trailing,
+  select,
+  children,
+  as,
+  innerClassName,
+  value,
+  ...props
+}: UnstyledInputProps<Select>) {
   const innerId = useId();
   id = id || innerId;
 
@@ -94,7 +89,6 @@ function UnstyledInput<Select extends boolean | undefined>(
           className={inputClassName}
           id={id}
           type={type}
-          ref={ref}
           value={value}
         >
           {children}
@@ -106,4 +100,4 @@ function UnstyledInput<Select extends boolean | undefined>(
   );
 }
 
-export default forwardRef(UnstyledInput);
+export default UnstyledInput;

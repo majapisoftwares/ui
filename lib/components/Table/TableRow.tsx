@@ -1,5 +1,5 @@
 import clsx from "../../utils/clsx";
-import { ForwardedRef, forwardRef, MouseEventHandler, ReactNode } from "react";
+import { MouseEventHandler, ReactNode } from "react";
 
 export type TableRowProps = {
   children?: ReactNode;
@@ -7,13 +7,9 @@ export type TableRowProps = {
   className?: string;
 };
 
-function TableRow(
-  { children, onClick, className, ...props }: TableRowProps,
-  ref: ForwardedRef<HTMLTableRowElement>,
-) {
+function TableRow({ children, onClick, className, ...props }: TableRowProps) {
   return (
     <tr
-      ref={ref}
       onClick={onClick}
       className={clsx(
         {
@@ -29,4 +25,4 @@ function TableRow(
   );
 }
 
-export default forwardRef(TableRow);
+export default TableRow;

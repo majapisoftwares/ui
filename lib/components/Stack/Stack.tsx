@@ -1,5 +1,4 @@
-import type { DetailedHTMLProps, ForwardedRef, HTMLAttributes } from "react";
-import { forwardRef } from "react";
+import type { DetailedHTMLProps, HTMLAttributes } from "react";
 import clsx from "../../utils/clsx";
 
 export type StackProps = DetailedHTMLProps<
@@ -7,17 +6,8 @@ export type StackProps = DetailedHTMLProps<
   HTMLDivElement
 >;
 
-function Stack(
-  { className, ...props }: StackProps,
-  ref: ForwardedRef<HTMLDivElement>,
-) {
-  return (
-    <div
-      {...props}
-      className={clsx("flex flex-col gap-2", className)}
-      ref={ref}
-    />
-  );
+function Stack({ className, ...props }: StackProps) {
+  return <div {...props} className={clsx("flex flex-col gap-2", className)} />;
 }
 
-export default forwardRef(Stack);
+export default Stack;

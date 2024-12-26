@@ -1,13 +1,6 @@
 import clsx from "../../utils/clsx";
 import Link from "next/link";
-import {
-  ElementType,
-  ForwardedRef,
-  forwardRef,
-  MouseEventHandler,
-  ReactNode,
-  useCallback,
-} from "react";
+import { ElementType, MouseEventHandler, ReactNode, useCallback } from "react";
 
 const colorMap = {
   default: {
@@ -47,29 +40,26 @@ const sizeMap = {
   },
 };
 
-function Badge(
-  {
-    color = "default",
-    size = "md",
-    className,
-    children,
-    onActionClick,
-    href,
-    shallow,
-    onClick,
-    ...props
-  }: {
-    color?: keyof typeof colorMap;
-    size?: keyof (typeof sizeMap)["badge"];
-    className?: string;
-    children: ReactNode;
-    onActionClick?: () => void;
-    href?: string;
-    shallow?: boolean;
-    onClick?: () => void;
-  },
-  ref: ForwardedRef<HTMLSpanElement>,
-) {
+function Badge({
+  color = "default",
+  size = "md",
+  className,
+  children,
+  onActionClick,
+  href,
+  shallow,
+  onClick,
+  ...props
+}: {
+  color?: keyof typeof colorMap;
+  size?: keyof (typeof sizeMap)["badge"];
+  className?: string;
+  children: ReactNode;
+  onActionClick?: () => void;
+  href?: string;
+  shallow?: boolean;
+  onClick?: () => void;
+}) {
   const Component = href ? Link : ("span" as ElementType);
 
   const handleActionClick: MouseEventHandler = useCallback(
@@ -92,7 +82,6 @@ function Badge(
       shallow={shallow}
       onClick={onClick}
       {...props}
-      ref={ref}
     >
       {children}
       {onActionClick && (
@@ -124,4 +113,4 @@ function Badge(
   );
 }
 
-export default forwardRef(Badge);
+export default Badge;

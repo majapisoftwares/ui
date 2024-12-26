@@ -1,6 +1,8 @@
 import React, {
   cloneElement,
+  CSSProperties,
   ReactElement,
+  ReactNode,
   useEffect,
   useRef,
   useState,
@@ -67,8 +69,14 @@ export default function Resizable({
     };
   }, [isResizingRef, maxWidth, minWidth, onResize]);
 
-  return cloneElement(children, {
-    className: clsx("relative", children.props.className),
+  const child = children as ReactElement<{
+    className?: string;
+    children?: ReactNode;
+    style?: CSSProperties;
+  }>;
+
+  return cloneElement(child, {
+    className: clsx("relative", child.props.className),
     style: { width: internalWidth },
     children: (
       <>
@@ -81,7 +89,7 @@ export default function Resizable({
           )}
           onMouseDown={onMouseDown}
         />
-        {children.props.children}
+        {child.props.children}
       </>
     ),
   });

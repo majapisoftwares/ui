@@ -1,12 +1,8 @@
-import { ForwardedRef, forwardRef } from "react";
 import Input, { InputProps } from "../Input";
 import { CalendarIcon } from "@heroicons/react/20/solid";
 import { useRefValue } from "./useRefValue";
 
-function DateTimeInput(
-  { readOnly, ...props }: InputProps<false>,
-  ref: ForwardedRef<HTMLInputElement>,
-) {
+function DateTimeInput({ readOnly, ref, ...props }: InputProps<false>) {
   const realRef = useRefValue(ref);
 
   return (
@@ -22,4 +18,4 @@ function DateTimeInput(
   );
 }
 
-export default forwardRef(DateTimeInput);
+export default DateTimeInput;

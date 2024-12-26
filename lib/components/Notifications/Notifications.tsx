@@ -39,13 +39,16 @@ export default function Notifications({
             style,
             className,
           }) => {
-            // noinspection SuspiciousTypeOfGuard
-            if (typeof icon === "string") {
-              icon = {
-                success: <CheckCircleIcon className="!text-success-400" />,
-                error: <ExclamationCircleIcon className="!text-error-400" />,
-              }[icon];
-            }
+            const iconChild = (
+              typeof icon === "string"
+                ? {
+                    success: <CheckCircleIcon className="!text-success-400" />,
+                    error: (
+                      <ExclamationCircleIcon className="!text-error-400" />
+                    ),
+                  }[icon]
+                : icon
+            ) as ReactElement<{ className?: string; "aria-hidden"?: string }>;
 
             // noinspection SuspiciousTypeOfGuard
             return (
@@ -64,17 +67,15 @@ export default function Notifications({
               >
                 <div className="p-4">
                   <div className="flex items-start">
-                    {icon && (
+                    {iconChild && (
                       <div className="mr-2 flex-shrink-0">
-                        {typeof icon === "string"
-                          ? icon
-                          : cloneElement(icon as ReactElement, {
-                              className: clsx(
-                                "h-6 w-6 text-zinc-400 dark:text-zinc-600",
-                                icon.props?.className,
-                              ),
-                              "aria-hidden": "true",
-                            })}
+                        {cloneElement(iconChild, {
+                          className: clsx(
+                            "h-6 w-6 text-zinc-400 dark:text-zinc-600",
+                            iconChild.props?.className,
+                          ),
+                          "aria-hidden": "true",
+                        })}
                       </div>
                     )}
                     <div className="ml-1 w-0 flex-1 pt-0.5">

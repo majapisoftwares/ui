@@ -1,4 +1,4 @@
-import { ComponentProps, ForwardedRef, forwardRef } from "react";
+import { ComponentProps } from "react";
 import FileInput from "../FileInput";
 
 const defaultIcon = (
@@ -12,19 +12,15 @@ const defaultIcon = (
   </svg>
 );
 
-function ImageInput(
-  {
-    icon = defaultIcon,
-    uploadAFileText = "Upload an image",
-    allowedFileTypes = [".png", ".jpg", ".jpeg", ".webp"],
-    fileDisplay = "preview",
-    ...props
-  }: ComponentProps<typeof FileInput>,
-  ref: ForwardedRef<HTMLInputElement>,
-) {
+function ImageInput({
+  icon = defaultIcon,
+  uploadAFileText = "Upload an image",
+  allowedFileTypes = [".png", ".jpg", ".jpeg", ".webp"],
+  fileDisplay = "preview",
+  ...props
+}: ComponentProps<typeof FileInput>) {
   return (
     <FileInput
-      ref={ref}
       {...props}
       icon={icon}
       uploadAFileText={uploadAFileText}
@@ -34,4 +30,4 @@ function ImageInput(
   );
 }
 
-export default forwardRef(ImageInput);
+export default ImageInput;

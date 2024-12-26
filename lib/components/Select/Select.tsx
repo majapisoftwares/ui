@@ -1,4 +1,4 @@
-import React, { ComponentProps, ForwardedRef, forwardRef } from "react";
+import { ComponentProps } from "react";
 import * as RSelect from "@radix-ui/react-select";
 import {
   CheckIcon,
@@ -68,22 +68,18 @@ function SelectSeparator({
   );
 }
 
-function SelectItemComponent(
-  {
-    children,
-    className,
-    indicatorClassName,
-    ...props
-  }: ComponentProps<typeof RSelect.Item> & {
-    indicatorClassName?: string;
-  },
-  forwardedRef: ForwardedRef<HTMLDivElement>,
-) {
+function SelectItem({
+  children,
+  className,
+  indicatorClassName,
+  ...props
+}: ComponentProps<typeof RSelect.Item> & {
+  indicatorClassName?: string;
+}) {
   return (
     <RSelect.Item
       className={clsx(dropdownItemClassName, "ui-select-item", className)}
       {...props}
-      ref={forwardedRef}
     >
       <RSelect.ItemIndicator
         className={clsx(
@@ -99,23 +95,17 @@ function SelectItemComponent(
   );
 }
 
-const SelectItem = forwardRef(
-  SelectItemComponent,
-) as typeof SelectItemComponent;
-
-function SelectTrigger(
-  {
-    className,
-    placeholder,
-    children,
-    readOnly,
-    ...props
-  }: ComponentProps<typeof RSelect.Trigger> &
-    ComponentProps<typeof Button> & {
-      placeholder?: string;
-    },
-  ref: ForwardedRef<HTMLButtonElement>,
-) {
+function SelectTrigger({
+  className,
+  placeholder,
+  children,
+  readOnly,
+  ref,
+  ...props
+}: ComponentProps<typeof RSelect.Trigger> &
+  ComponentProps<typeof Button> & {
+    placeholder?: string;
+  }) {
   return (
     <RSelect.Trigger
       asChild
@@ -158,7 +148,7 @@ function SelectLabel({
 const Select = {
   Root: RSelect.Root,
   Item: SelectItem,
-  Trigger: forwardRef(SelectTrigger) as typeof SelectTrigger,
+  Trigger: SelectTrigger,
   Content: SelectContent,
   Group: RSelect.Group,
   Label: SelectLabel,

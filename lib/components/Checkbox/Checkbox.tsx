@@ -1,7 +1,5 @@
 import {
   DetailedHTMLProps,
-  ForwardedRef,
-  forwardRef,
   InputHTMLAttributes,
   ReactNode,
   useEffect,
@@ -27,24 +25,22 @@ export type CheckboxProps = {
 const defaultLabelClassName = defaultTextStyles.variant.label;
 const defaultDescriptionClassName = defaultTextStyles.variant.secondary;
 
-function Checkbox(
-  {
-    id,
-    label,
-    description,
-    className,
-    labelClassName,
-    descriptionClassName,
-    inputClassName,
-    labelOuterClassName,
-    type = "checkbox",
-    error,
-    helpText,
-    indeterminate,
-    ...props
-  }: CheckboxProps,
-  ref: ForwardedRef<HTMLInputElement>,
-) {
+function Checkbox({
+  id,
+  label,
+  description,
+  className,
+  labelClassName,
+  descriptionClassName,
+  inputClassName,
+  labelOuterClassName,
+  type = "checkbox",
+  error,
+  helpText,
+  indeterminate,
+  ref,
+  ...props
+}: CheckboxProps) {
   const innerRef = useRef<HTMLInputElement>(null);
   const defaultInputId = useId();
   const descriptionId = useId();
@@ -105,4 +101,4 @@ function Checkbox(
   );
 }
 
-export default forwardRef(Checkbox);
+export default Checkbox;

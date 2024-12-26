@@ -15,7 +15,9 @@ export default function NavigationItem({
   disabled,
   active,
 }: {
-  icon?: ReactElement;
+  icon?: ReactElement<{
+    className?: string;
+  }>;
 
   children: ReactNode;
   href: string;

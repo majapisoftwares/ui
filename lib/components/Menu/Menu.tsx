@@ -1,8 +1,6 @@
 import {
   cloneElement,
   ComponentPropsWithoutRef,
-  ForwardedRef,
-  forwardRef,
   Fragment,
   ReactElement,
   ReactNode,
@@ -34,7 +32,9 @@ export type MenuProps = {
 
 export type MenuItemProps<T extends HTMLElement = HTMLButtonElement> =
   UnstyledButtonProps<T> & {
-    icon?: ReactElement;
+    icon?: ReactElement<{
+      className?: string;
+    }>;
   };
 
 const Item = function MenuItem<T extends HTMLElement = HTMLButtonElement>({
@@ -71,13 +71,9 @@ const Item = function MenuItem<T extends HTMLElement = HTMLButtonElement>({
 
 export type MenuLabelProps = TextProps;
 
-const Label = forwardRef(function MenuLabel(
-  props: MenuLabelProps,
-  ref: ForwardedRef<HTMLDivElement>,
-) {
+const Label = function MenuLabel(props: MenuLabelProps) {
   return (
     <Text
-      ref={ref}
       {...props}
       variant="label"
       className={clsx(
@@ -87,23 +83,20 @@ const Label = forwardRef(function MenuLabel(
       )}
     />
   );
-});
+};
 
-const Menu = forwardRef(function Menu(
-  {
-    className,
-    iconClassName,
-    position = "right",
-    children,
-    label,
-    button,
-    buttonProps,
-    unmount,
-    menuItemsClassName,
-    ...props
-  }: MenuProps,
-  ref: ForwardedRef<HTMLDivElement>,
-) {
+const Menu = function Menu({
+  className,
+  iconClassName,
+  position = "right",
+  children,
+  label,
+  button,
+  buttonProps,
+  unmount,
+  menuItemsClassName,
+  ...props
+}: MenuProps) {
   useMount(() => {
     console.warn(
       "<Menu> was deprecated and should be replaced with <DropdownMenu>",
@@ -113,7 +106,6 @@ const Menu = forwardRef(function Menu(
     <HuiMenu
       as="div"
       className={clsx("relative inline-block text-left", className)}
-      ref={ref}
       {...props}
     >
       <div>
@@ -167,6 +159,6 @@ const Menu = forwardRef(function Menu(
       </Transition>
     </HuiMenu>
   );
-});
+};
 
 export default Object.assign(Menu, { Label, Item });

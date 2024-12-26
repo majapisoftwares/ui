@@ -1,4 +1,4 @@
-import { ForwardedRef, useEffect, useRef } from "react";
+import { Ref, useEffect, useRef } from "react";
 import dayjs from "dayjs";
 import "dayjs/locale/pt-br";
 
@@ -24,7 +24,7 @@ export function formatDate(value: string) {
   }
 }
 
-export function useRefValue(ref: ForwardedRef<HTMLInputElement>) {
+export function useRefValue(ref?: Ref<HTMLInputElement>) {
   const realRef = useRef<HTMLInputElement>(null);
 
   const innerRef = useRef<HTMLInputElement>({

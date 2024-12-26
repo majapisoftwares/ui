@@ -1,25 +1,24 @@
 import * as RTooltip from "@radix-ui/react-tooltip";
-import { ForwardedRef, forwardRef, ReactNode } from "react";
+import { ReactNode, Ref } from "react";
 import clsx from "../../utils/clsx";
 
-function Tooltip(
-  {
-    children,
-    content,
-    side,
-    delayDuration,
-    className,
-    arrowClassName,
-  }: {
-    children?: ReactNode;
-    content?: ReactNode;
-    side?: "top" | "bottom" | "left" | "right";
-    delayDuration?: number;
-    className?: string;
-    arrowClassName?: string;
-  },
-  ref: ForwardedRef<HTMLButtonElement>,
-) {
+function Tooltip({
+  children,
+  content,
+  side,
+  delayDuration,
+  className,
+  arrowClassName,
+  ref,
+}: {
+  children?: ReactNode;
+  content?: ReactNode;
+  side?: "top" | "bottom" | "left" | "right";
+  delayDuration?: number;
+  className?: string;
+  arrowClassName?: string;
+  ref?: Ref<HTMLButtonElement>;
+}) {
   if (!content) {
     return <>{children}</>;
   }
@@ -55,4 +54,4 @@ function Tooltip(
   );
 }
 
-export default forwardRef(Tooltip) as typeof Tooltip;
+export default Tooltip;

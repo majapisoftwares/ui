@@ -1,10 +1,9 @@
 import {
   ChangeEventHandler,
   cloneElement,
-  ForwardedRef,
-  forwardRef,
   ReactElement,
   ReactNode,
+  Ref,
   useCallback,
   useEffect,
   useId,
@@ -58,10 +57,13 @@ export interface FileSelectProps {
   helperText?: string;
   className?: string;
   error?: boolean;
-  icon?: ReactElement;
+  icon?: ReactElement<{
+    className?: string;
+  }>;
   uploading?: boolean;
   disabled?: boolean;
   additionalBottomInfo?: ReactNode;
+  ref?: Ref<HTMLInputElement>;
 }
 
 const defaultIcon = <DocumentIcon />;
@@ -74,29 +76,27 @@ function checkAllowedFileTypesFn(file: File, allowedFileTypes?: string[]) {
   );
 }
 
-function FileSelect(
-  {
-    maxFileSize,
-    allowedFileTypes,
-    id,
-    limit,
-    onAcceptFiles,
-    className,
-    uploadAFileText = "Upload a file",
-    orDragAndDropText = "or drag and drop",
-    upToText = "up to",
-    anyFileText = "Any file",
-    dropFilesHereText = "Drop files here",
-    uploadingText = "Uploading...",
-    icon = defaultIcon,
-    uploading,
-    disabled,
-    additionalBottomInfo,
-    onRejectFiles,
-    error,
-  }: FileSelectProps,
-  ref: ForwardedRef<HTMLInputElement>,
-) {
+function FileSelect({
+  maxFileSize,
+  allowedFileTypes,
+  id,
+  limit,
+  onAcceptFiles,
+  className,
+  uploadAFileText = "Upload a file",
+  orDragAndDropText = "or drag and drop",
+  upToText = "up to",
+  anyFileText = "Any file",
+  dropFilesHereText = "Drop files here",
+  uploadingText = "Uploading...",
+  icon = defaultIcon,
+  uploading,
+  disabled,
+  additionalBottomInfo,
+  onRejectFiles,
+  error,
+  ref,
+}: FileSelectProps) {
   const innerId = useId();
   id = id || innerId;
   maxFileSize =
@@ -157,7 +157,9 @@ function FileSelect(
 
   return (
     <div
-      ref={drop}
+      ref={(ref) => {
+        drop(ref);
+      }}
       className={clsx(
         "flex justify-center rounded-md border-2 border-dashed px-6 pb-6 pt-5",
         className,
@@ -238,7 +240,7 @@ function FileSelect(
   );
 }
 
-export default forwardRef(FileSelect);
+export default FileSelect;
 
 const useOnPasteFiles = (
   enabled: boolean,

@@ -1,6 +1,6 @@
 import UnstyledButton, { UnstyledButtonProps } from "./UnstyledButton";
 import clsx from "../../utils/clsx";
-import { cloneElement, ForwardedRef, forwardRef, ReactElement } from "react";
+import { cloneElement, ReactElement, Ref } from "react";
 import Loading from "../Loading";
 
 const styles = {
@@ -130,35 +130,37 @@ export type ButtonProps<T extends HTMLElement = HTMLButtonElement> = Omit<
   color?: keyof (typeof styles)["color"];
   size?: keyof (typeof styles)["size"];
   icon?: boolean;
-  leading?: ReactElement;
-  trailing?: ReactElement;
+  leading?: ReactElement<{
+    className?: string;
+  }>;
+  trailing?: ReactElement<{
+    className?: string;
+  }>;
   loading?: boolean;
   disabled?: boolean;
   rounded?: boolean;
   trailingClassName?: string;
   leadingClassName?: string;
+  ref?: Ref<T>;
 };
 
-const Button = <T extends HTMLElement = HTMLButtonElement>(
-  {
-    variant = "outlined",
-    color = "default",
-    size = "md",
-    className,
-    trailingClassName,
-    leadingClassName,
-    icon,
-    type = "button",
-    leading,
-    trailing,
-    children,
-    loading,
-    disabled,
-    rounded,
-    ...props
-  }: ButtonProps<T>,
-  ref: ForwardedRef<T>,
-) => {
+const Button = <T extends HTMLElement = HTMLButtonElement>({
+  variant = "outlined",
+  color = "default",
+  size = "md",
+  className,
+  trailingClassName,
+  leadingClassName,
+  icon,
+  type = "button",
+  leading,
+  trailing,
+  children,
+  loading,
+  disabled,
+  rounded,
+  ...props
+}: ButtonProps<T>) => {
   if (loading) {
     if (icon) {
       children = <Loading className="my-auto" />;
@@ -169,7 +171,6 @@ const Button = <T extends HTMLElement = HTMLButtonElement>(
 
   return (
     <UnstyledButton
-      ref={ref}
       {...props}
       className={clsx(
         styles.root,
@@ -198,21 +199,32 @@ const Button = <T extends HTMLElement = HTMLButtonElement>(
       {!icon
         ? children
         : Array.isArray(children)
-          ? children.map((child, key) =>
-              cloneElement(child as ReactElement, {
+          ? children.map(
+              (
+                child: ReactElement<{
+                  className?: string;
+                }>,
                 key,
+              ) =>
+                cloneElement(child, {
+                  key,
+                  className: clsx(
+                    styles.icon[size].icon,
+                    child?.props?.className,
+                  ),
+                }),
+            )
+          : (() => {
+              const child = children as ReactElement<{
+                className?: string;
+              }>;
+              return cloneElement(child, {
                 className: clsx(
                   styles.icon[size].icon,
-                  (child as ReactElement)?.props?.className,
+                  child?.props?.className,
                 ),
-              }),
-            )
-          : cloneElement(children as ReactElement, {
-              className: clsx(
-                styles.icon[size].icon,
-                (children as ReactElement)?.props?.className,
-              ),
-            })}
+              });
+            })()}
       {trailing &&
         cloneElement(trailing, {
           className: clsx(
@@ -226,4 +238,4 @@ const Button = <T extends HTMLElement = HTMLButtonElement>(
   );
 };
 
-export default forwardRef(Button);
+export default Button;

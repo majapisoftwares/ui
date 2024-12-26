@@ -2,7 +2,7 @@ import UnstyledInput, { UnstyledInputProps } from "../Input/UnstyledInput";
 import { defaultTextStyles } from "../Text";
 import { ExclamationCircleIcon } from "@heroicons/react/20/solid";
 import InputIcon from "./InputIcon";
-import { cloneElement, ForwardedRef, forwardRef } from "react";
+import { cloneElement } from "react";
 import recursiveChildrenMap from "../../utils/recursiveChildrenMap";
 import clsx from "../../utils/clsx";
 
@@ -27,28 +27,26 @@ export const defaultLeadingClassName =
 export const defaultLeadingInputClassName = "pl-10";
 export const defaultTrailingInputClassName = "pr-10";
 
-function Input<Select extends boolean | undefined>(
-  {
-    error,
-    trailing,
-    labelClassName,
-    inputClassName,
-    helpTextClassName,
-    trailingClassName,
-    leadingClassName,
-    leadingInputClassName,
-    trailingInputClassName,
-    required,
-    label,
-    loading,
-    readOnly,
-    children,
-    disabled,
-    helpText,
-    ...props
-  }: InputProps<Select>,
-  ref: ForwardedRef<Select extends true ? HTMLSelectElement : HTMLInputElement>,
-) {
+function Input<Select extends boolean | undefined>({
+  error,
+  trailing,
+  labelClassName,
+  inputClassName,
+  helpTextClassName,
+  trailingClassName,
+  leadingClassName,
+  leadingInputClassName,
+  trailingInputClassName,
+  required,
+  label,
+  loading,
+  readOnly,
+  children,
+  disabled,
+  helpText,
+  ref,
+  ...props
+}: InputProps<Select>) {
   trailing =
     trailing ||
     (error ? (
@@ -116,7 +114,9 @@ function Input<Select extends boolean | undefined>(
       data-disabled={disabled || undefined}
       helpText={helpText}
     >
-      {recursiveChildrenMap(children, (child) =>
+      {recursiveChildrenMap<{
+        disabled?: boolean;
+      }>(children, (child) =>
         cloneElement(child, {
           disabled: readOnly || disabled || child.props.disabled,
         }),
@@ -125,4 +125,4 @@ function Input<Select extends boolean | undefined>(
   );
 }
 
-export default forwardRef(Input);
+export default Input;

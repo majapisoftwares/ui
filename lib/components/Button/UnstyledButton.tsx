@@ -1,11 +1,4 @@
-import type {
-  ButtonHTMLAttributes,
-  DetailedHTMLProps,
-  ForwardedRef,
-  HTMLProps,
-  Ref,
-} from "react";
-import { forwardRef } from "react";
+import type { ButtonHTMLAttributes, DetailedHTMLProps, HTMLProps } from "react";
 import NextLink from "next/link";
 
 export type UnstyledButtonProps<T extends HTMLElement = HTMLButtonElement> = {
@@ -16,20 +9,14 @@ export type UnstyledButtonProps<T extends HTMLElement = HTMLButtonElement> = {
   as?: string;
 } & Omit<HTMLProps<T>, "ref" | "href">;
 
-const UnstyledButton = <T extends HTMLElement = HTMLButtonElement>(
-  { href, as, ...props }: UnstyledButtonProps<T>,
-  ref: ForwardedRef<T>,
-) => {
+const UnstyledButton = <T extends HTMLElement = HTMLButtonElement>({
+  href,
+  as,
+  ...props
+}: UnstyledButtonProps<T>) => {
   if (as) {
     const Component = as;
-    return (
-      <Component
-        {...props}
-        {...{
-          ref,
-        }}
-      />
-    );
+    return <Component {...props} />;
   }
 
   if (href) {
@@ -38,7 +25,6 @@ const UnstyledButton = <T extends HTMLElement = HTMLButtonElement>(
       <NextLink
         {...props2}
         href={href}
-        ref={ref as Ref<HTMLAnchorElement>}
         tabIndex={props2.disabled ? -1 : undefined}
       />
     );
@@ -50,9 +36,8 @@ const UnstyledButton = <T extends HTMLElement = HTMLButtonElement>(
         ButtonHTMLAttributes<HTMLButtonElement>,
         HTMLButtonElement
       >)}
-      ref={ref as Ref<HTMLButtonElement>}
     />
   );
 };
 
-export default forwardRef(UnstyledButton);
+export default UnstyledButton;

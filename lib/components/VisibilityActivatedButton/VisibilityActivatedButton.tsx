@@ -1,4 +1,4 @@
-import { ComponentProps, useEffect, useRef } from "react";
+import { ComponentProps, RefObject, useEffect, useRef } from "react";
 import { useIntersection } from "react-use";
 import Button from "../Button";
 
@@ -12,9 +12,9 @@ export default function VisibilityActivatedButton({
   threshold?: number;
   rootMargin?: string;
 }) {
-  const observerRef = useRef<HTMLButtonElement | null>(null);
+  const observerRef = useRef<HTMLElement>(null);
 
-  const intersection = useIntersection(observerRef, {
+  const intersection = useIntersection(observerRef as RefObject<HTMLElement>, {
     root,
     rootMargin,
     threshold,

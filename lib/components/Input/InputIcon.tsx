@@ -6,7 +6,9 @@ export default function InputIcon({
   children,
 }: {
   className?: string;
-  children: ReactElement;
+  children: ReactElement<{
+    className?: string;
+  }>;
 }) {
   return cloneElement(children, {
     className: clsx("h-5 w-5", className),

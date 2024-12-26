@@ -1,10 +1,4 @@
-import {
-  ComponentProps,
-  DetailedHTMLProps,
-  ForwardedRef,
-  forwardRef,
-  HTMLAttributes,
-} from "react";
+import { ComponentProps, DetailedHTMLProps, HTMLAttributes } from "react";
 import clsx from "../../utils/clsx";
 import NextLink from "next/link";
 
@@ -35,18 +29,15 @@ export type TextProps = {
     ComponentProps<typeof NextLink>
 >;
 
-function Text(
-  {
-    inline,
-    variant = "default",
-    className,
-    href,
-    target,
-    size = variant !== "label" ? "base" : "sm",
-    ...props
-  }: TextProps,
-  ref: ForwardedRef<HTMLDivElement | HTMLAnchorElement>,
-) {
+function Text({
+  inline,
+  variant = "default",
+  className,
+  href,
+  target,
+  size = variant !== "label" ? "base" : "sm",
+  ...props
+}: TextProps) {
   className = clsx(
     defaultTextStyles.variant[variant],
     defaultTextStyles.size[size],
@@ -54,26 +45,14 @@ function Text(
   );
   if (href) {
     return (
-      <NextLink
-        ref={ref as ForwardedRef<HTMLAnchorElement>}
-        href={href}
-        target={target}
-        {...props}
-        className={className}
-      />
+      <NextLink href={href} target={target} {...props} className={className} />
     );
   }
   if (inline) {
-    return <span ref={ref} {...props} className={className} />;
+    return <span {...props} className={className} />;
   }
 
-  return (
-    <div
-      ref={ref as ForwardedRef<HTMLDivElement>}
-      {...props}
-      className={className}
-    />
-  );
+  return <div {...props} className={className} />;
 }
 
-export default forwardRef(Text);
+export default Text;
