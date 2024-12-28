@@ -35,7 +35,13 @@ export type DataTableProps<RowData> = {
     icon: ReactElement;
     href?: string | ((item: RowData) => string | null | undefined);
     onClick?: (item: RowData) => void;
-    wrapper?: ComponentType<{ item: RowData; children: ReactNode }>;
+    wrapper?: ComponentType<{
+      item: RowData;
+      children: ReactElement<{
+        className?: string;
+        onClick: () => void;
+      }>;
+    }>;
     target?: string;
   }[];
   isLoading?: boolean;
