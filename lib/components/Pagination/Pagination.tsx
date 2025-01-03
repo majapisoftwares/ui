@@ -40,7 +40,8 @@ export default function Pagination({
     if (onChangePage) {
       onChangePage(page);
     }
-  }, [onChangePage, page]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page]);
 
   const [previousTotalItems, setPreviousTotalItems] = useState(totalItems || 0);
   useEffect(() => {

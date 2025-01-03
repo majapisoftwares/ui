@@ -111,7 +111,8 @@ export default function DataTable<RowData>({
     if (onChangePage) {
       onChangePage(page);
     }
-  }, [onChangePage, page]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page]);
 
   const handleRowClick = useCallback(
     (item: RowData) => (onRowClick ? () => onRowClick(item) : undefined),

@@ -43,7 +43,8 @@ export default function TableFooterWithPagination({
     if (onChangePage) {
       onChangePage(page);
     }
-  }, [onChangePage, page]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page]);
 
   const handlePageClick = useCallback(
     (page: number) => () => setPage(page),
