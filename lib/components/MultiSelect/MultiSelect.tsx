@@ -21,6 +21,7 @@ import clsx from "../../utils/clsx";
 import { isEqual, take } from "lodash-es";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import Badge from "../Badge";
+import { useDeepCompareEffect } from "react-use";
 
 const defaultMenuItemsClassName =
   "z-10 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-zinc-800";
@@ -171,7 +172,7 @@ export default function MultiSelect<T extends object | string>({
       onChangeQuery(query);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [onChangeQuery, query]);
+  }, [query]);
 
   const filteredItems = useMemo(
     () =>
@@ -216,17 +217,17 @@ export default function MultiSelect<T extends object | string>({
     [renderFunction, renderProperty],
   );
 
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     onChange?.(selectedItems);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedItems]);
+  }, [selectedItems || {}]);
 
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     if (!isEqual(selectedItems, value)) {
       setSelectedItems(value || []);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value]);
+  }, [value || {}]);
 
   const removeItem = useCallback(
     (item: T) => () =>
