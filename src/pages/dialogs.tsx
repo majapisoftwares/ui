@@ -66,7 +66,7 @@ export default function Page() {
           <Dialog
             title="Payment successful"
             description="Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur amet labore."
-            open={isOpen}
+            open={true}
             onOpenChange={(open) => setOpen(open)}
           >
             <Group>

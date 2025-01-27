@@ -2,19 +2,27 @@ import { setCookie } from "cookies-next";
 import ms from "ms";
 import { snapshot, subscribe } from "valtio";
 
+const hydratedStates = new Set<string>();
+
 export default function createStateHydration<T extends object>(
   cookieName: string,
   state: T,
   properties?: (keyof T)[],
 ) {
-  subscribe(state, () => {
-    setCookie(cookieName, snapshot(state), {
-      maxAge: ms("30d"),
-      path: "/",
+  if (!hydratedStates.has(cookieName)) {
+    subscribe(state, () => {
+      setCookie(cookieName, snapshot(state), {
+        maxAge: ms("30d"),
+        path: "/",
+      });
     });
-  });
+  }
 
   return function hydrate(cookies?: { state?: string }) {
+    if (hydratedStates.has(cookieName)) {
+      return;
+    }
+    hydratedStates.add(cookieName);
     if (cookies?.[cookieName as keyof typeof cookies]) {
       try {
         const cookieValueString = cookies[
