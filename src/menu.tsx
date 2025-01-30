@@ -106,10 +106,6 @@ export const menu = [
         title: "Notifications",
         href: "/notifications",
       },
-      {
-        title: "Dialogs",
-        href: "/dialogs",
-      },
       //
       {
         title: "Navigation",
@@ -177,6 +173,14 @@ export const menu = [
       {
         title: "Tabs",
         href: "/tabs",
+      },
+      {
+        title: "Dialogs",
+        href: "/dialogs",
+      },
+      {
+        title: "Popover",
+        href: "/popover",
       },
       //
       {
