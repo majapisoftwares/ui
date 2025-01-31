@@ -1,4 +1,12 @@
-import { ChangeEvent, useEffect, useId, useRef, useState } from "react";
+import {
+  ChangeEvent,
+  RefObject,
+  useCallback,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+} from "react";
 import ReactCrop, { type Crop, PixelCrop } from "react-image-crop";
 import useDebounceEffect from "../../hooks/useDebounceEffect";
 import { canvasPreview } from "./canvasPreview";
@@ -10,6 +18,11 @@ import { CheckIcon, TrashIcon } from "@heroicons/react/20/solid";
 import Tooltip from "../Tooltip";
 import { useLatest } from "react-use";
 
+export type PictureCropInputRef = {
+  handleCrop: () => Promise<void>;
+  completedCrop: PixelCrop | undefined;
+};
+
 export default function PictureCropInput({
   value,
   onChange,
@@ -19,6 +32,7 @@ export default function PictureCropInput({
   previewContainerClassName,
   cropButtonClassName,
   aspect = 1,
+  ref,
 }: {
   value: string;
   onChange: (value: string) => void;
@@ -28,6 +42,7 @@ export default function PictureCropInput({
   previewContainerClassName?: string;
   cropButtonClassName?: string;
   aspect?: number;
+  ref: RefObject<PictureCropInputRef | null>;
 }) {
   const id = useId();
   const [src, setSrc] = useState<string>();
@@ -38,7 +53,7 @@ export default function PictureCropInput({
   const imgRef = useRef<HTMLImageElement>(null);
   const parentRef = useRef<HTMLDivElement>(null);
 
-  const autoCrop = () => {
+  const autoCrop = useCallback(() => {
     const smallestSide = Math.min(
       imgRef.current?.getBoundingClientRect().width || 0,
       imgRef.current?.getBoundingClientRect().height || 0,
@@ -50,17 +65,20 @@ export default function PictureCropInput({
       width: smallestSide,
       height: smallestSide,
     });
-  };
+  }, []);
 
-  const onFileSelect = async (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setSrc(URL.createObjectURL(file));
-      setTimeout(() => {
-        autoCrop();
-      }, 100);
-    }
-  };
+  const onFileSelect = useCallback(
+    async (event: ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0];
+      if (file) {
+        setSrc(URL.createObjectURL(file));
+        setTimeout(() => {
+          autoCrop();
+        }, 100);
+      }
+    },
+    [autoCrop],
+  );
 
   useEffect(() => {
     const resizeObserver = new ResizeObserver(() => {
@@ -100,7 +118,7 @@ export default function PictureCropInput({
     [completedCrop],
   );
 
-  const cropToBlobUrl = async () => {
+  const cropToBlobUrl = useCallback(async () => {
     const image = imgRef.current;
     const previewCanvas = previewCanvasRef.current;
     if (!image || !previewCanvas || !completedCrop) {
@@ -140,17 +158,26 @@ export default function PictureCropInput({
     });
 
     return URL.createObjectURL(blob);
-  };
+  }, [completedCrop]);
 
-  const handleCrop = async () => {
+  const handleCrop = useCallback(async () => {
     onChange(await cropToBlobUrl());
     setSrc(undefined);
-  };
+  }, [cropToBlobUrl, onChange]);
 
-  const handleClear = () => {
+  useEffect(() => {
+    if (ref) {
+      ref.current = {
+        handleCrop,
+        completedCrop,
+      };
+    }
+  }, [completedCrop, handleCrop, ref]);
+
+  const handleClear = useCallback(() => {
     setCrop(undefined);
     setSrc(undefined);
-  };
+  }, []);
 
   return (
     <div ref={parentRef} className={clsx("flex gap-2", className)}>
