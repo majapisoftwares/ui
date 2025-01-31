@@ -42,7 +42,7 @@ export default function PictureCropInput({
   previewContainerClassName?: string;
   cropButtonClassName?: string;
   aspect?: number;
-  ref: RefObject<PictureCropInputRef | null>;
+  ref?: RefObject<PictureCropInputRef | null>;
 }) {
   const id = useId();
   const [src, setSrc] = useState<string>();
