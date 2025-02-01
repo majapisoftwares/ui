@@ -1,5 +1,7 @@
-import { DetailedHTMLProps, HTMLAttributes } from "react";
+import { ComponentProps, DetailedHTMLProps, HTMLAttributes } from "react";
 import clsx from "../../utils/clsx";
+import NextLink from "next/link";
+import Link from "../Link";
 
 export const defaultTextStyles = {
   variant: {
@@ -18,26 +20,36 @@ export const defaultTextStyles = {
 };
 
 export type TextProps = {
-  variant?: keyof (typeof defaultTextStyles)["variant"];
+  variant?: keyof (typeof defaultTextStyles)["variant"] | "link";
   size?: keyof (typeof defaultTextStyles)["size"];
   inline?: boolean;
 } & Partial<
   DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> &
-    DetailedHTMLProps<HTMLAttributes<HTMLSpanElement>, HTMLSpanElement>
+    DetailedHTMLProps<HTMLAttributes<HTMLSpanElement>, HTMLSpanElement> &
+    ComponentProps<typeof NextLink>
 >;
 
 function Text({
   inline,
   variant = "default",
   className,
+  href,
+  target,
   size = variant !== "label" ? "base" : "sm",
   ...props
 }: TextProps) {
+  if (href || variant === "link") {
+    return (
+      <Link href={href} target={target} {...props} className={className} />
+    );
+  }
+
   className = clsx(
     defaultTextStyles.variant[variant],
     defaultTextStyles.size[size],
     className,
   );
+
   if (inline) {
     return <span {...props} className={className} />;
   }
