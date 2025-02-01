@@ -5,6 +5,7 @@ import { NextSeo } from "next-seo";
 import { GetServerSideProps } from "next";
 import { getCookies } from "cookies-next";
 import Breadcrumbs from "../../lib/components/Breadcrumbs";
+import Link from "../../lib/components/Link";
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => ({
   props: {
@@ -22,9 +23,7 @@ export default function Page() {
       <Stack className="p-2">
         <Text variant="label">Variant label</Text>
         <Text variant="secondary">Variant secondary</Text>
-        <Text variant="link" href="/">
-          Link
-        </Text>
+        <Link href="/">Link</Link>
         <Text size="xs">Size xs</Text>
         <Text size="sm">Size sm</Text>
         <Text>Default</Text>
