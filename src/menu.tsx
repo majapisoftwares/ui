@@ -99,6 +99,10 @@ export const menu = [
         href: "/loading",
       },
       {
+        title: "Skeleton",
+        href: "/skeleton",
+      },
+      {
         title: "Error boundary",
         href: "/error-boundary",
       },
