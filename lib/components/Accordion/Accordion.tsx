@@ -17,19 +17,21 @@ function AccordionItem({
   children,
   title,
   value,
+  className,
   triggerClassName,
   contentClassName,
 }: {
   children?: ReactNode;
   title: ReactNode;
   value?: string;
+  className?: string;
   triggerClassName?: string;
   contentClassName?: string;
 }) {
   const id = useId();
   value = value || id;
   return (
-    <RAccordion.Item value={value}>
+    <RAccordion.Item value={value} className={className}>
       <RAccordion.Header>
         <RAccordion.Trigger
           className={clsx(
