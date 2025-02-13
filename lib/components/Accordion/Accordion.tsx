@@ -31,7 +31,7 @@ function AccordionItem({
   const id = useId();
   value = value || id;
   return (
-    <RAccordion.Item value={value} className={clsx("", className)}>
+    <RAccordion.Item value={value} className={clsx(className)}>
       <RAccordion.Header>
         <RAccordion.Trigger
           className={clsx(
