@@ -3,7 +3,6 @@ import { ReactNode, useId } from "react";
 import * as RAccordion from "@radix-ui/react-accordion";
 import clsx from "../../utils/clsx";
 
-
 export default function Accordion({ children }: { children?: ReactNode }) {
   return (
     <RAccordion.Root type="multiple" className="flex flex-col gap-2">
@@ -18,13 +17,13 @@ function AccordionItem({
   children,
   title,
   value,
-  className,
+  triggerClassName,
   contentClassName,
 }: {
   children?: ReactNode;
   title: ReactNode;
   value?: string;
-  className?: string;
+  triggerClassName?: string;
   contentClassName?: string;
 }) {
   const id = useId();
@@ -35,7 +34,7 @@ function AccordionItem({
         <RAccordion.Trigger
           className={clsx(
             "group flex w-full justify-between rounded-lg bg-zinc-200 px-4 py-2 text-left text-sm font-medium hover:bg-zinc-300 focus:outline-none focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75 dark:bg-zinc-800 dark:hover:bg-zinc-700",
-            className,
+            triggerClassName,
           )}
         >
           {title}
