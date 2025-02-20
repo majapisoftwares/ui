@@ -8,15 +8,21 @@ export default function ScrollArea({
   viewportClassName,
   ref,
   viewportRef,
+  type,
 }: {
   children: ReactNode;
   className?: string;
   viewportClassName?: string;
   ref?: Ref<HTMLDivElement>;
   viewportRef?: Ref<HTMLDivElement>;
+  type?: "auto" | "always" | "scroll" | "hover";
 }) {
   return (
-    <RScrollArea.Root className={clsx("overflow-hidden", className)} ref={ref}>
+    <RScrollArea.Root
+      className={clsx("overflow-hidden", className)}
+      ref={ref}
+      type={type}
+    >
       <RScrollArea.Viewport
         className={clsx("h-full w-full", viewportClassName)}
         ref={viewportRef}
