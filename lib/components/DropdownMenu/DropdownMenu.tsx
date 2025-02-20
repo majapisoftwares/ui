@@ -67,12 +67,16 @@ function DropdownMenuSeparator({
 function DropdownMenuItem({
   className,
   href,
+  target,
   ...props
-}: ComponentProps<typeof RDropdownMenu.Item> & { href?: string }) {
+}: ComponentProps<typeof RDropdownMenu.Item> & {
+  href?: string;
+  target?: string;
+}) {
   const Wrapper = href ? Link : Fragment;
   return (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    <Wrapper {...(href ? ({ href } as any) : {})}>
+    <Wrapper {...(href ? ({ href, target } as any) : {})}>
       <RDropdownMenu.Item
         {...props}
         className={clsx(
