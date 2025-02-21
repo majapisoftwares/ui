@@ -19,6 +19,7 @@ export interface DialogProps {
   descriptionClassName?: string;
   hideTitle?: boolean;
   contentProps?: Omit<DialogContentProps, "children">;
+  hideCloseButton?: boolean;
 }
 
 export default function Dialog({
@@ -35,6 +36,7 @@ export default function Dialog({
   descriptionClassName,
   hideTitle,
   contentProps,
+  hideCloseButton,
 }: {
   children: ReactNode;
   open: boolean;
@@ -93,20 +95,22 @@ export default function Dialog({
                 </RDialog.Description>
               )}
               {children}
-              <RDialog.Close asChild>
-                <Button
-                  className={clsx(
-                    "absolute right-1 top-1 p-1.5",
-                    "ui-dialog-close-button",
-                    closeButtonClassName,
-                  )}
-                  aria-label="Close"
-                  variant="text"
-                  icon
-                >
-                  <XMarkIcon />
-                </Button>
-              </RDialog.Close>
+              {!hideCloseButton && (
+                <RDialog.Close asChild>
+                  <Button
+                    className={clsx(
+                      "absolute right-1 top-1 p-1.5",
+                      "ui-dialog-close-button",
+                      closeButtonClassName,
+                    )}
+                    aria-label="Close"
+                    variant="text"
+                    icon
+                  >
+                    <XMarkIcon />
+                  </Button>
+                </RDialog.Close>
+              )}
             </div>
           </RDialog.Content>
         </RDialog.Overlay>
@@ -114,3 +118,5 @@ export default function Dialog({
     </RDialog.Root>
   );
 }
+
+Dialog.Close = RDialog.Close;
