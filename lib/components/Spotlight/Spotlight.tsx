@@ -1,150 +1,204 @@
-import { Fragment, useCallback, useEffect, useState } from "react";
-import { Dialog, Transition } from "@headlessui/react";
-import clsx from "../../utils/clsx";
+import * as Dialog from "@radix-ui/react-dialog";
+import { VisuallyHidden } from "radix-ui";
+import { useCallback } from "react";
 import {
-  UnstyledAutocomplete,
-  UnstyledAutocompleteProps,
-} from "../Autocomplete";
-import { defaultLeadingClassName, InputIcon } from "../Input";
-import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
+  ChevronRightIcon,
+  MagnifyingGlassIcon,
+} from "@heroicons/react/24/solid";
+import { useLocalStorage } from "react-use";
+import { take, uniqBy } from "lodash-es";
+import Image from "next/image";
+import Input from "../Input";
+import Skeleton from "../Skeleton";
+import UnstyledButton from "../Button/UnstyledButton";
+import Button from "../Button";
+import clsx from "../../utils/clsx";
 
-export interface SpotlightProps<T extends { _id: string }>
-  extends UnstyledAutocompleteProps<T> {
-  open?: boolean;
-  onClose?: () => void;
-}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Any = any;
 
-export default function Spotlight<T extends { _id: string }>({
+export default function Spotlight<T extends object>({
+  recentSearchesId,
   open,
-  onClose,
-  placeholder = "Search...",
-  query: defaultQuery = "",
-  onChangeQuery,
-  emptyText = "No item found.",
-  ...props
-}: SpotlightProps<T>) {
-  const [query, setQuery] = useState(defaultQuery);
+  setOpen,
+  setQuery,
+  query,
+  onClickItem,
+  results,
+  loading,
+  getItemId = (item: Any) => item._id,
+  getItemLabel = (item: Any) => item.name,
+  getItemPicture,
+  getItemHref,
+  showSeeMoreButton,
+  onSeeMoreClick,
+  seeMoreHref,
+}: {
+  recentSearchesId: string;
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  setQuery: (search: string) => void;
+  query: string;
+  results?: T[];
+  loading: boolean;
+  getItemId?: (item: T) => string;
+  getItemLabel?: (item: T) => string;
+  getItemPicture?: (item: T) => string;
+  getItemHref?: (item: T) => string;
+  onClickItem?: (item: T) => void;
+  showSeeMoreButton?: boolean;
+  onSeeMoreClick?: () => void;
+  seeMoreHref?: string;
+}) {
+  const [recentQueries, setRecentQueries] = useLocalStorage<T[]>(
+    `spotlight-recent-queries-${recentSearchesId}`,
+    [],
+  );
 
-  useEffect(() => {
-    if (query !== defaultQuery) {
-      setQuery(defaultQuery);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [defaultQuery]);
-  useEffect(() => {
-    if (onChangeQuery && query !== defaultQuery) {
-      onChangeQuery(query);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [onChangeQuery, query]);
+  const handleClose = useCallback(
+    (item: T) => {
+      setRecentQueries(
+        take(uniqBy([item, ...(recentQueries || [])], getItemId), 5),
+      );
+      setOpen(false);
+      setQuery("");
+    },
+    [getItemId, recentQueries, setOpen, setQuery, setRecentQueries],
+  );
 
-  const handleOnClose = useCallback(() => onClose?.(), [onClose]);
+  const handleItemClick = useCallback(
+    (item: T) => () => {
+      onClickItem?.(item);
+      handleClose(item);
+    },
+    [handleClose, onClickItem],
+  );
 
   return (
-    <Transition.Root
-      show={open}
-      as={Fragment}
-      afterLeave={() => setQuery("")}
-      appear
-    >
-      <Dialog as="div" className="relative z-10" onClose={handleOnClose}>
-        <Transition.Child
-          as={Fragment}
-          enter="ease-out duration-300"
-          enterFrom="opacity-0"
-          enterTo="opacity-100"
-          leave="ease-in duration-200"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0"
+    <Dialog.Root open={open} onOpenChange={setOpen}>
+      <Dialog.Portal>
+        <Dialog.Overlay
+          className={clsx(
+            "fixed inset-0 z-20 flex justify-center bg-black/30 backdrop-blur-sm",
+            "will-change-[opacity,transform] data-[state=closed]:animate-fadeOut data-[state=open]:animate-slideUpAndFade",
+          )}
         >
-          <div
+          <Dialog.Content
             className={clsx(
-              "fixed inset-0 bg-zinc-500 !bg-opacity-25 transition-opacity dark:bg-zinc-800",
-              "bg-white/50 backdrop-blur [@supports(backdrop-filter:blur(0))]:bg-white/30",
-              "dark:bg-zinc-900/50 dark:[@supports(backdrop-filter:blur(0))]:bg-zinc-900/30",
+              "fixed mx-auto w-full max-w-screen-md px-4 py-4 focus:outline-none md:py-8",
+              "will-change-[transform,opacity] data-[state=closed]:animate-fadeOut data-[state=open]:animate-elasticSlideUpAndFade",
             )}
-          />
-        </Transition.Child>
-
-        <div className="fixed inset-0 z-10 overflow-y-auto p-4 sm:p-6 md:p-20">
-          <Transition.Child
-            as={Fragment}
-            enter="ease-out duration-300"
-            enterFrom="opacity-0 scale-95"
-            enterTo="opacity-100 scale-100"
-            leave="ease-in duration-200"
-            leaveFrom="opacity-100 scale-100"
-            leaveTo="opacity-0 scale-95"
           >
-            <Dialog.Panel className="mx-auto max-w-xl transform divide-y divide-zinc-100 overflow-hidden rounded-xl bg-white shadow-2xl ring-1 ring-black ring-opacity-10 transition-all dark:divide-zinc-800 dark:bg-zinc-900 dark:ring-1 dark:ring-white/5">
-              {/*<Combobox onChange={handleSelect}>
-                <div className="relative flex">
-                  <MagnifyingGlassIcon
-                    className="pointer-events-none absolute top-3.5 left-4 h-5 w-5 text-zinc-400"
-                    aria-hidden="true"
-                  />
-                  <Combobox.Input
-                    className="h-12 w-full border-0 bg-transparent pl-11 pr-4 text-zinc-800 placeholder-zinc-400 focus:ring-0 dark:text-zinc-200 sm:text-sm"
-                    placeholder={placeholder}
-                    onChange={(event) => setQuery(event.target.value)}
-                  />
-                  {loading && <Loading className="mt-3.5 mr-3.5" />}
+            <VisuallyHidden.Root>
+              <Dialog.Title />
+              <Dialog.Description />
+            </VisuallyHidden.Root>
+            <div className="flex w-full flex-col justify-center rounded border border-zinc-800 bg-zinc-900">
+              <div className="px-4 py-4">
+                <Input
+                  className="w-full bg-zinc-900"
+                  inputClassName="border-none rounded-t-md rounded-b-none dark:bg-zinc-900 dark:focus:ring-0"
+                  autoFocus={true}
+                  leading={
+                    <MagnifyingGlassIcon className="h-5 w-5 text-white" />
+                  }
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                />
+              </div>
+              <div className="w-full border-t border-zinc-800">
+                <div className="flex flex-col">
+                  {query ? (
+                    <>
+                      {loading && (
+                        <div className="flex items-center gap-4 px-4 py-2">
+                          {getItemPicture && <Skeleton className="h-16 w-28" />}
+                          <Skeleton className="h-6 w-32" />
+                        </div>
+                      )}
+                      {!loading && !results?.length && (
+                        <div className="flex justify-center border-b border-zinc-800 px-6 py-10 text-zinc-600">
+                          No result found
+                        </div>
+                      )}
+                      {!loading && !!results?.length && (
+                        <>
+                          {results.map((item) => (
+                            <UnstyledButton
+                              key={getItemId(item)}
+                              href={getItemHref?.(item)}
+                              className="flex w-full items-center gap-4 border-t border-zinc-800 px-4 py-2 hover:bg-zinc-800/90"
+                              onClick={handleItemClick(item)}
+                            >
+                              {getItemPicture && (
+                                <Image
+                                  src={getItemPicture(item)}
+                                  alt={getItemLabel(item)}
+                                  width={200}
+                                  height={378}
+                                  className="h-16 w-28 rounded object-cover"
+                                />
+                              )}
+                              <div className="text-white">
+                                {getItemLabel(item)}
+                              </div>
+                            </UnstyledButton>
+                          ))}
+                          {showSeeMoreButton && (
+                            <div className="flex w-full justify-center px-4 py-2">
+                              <Button
+                                variant="filled"
+                                type="submit"
+                                className="w-full dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700"
+                                trailing={<ChevronRightIcon />}
+                                onClick={onSeeMoreClick}
+                                href={seeMoreHref}
+                              >
+                                See more
+                              </Button>
+                            </div>
+                          )}
+                        </>
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      {recentQueries?.length ? (
+                        <div className="px-6 py-2 text-zinc-400">
+                          Recently searched
+                        </div>
+                      ) : (
+                        <div className="flex justify-center border-zinc-800 px-6 py-10 text-zinc-600">
+                          No recent search
+                        </div>
+                      )}
+                      {recentQueries?.map((item) => (
+                        <UnstyledButton
+                          key={getItemId(item)}
+                          href={getItemHref?.(item)}
+                          className="flex w-full items-center gap-4 border-t border-zinc-800 px-4 py-2 hover:bg-zinc-800/90"
+                          onClick={handleItemClick(item)}
+                        >
+                          {getItemPicture && (
+                            <Image
+                              src={getItemPicture(item)}
+                              alt={getItemLabel(item)}
+                              width={200}
+                              height={378}
+                              className="max-h-16 max-w-28 rounded object-cover"
+                            />
+                          )}
+                          <div className="text-white">{getItemLabel(item)}</div>
+                        </UnstyledButton>
+                      ))}
+                    </>
+                  )}
                 </div>
-
-                {filteredItems.length > 0 && (
-                  <Combobox.Options
-                    static
-                    className="max-h-72 scroll-py-2 overflow-y-auto py-2 text-sm text-zinc-800 dark:text-zinc-200"
-                  >
-                    {filteredItems.map((item) => (
-                      <Combobox.Option
-                        key={item._id}
-                        value={item}
-                        className={({ active }) =>
-                          clsx(
-                            "cursor-default select-none px-4 py-2",
-                            active && "bg-primary-600 text-white"
-                          )
-                        }
-                      >
-                        {renderFunction
-                          ? renderFunction(item)
-                          : (item[renderProperty] as string)}
-                      </Combobox.Option>
-                    ))}
-                  </Combobox.Options>
-                )}
-
-                {query !== "" && filteredItems.length === 0 && (
-                  <p className="p-4 text-sm text-zinc-500">{emptyText}</p>
-                )}
-              </Combobox>*/}
-              <UnstyledAutocomplete
-                {...props}
-                query={query}
-                onChangeQuery={setQuery}
-                placeholder={placeholder}
-                leadingClassName={defaultLeadingClassName}
-                inputElementClassName="h-12 border-0 focus:ring-0"
-                leading={
-                  <InputIcon>
-                    <MagnifyingGlassIcon aria-hidden="true" />
-                  </InputIcon>
-                }
-                emptyTextClassName="p-4 text-sm text-zinc-500 dark:text-zinc-400"
-                optionsClassName="max-h-72 scroll-py-2 overflow-y-auto py-2 text-sm text-zinc-800 dark:text-zinc-200"
-                optionClassName={({ active }) =>
-                  clsx(
-                    "cursor-default select-none px-4 py-2",
-                    active && "bg-primary-600 text-white",
-                  )
-                }
-                emptyText={emptyText}
-              />
-            </Dialog.Panel>
-          </Transition.Child>
-        </div>
-      </Dialog>
-    </Transition.Root>
+              </div>
+            </div>
+          </Dialog.Content>
+        </Dialog.Overlay>
+      </Dialog.Portal>
+    </Dialog.Root>
   );
 }

@@ -6,8 +6,12 @@ import { getCookies } from "cookies-next";
 import Breadcrumbs from "../../lib/components/Breadcrumbs";
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 import Spotlight from "../../lib/components/Spotlight";
-import { useModalState } from "../../lib/components/Modal";
 import Stack from "../../lib/components/Stack";
+import wait from "@italodeandra/next/utils/wait";
+import { QueryClientProvider, useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import useDebounce from "../../lib/hooks/useDebouncedValue";
+import getQueryClient from "@italodeandra/next/api/getQueryClient";
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => ({
   props: {
@@ -17,35 +21,87 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => ({
 
 const pages = [{ title: "Spotlight" }];
 
-const people = [
-  { _id: "1", name: "Leslie Alexander", url: "#" },
-  { _id: "3", name: "Leslie 2", url: "#" },
-  { _id: "2", name: "Leslie 3", url: "#" },
+const fakeData = [
+  {
+    _id: "1",
+    name: "Leslie Alexander",
+    url: "#",
+    picture: "https://i.imgur.com/BniYvjG.jpeg",
+  },
+  {
+    _id: "3",
+    name: "Leslie 2",
+    url: "#",
+    picture: "https://i.imgur.com/BniYvjG.jpeg",
+  },
+  {
+    _id: "2",
+    name: "Leslie 3",
+    url: "#",
+    picture: "https://i.imgur.com/BniYvjG.jpeg",
+  },
 ];
 
-export default function Page() {
-  const [open, { openModal, closeModal }] = useModalState();
+function useSearchApi({ query }: { query: string }, options = {}) {
+  return useQuery({
+    ...options,
+    queryKey: ["search", query],
+    queryFn: async () => {
+      await wait("5s");
+      return fakeData.filter((anime) =>
+        anime.name.toLowerCase().includes(query.toLowerCase().trim()),
+      );
+    },
+  });
+}
+
+const queryClient = getQueryClient();
+
+function WithQuery() {
+  const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState("");
+
+  const debouncedQuery = useDebounce(query, 800);
+
+  const searchApi = useSearchApi(
+    {
+      query: debouncedQuery,
+    },
+    {
+      enabled: !!debouncedQuery && open,
+    },
+  );
 
   return (
     <>
-      <NextSeo title={pages[0].title} />
-      <Breadcrumbs pages={pages} className="mb-2 md:mx-2" />
       <Stack className="p-2">
-        <Button onClick={openModal}>
+        <Button onClick={() => setOpen(true)}>
           <MagnifyingGlassIcon className="mr-2 w-5" />
           Search
         </Button>
       </Stack>
       <Spotlight
+        recentSearchesId="demo"
         open={open}
-        onClose={closeModal}
-        items={people}
-        onSelect={console.info}
-        filterProperty="name"
-        renderProperty="name"
-        loading
+        setOpen={setOpen}
+        query={query}
+        setQuery={setQuery}
+        loading={searchApi.isFetching}
+        results={searchApi.data}
+        getItemPicture={(item) => item.picture}
+        getItemHref={(item) => item.url}
       />
     </>
+  );
+}
+
+export default function Page() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <NextSeo title={pages[0].title} />
+      <Breadcrumbs pages={pages} className="mb-2 md:mx-2" />
+      <WithQuery />
+    </QueryClientProvider>
   );
 }
 
