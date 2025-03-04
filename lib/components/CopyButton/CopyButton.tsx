@@ -7,12 +7,14 @@ export type CopyButtonProps = {
   text: string;
   copyText?: string;
   copiedText?: string;
+  className?: string;
 };
 
 export default function CopyButton({
   text,
   copyText = "Copy",
   copiedText = "Copied!",
+  className,
 }: CopyButtonProps) {
   const [copyCount, setCopyCount] = useState(0);
   const copied = copyCount > 0;
@@ -31,7 +33,10 @@ export default function CopyButton({
       type="button"
       color={copied ? "success" : undefined}
       size="sm"
-      className="absolute right-2.5 top-2.5 opacity-0 backdrop-blur focus:opacity-100 group-hover:opacity-100"
+      className={clsx(
+        "absolute right-2.5 top-2.5 opacity-0 backdrop-blur focus:opacity-100 group-hover:opacity-100",
+        className,
+      )}
       onClick={() => {
         window.navigator.clipboard.writeText(text).then(() => {
           setCopyCount((count) => count + 1);
