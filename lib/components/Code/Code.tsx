@@ -11,6 +11,7 @@ export type CodeProps = {
   copyText?: string;
   copiedText?: string;
   theme?: PrismTheme;
+  copyClassName?: string;
 };
 
 export default function Code({
@@ -21,6 +22,7 @@ export default function Code({
   copyText,
   copiedText,
   theme,
+  copyClassName,
 }: CodeProps) {
   return (
     <div
@@ -53,6 +55,7 @@ export default function Code({
           text={children}
           copyText={copyText}
           copiedText={copiedText}
+          className={copyClassName}
         />
       )}
     </div>
