@@ -196,7 +196,7 @@ export default function PictureCropInput({
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              alt="Profile picture"
+              alt="Picture"
               src={src}
               // className="h-96 w-96 object-contain"
               ref={imgRef}
@@ -262,7 +262,7 @@ export default function PictureCropInput({
             </div>
             <div className="flex flex-col items-start gap-1.5">
               <div className="text-gray-10 text-sm font-medium">
-                Change picture
+                {value ? "Change" : "Select"} picture
               </div>
               <div className="text-xs text-zinc-500">
                 JPG, PNG - Max size 10MB
