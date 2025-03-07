@@ -26,7 +26,10 @@ export default function Notifications({
   }, [setRendered]);
 
   return (
-    <ul className="pointer-events-none fixed inset-0 z-30 flex flex-col items-center justify-end gap-3 px-4 py-6 sm:items-end sm:justify-start sm:p-6">
+    <ul
+      id="ui-notifications"
+      className="pointer-events-none fixed inset-0 z-30 flex flex-col items-center justify-end gap-3 px-4 py-6 sm:items-end sm:justify-start sm:p-6"
+    >
       <AnimatePresence initial={false}>
         {notifications.map(
           ({
