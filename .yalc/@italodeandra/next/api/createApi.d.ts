@@ -25,8 +25,8 @@ export default function createApi<T extends (args: Any, req: NextApiRequest, res
         InfiniteQueryOptions: Omit<UseInfiniteQueryOptions<InferApiResponse<T>>, "queryKey">;
         MutationOptions: Partial<UseMutationOptions<InferApiResponse<T>, AxiosError, InferApiArgs<T>>>;
     };
-    useQuery: (args?: InferApiArgs<T>, options?: Partial<UseQueryOptions<InferApiResponse<T>, Error, InferApiResponse<T>, import("@tanstack/react-query").QueryKey>>) => import("@tanstack/react-query").UseQueryResult<InferApiResponse<T>, Error>;
-    useInfiniteQuery: (args: InferApiArgs<T>, options: Omit<UseInfiniteQueryOptions<InferApiResponse<T>, Error, InferApiResponse<T>, InferApiResponse<T>, import("@tanstack/react-query").QueryKey, unknown>, "queryKey">) => import("@tanstack/react-query").UseInfiniteQueryResult<import("@tanstack/react-query").InfiniteData<InferApiResponse<T>, unknown>, Error>;
+    useQuery: (args?: InferApiArgs<T>, options?: Partial<UseQueryOptions<InferApiResponse<T>, Error, InferApiResponse<T>, readonly unknown[]>>) => import("@tanstack/react-query").UseQueryResult<InferApiResponse<T>, Error>;
+    useInfiniteQuery: (args: InferApiArgs<T>, options: Omit<UseInfiniteQueryOptions<InferApiResponse<T>, Error, InferApiResponse<T>, InferApiResponse<T>, readonly unknown[], unknown>, "queryKey">) => import("@tanstack/react-query").UseInfiniteQueryResult<import("@tanstack/react-query").InfiniteData<InferApiResponse<T>, unknown>, Error>;
     useMutation: (options?: Partial<UseMutationOptions<InferApiResponse<T>, AxiosError<unknown, any>, InferApiArgs<T>, unknown>>) => import("@tanstack/react-query").UseMutationResult<InferApiResponse<T>, AxiosError<unknown, any>, InferApiArgs<T>, C>;
     invalidateQueries: (queryClient: QueryClient, args?: InferApiArgs<T>) => Promise<void>;
     prefetchQuery: (queryClient: QueryClient, args: InferApiArgs<T>, req?: NextApiRequest | GetServerSidePropsContext["req"], res?: NextApiResponse | GetServerSidePropsContext["res"]) => Promise<void>;

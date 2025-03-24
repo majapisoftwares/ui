@@ -1,2 +1,3 @@
 import { NextApiRequest } from "next";
-export default function rateLimiter(req: NextApiRequest, windowTime?: string, requestLimit?: number): void;
+import { StringValue } from "ms";
+export default function rateLimiter(req: NextApiRequest, windowTime?: StringValue, requestLimit?: number): void;

@@ -17,10 +17,10 @@ export default async function waitFor(asyncFunction, interval, timeout) {
                 resolve(result);
             }
             else if (Date.now() - start >=
-                (typeof timeout === "string" ? ms(timeout) : timeout)) {
+                (typeof timeout !== "number" ? ms(timeout) : timeout)) {
                 clearInterval(intervalId);
                 reject(new Error("Timeout reached"));
             }
-        }, typeof interval === "string" ? ms(interval) : interval);
+        }, typeof interval !== "number" ? ms(interval) : interval);
     });
 }
