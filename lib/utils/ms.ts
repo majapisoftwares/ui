@@ -1,4 +1,4 @@
-import vms from "ms";
+import vms, {StringValue} from "ms";
 
 const locale: Record<string, Record<string, string>> = {
   ["en"]: {
@@ -25,9 +25,9 @@ export function ms(
   value: number,
   options?: { long: boolean; locale?: string },
 ): string;
-export function ms(value: string): number;
+export function ms(value: StringValue): number;
 export function ms(
-  value: number | string,
+  value: number | StringValue,
   options?: { long: boolean; locale?: string },
 ) {
   if (typeof value === "number") {

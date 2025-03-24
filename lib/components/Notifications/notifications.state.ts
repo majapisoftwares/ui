@@ -1,13 +1,13 @@
 import { proxy, ref } from "valtio";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
-import ms from "ms";
+import ms, { StringValue } from "ms";
 import { CSSProperties, ReactElement, ReactNode } from "react";
 
 type Notification = {
   _id: string;
   message: string | ReactElement;
   title?: string;
-  timeout?: number | string;
+  timeout?: number | StringValue;
   icon?: "success" | "error" | ReactElement;
   dismissable?: boolean;
   actions?: ReactNode;
@@ -45,7 +45,7 @@ const notificationsState = proxy({
         () => {
           notificationsState.remove(_id);
         },
-        typeof timeout === "string" ? ms(timeout) : timeout,
+        typeof timeout !== "number" ? ms(timeout) : timeout,
       );
     }
   },

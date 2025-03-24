@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import ms from "ms";
+import ms, {StringValue} from "ms";
 
 export default function useDebounce<T = unknown>(
   value: T,
-  delay: string | number,
+  delay: StringValue | number,
 ) {
   const [debouncedValue, setDebouncedValue] = useState(value);
   useEffect(() => {
@@ -11,7 +11,7 @@ export default function useDebounce<T = unknown>(
       () => {
         setDebouncedValue(value);
       },
-      typeof delay === "string" ? ms(delay) : delay,
+      typeof delay !== "number" ? ms(delay) : delay,
     );
     return () => {
       clearTimeout(handler);
