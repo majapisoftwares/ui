@@ -34,7 +34,7 @@ export default function CopyButton({
       color={copied ? "success" : undefined}
       size="sm"
       className={clsx(
-        "absolute right-2.5 top-2.5 opacity-0 backdrop-blur focus:opacity-100 group-hover:opacity-100",
+        "absolute right-2.5 top-2.5 opacity-0 backdrop-blur-sm focus:opacity-100 group-hover:opacity-100",
         className,
       )}
       onClick={() => {

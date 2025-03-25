@@ -46,7 +46,7 @@ export default function ConfirmationButton({
       {...menuProps}
     >
       <Menu.Label>{confirmation}</Menu.Label>
-      <Menu.Item className="!text-red-500" onClick={onConfirm}>
+      <Menu.Item className="text-red-500!" onClick={onConfirm}>
         {confirm || label}
       </Menu.Item>
       <Menu.Item>{cancel}</Menu.Item>

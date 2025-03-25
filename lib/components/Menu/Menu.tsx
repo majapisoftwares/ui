@@ -15,7 +15,7 @@ import Text, { TextProps } from "../Text";
 import { useMount } from "react-use";
 
 export const defaultMenuItemsClassName =
-  "z-10 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-zinc-800";
+  "z-10 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-hidden dark:bg-zinc-800";
 
 export type MenuProps = {
   className?: string;

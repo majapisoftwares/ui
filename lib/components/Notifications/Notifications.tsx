@@ -45,9 +45,9 @@ export default function Notifications({
             const iconChild = (
               typeof icon === "string"
                 ? {
-                    success: <CheckCircleIcon className="!text-success-400" />,
+                    success: <CheckCircleIcon className="text-success-400!" />,
                     error: (
-                      <ExclamationCircleIcon className="!text-error-400" />
+                      <ExclamationCircleIcon className="text-error-400!" />
                     ),
                   }[icon]
                 : icon
@@ -71,7 +71,7 @@ export default function Notifications({
                 <div className="p-4">
                   <div className="flex items-start">
                     {iconChild && (
-                      <div className="mr-2 flex-shrink-0">
+                      <div className="mr-2 shrink-0">
                         {cloneElement(iconChild, {
                           className: clsx(
                             "h-6 w-6 text-zinc-400 dark:text-zinc-600",
@@ -97,13 +97,13 @@ export default function Notifications({
                       )}
                     </div>
                     {dismissable && (
-                      <div className="ml-4 flex flex-shrink-0">
+                      <div className="ml-4 flex shrink-0">
                         <Button
                           icon
                           onClick={() => {
                             remove(_id);
                           }}
-                          className="h-5 w-5 !p-0"
+                          className="h-5 w-5 p-0!"
                           variant="text"
                         >
                           <XMarkIcon

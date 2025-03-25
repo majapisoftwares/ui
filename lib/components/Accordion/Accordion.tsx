@@ -49,7 +49,7 @@ function AccordionItem({
       <RAccordion.Header>
         <RAccordion.Trigger
           className={clsx(
-            "group flex w-full justify-between rounded-lg bg-zinc-200 px-4 py-2 text-left text-sm font-medium transition hover:bg-zinc-300 focus:outline-none focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75 dark:bg-zinc-800 dark:hover:bg-zinc-700",
+            "group flex w-full justify-between rounded-lg bg-zinc-200 px-4 py-2 text-left text-sm font-medium transition hover:bg-zinc-300 focus:outline-hidden focus-visible:ring-3 focus-visible:ring-purple-500 focus-visible:ring-opacity-75 dark:bg-zinc-800 dark:hover:bg-zinc-700",
             triggerClassName,
           )}
         >

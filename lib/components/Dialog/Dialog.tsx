@@ -59,7 +59,7 @@ export default function Dialog({
             className={clsx(
               modalContentClassName,
               "ui-dialog-content",
-              "relative p-0 focus:outline-none",
+              "relative p-0 focus:outline-hidden",
               contentClassName,
               contentProps?.className,
             )}

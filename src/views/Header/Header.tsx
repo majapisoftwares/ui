@@ -21,7 +21,7 @@ export default function Header() {
         <Image src="/favicon.ico" width={34} height={34} alt="Logo" />
       </NextLink>
       <span className="ml-2 text-xl font-medium">@italodeandra/ui</span>
-      <div className="flex-grow" />
+      <div className="grow" />
       <ModeToggle />
     </UiHeader>
   );

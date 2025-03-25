@@ -9,21 +9,21 @@ export const dropdownSeparatorClassName = clsx(
 
 export const dropdownItemClassName = clsx(
   "ui-dropdown-item",
-  "relative rounded py-1 px-7 cursor-pointer outline-none select-none flex items-center gap-2",
-  "data-[highlighted]:bg-black/5",
-  "dark:data-[highlighted]:bg-white/5",
-  "data-[disabled]:cursor-default data-[disabled]:opacity-50",
+  "relative rounded-sm py-1 px-7 cursor-pointer outline-hidden select-none flex items-center gap-2",
+  "data-highlighted:bg-black/5",
+  "dark:data-highlighted:bg-white/5",
+  "data-disabled:cursor-default data-disabled:opacity-50",
 );
 
 export const dropdownSubTriggerClassName = clsx(
   dropdownItemClassName,
-  "data-[state=open]:bg-black/[0.025] data-[state=open]:data-[highlighted]:bg-black/5 dark:data-[state=open]:data-[highlighted]:bg-white/5",
+  "data-[state=open]:bg-black/[0.025] data-[state=open]:data-highlighted:bg-black/5 dark:data-[state=open]:data-highlighted:bg-white/5",
   "dark:data-[state=open]:bg-white/[0.025]",
 );
 
 export const dropdownLabelClassName = clsx(
   "ui-dropdown-label",
-  "py-1 px-7 text-xs font-medium cursor-default text-zinc-500 outline-none",
+  "py-1 px-7 text-xs font-medium cursor-default text-zinc-500 outline-hidden",
 );
 
 export const dropdownCheckboxItemClassName = clsx(

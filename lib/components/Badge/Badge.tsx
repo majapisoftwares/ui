@@ -88,7 +88,7 @@ function Badge({
         <button
           type="button"
           className={clsx(
-            "ml-0.5 inline-flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full focus:text-white focus:outline-none",
+            "ml-0.5 inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full focus:text-white focus:outline-hidden",
             sizeMap.button[size],
             colorMap[color].button,
           )}

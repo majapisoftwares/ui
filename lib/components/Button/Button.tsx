@@ -5,14 +5,14 @@ import Loading from "../Loading";
 
 const styles = {
   root: clsx(
-    "appearance-none select-none border transition-colors inline-flex items-center justify-center font-medium leading-4 focus:outline-none",
+    "appearance-none select-none border transition-colors inline-flex items-center justify-center font-medium leading-4 focus:outline-hidden",
     "ring-offset-zinc-100 focus-visible:ring-2 focus:ring-primary-500 focus:ring-offset-2",
     "dark:ring-offset-zinc-900",
   ),
   variant: {
-    filled: "shadow-sm",
-    light: "shadow-sm",
-    outlined: "shadow-sm",
+    filled: "shadow-xs",
+    light: "shadow-xs",
+    outlined: "shadow-xs",
     text: "",
     custom: "",
   },
@@ -178,7 +178,7 @@ const Button = <T extends HTMLElement = HTMLButtonElement>({
         variant !== "custom" && styles.color[color],
         variant !== "custom" && styles.variantColor[`${variant}-${color}`],
         icon ? styles.icon[size].button : styles.size[size].button,
-        rounded ? "rounded-full" : "rounded",
+        rounded ? "rounded-full" : "rounded-sm",
         {
           [styles.disabled]: disabled,
         },

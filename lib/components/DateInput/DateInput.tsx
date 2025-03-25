@@ -43,7 +43,7 @@ function DateInput({
       type="date"
       pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}"
       trailing={!readOnly ? <CalendarIcon className="w-5" /> : undefined}
-      inputClassName="!pr-3"
+      inputClassName="pr-3!"
       readOnly={readOnly}
       value={formattedValue}
     />
