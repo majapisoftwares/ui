@@ -137,8 +137,6 @@ input[type="checkbox"]:indeterminate {
 
     --font-weight-inherit: inherit;
 
-    --scale-flip: -1;
-
     --animate-slide-down-and-fade: slideDownAndFade 150ms cubic-bezier(0.16, 1, 0.3, 1);
     --animate-slide-left-and-fade: slideLeftAndFade 150ms cubic-bezier(0.16, 1, 0.3, 1);
     --animate-slide-up-and-fade: slideUpAndFade 150ms cubic-bezier(0.16, 1, 0.3, 1);
