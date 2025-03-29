@@ -32,7 +32,7 @@ function Tooltip({
         <RTooltip.Portal>
           <RTooltip.Content
             className={clsx(
-              "z-20 rounded bg-zinc-950 px-2 py-1 text-center text-sm text-zinc-50 shadow",
+              "z-20 rounded-sm bg-zinc-950 px-2 py-1 text-center text-sm text-zinc-50 shadow-sm",
               "dark:bg-zinc-50 dark:text-zinc-950",
               "will-change-[transform,opacity] data-[state=closed]:animate-fadeOut data-[state=delayed-open]:data-[side=bottom]:animate-elasticSlideUpAndFade data-[state=delayed-open]:data-[side=left]:animate-elasticSlideRightAndFade data-[state=delayed-open]:data-[side=right]:animate-elasticSlideLeftAndFade data-[state=delayed-open]:data-[side=top]:animate-elasticSlideDownAndFade",
               className,

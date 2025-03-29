@@ -47,7 +47,7 @@ export default function NavigationItem({
       leading={
         icon &&
         cloneElement(icon, {
-          className: clsx(icon.props?.className, "!w-5 mr-3"),
+          className: clsx(icon.props?.className, "w-5! mr-3"),
         })
       }
       href={href}

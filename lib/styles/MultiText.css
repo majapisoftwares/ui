@@ -1,9 +1,9 @@
 .ui-theme-default .ui-multi-text {
-  @apply border rounded flex flex-wrap gap-2 items-center px-2 py-1 shadow-sm transition-all
+  @apply border rounded-sm flex flex-wrap gap-2 items-center px-2 py-1 shadow-xs transition-all
     border-zinc-300 bg-white
     dark:border-zinc-700 dark:bg-zinc-800
-    data-[readonly]:border-dashed
-    data-[loading]:animate-pulse;
+    data-readonly:border-dashed
+    data-loading:animate-pulse;
 }
 
 .ui-theme-default .ui-multi-text[data-error],
@@ -16,11 +16,11 @@
 }
 
 .ui-theme-default .ui-multi-text-input {
-  @apply border-none bg-transparent p-0 flex-grow focus:ring-0 py-1;
+  @apply border-none bg-transparent p-0 grow focus:ring-0 py-1;
 }
 
 .ui-theme-default .ui-multi-text-item {
-  @apply rounded flex items-center px-2 py-1 gap-2 max-w-full
+  @apply rounded-sm flex items-center px-2 py-1 gap-2 max-w-full
     bg-zinc-100
     dark:bg-zinc-700;
 }
@@ -38,7 +38,7 @@
 }
 
 .ui-theme-default .ui-multi-text-delete-button {
-  @apply rounded
+  @apply rounded-sm
     hover:bg-black/10
     dark:hover:bg-white/10;
 }

@@ -12,12 +12,12 @@ export type InputProps<Select extends boolean | undefined> = {
 
 export const defaultLabelClassName = `ui-input-label block ${defaultTextStyles.variant.label} mb-1`;
 export const defaultInputClassNameUncolored =
-  "block w-full rounded-md shadow-sm sm:text-sm data-[disabled]:cursor-not-allowed dark:bg-zinc-800 dark:placeholder:text-zinc-500 px-2.5";
+  "block w-full rounded-md shadow-xs sm:text-sm data-disabled:cursor-not-allowed dark:bg-zinc-800 dark:placeholder:text-zinc-500 px-2.5";
 export const defaultInputClassName = clsx(
   "ui-input-input",
   defaultInputClassNameUncolored,
-  "border-zinc-300 focus:border-primary-500 focus:ring-primary-500 data-[disabled]:border-zinc-200 data-[disabled]:bg-zinc-50",
-  "dark:border-zinc-700 dark:focus:border-primary-500 dark:data-[disabled]:border-zinc-800 dark:data-[disabled]:bg-zinc-900/90 data-[disabled]:text-zinc-500",
+  "border-zinc-300 focus:border-primary-500 focus:ring-primary-500 data-disabled:border-zinc-200 data-disabled:bg-zinc-50",
+  "dark:border-zinc-700 dark:focus:border-primary-500 dark:data-disabled:border-zinc-800 dark:data-disabled:bg-zinc-900/90 data-disabled:text-zinc-500",
 );
 export const defaultHelpTextClassName = `mt-2 ${defaultTextStyles.variant.secondary}`;
 export const defaultTrailingClassName =
@@ -80,7 +80,7 @@ function Input<Select extends boolean | undefined>({
   }
   if (error) {
     inputClassName = `${inputClassName} border-error-300 dark:border-error-500 text-error-900 dark:text-error-500 placeholder-error-300 focus:border-error-500 dark:focus:border-error-500 focus:ring-error-500`;
-    helpTextClassName = `${helpTextClassName} !text-error-600 dark:!text-error-500`;
+    helpTextClassName = `${helpTextClassName} text-error-600! dark:text-error-500!`;
   }
   if (readOnly) {
     inputClassName = `${inputClassName} border-dashed`;

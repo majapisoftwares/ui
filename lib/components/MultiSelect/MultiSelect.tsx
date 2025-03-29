@@ -24,7 +24,7 @@ import Badge from "../Badge";
 import { useDeepCompareEffect } from "react-use";
 
 const defaultMenuItemsClassName =
-  "z-10 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-zinc-800";
+  "z-10 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-hidden dark:bg-zinc-800";
 
 export interface MultiSelectProps<T extends object | string>
   extends Omit<
@@ -115,7 +115,7 @@ function MultiSelectInput<
           /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
           {...(props as any)}
           ref={ref}
-          className="rounded-md border-none !ring-transparent disabled:cursor-not-allowed disabled:text-zinc-500 dark:bg-zinc-800 dark:disabled:bg-zinc-900/90 sm:text-sm"
+          className="rounded-md border-none ring-transparent! disabled:cursor-not-allowed disabled:text-zinc-500 dark:bg-zinc-800 dark:disabled:bg-zinc-900/90 sm:text-sm"
           readOnly={readOnly}
         />
       )}

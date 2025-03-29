@@ -20,7 +20,7 @@ export default function Page() {
       <NextSeo title={pages[0].title} />
       <Breadcrumbs pages={pages} className="mb-2 md:mx-2" />
       <Stack className="p-2">
-        <div className="group relative max-w-[300px] rounded bg-zinc-200 p-4">
+        <div className="group relative max-w-[300px] rounded-sm bg-zinc-200 p-4">
           This text will be copied
           <CopyButton text="This text will be copied" />
         </div>

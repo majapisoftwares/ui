@@ -33,12 +33,12 @@ export default function TableActionButton<
     <Button
       icon
       variant="text"
-      className={clsx("!p-1", className)}
+      className={clsx("p-1!", className)}
       onClick={handleClick}
       {...props}
     >
       {cloneElement(child, {
-        className: clsx("!h-[20px] !w-[20px]", child.props.className),
+        className: clsx("h-[20px]! w-[20px]!", child.props.className),
       })}
     </Button>
   );

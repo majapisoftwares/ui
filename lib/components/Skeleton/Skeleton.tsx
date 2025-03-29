@@ -8,7 +8,7 @@ export default function Skeleton({
   return (
     <div
       className={clsx(
-        "animate-pulse overflow-hidden rounded text-transparent",
+        "animate-pulse overflow-hidden rounded-sm text-transparent",
         "bg-zinc-300 text-zinc-300 dark:bg-zinc-700 dark:text-zinc-700",
         className,
       )}

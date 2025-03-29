@@ -195,7 +195,7 @@ function FileSelect({
             <label
               htmlFor={id}
               className={clsx(
-                "relative rounded-md font-medium text-primary-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2 hover:text-primary-500 dark:ring-offset-slate-900",
+                "relative rounded-md font-medium text-primary-600 focus-within:outline-hidden focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2 hover:text-primary-500 dark:ring-offset-slate-900",
                 {
                   "cursor-pointer": !disabled,
                   "cursor-not-allowed": disabled,

@@ -215,7 +215,7 @@ function FileInput({
       data-input-name={name}
       data-error={error ? "" : undefined}
       data-loading={loading ? "" : undefined}
-      className={clsx("relative data-[loading]:animate-pulse", className)}
+      className={clsx("relative data-loading:animate-pulse", className)}
       onMouseOver={onMouseOver}
       onMouseOut={onMouseOut}
     >
@@ -268,7 +268,7 @@ function FileInput({
         <div
           className={clsx(
             defaultHelpTextClassName,
-            "[[data-error]_&]:text-error-500",
+            "in-data-error:text-error-500",
           )}
         >
           {helpText}

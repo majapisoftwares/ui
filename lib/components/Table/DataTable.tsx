@@ -198,7 +198,7 @@ export default function DataTable<RowData>({
                       {column.title}
                       <span
                         className={clsx(
-                          "mb-auto ml-2 flex-none rounded text-zinc-400",
+                          "mb-auto ml-2 flex-none rounded-sm text-zinc-400",
                           {
                             "bg-zinc-200 text-zinc-900 group-hover:bg-zinc-300":
                               columnSort?.[1],

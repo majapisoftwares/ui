@@ -1,11 +1,11 @@
 .ui-theme-default .ui-tabs {
-    @apply flex gap-0.5 p-1 rounded
+    @apply flex gap-0.5 p-1 rounded-sm
     bg-zinc-200/50
     dark:bg-zinc-800/50
 }
 
 .ui-theme-default .ui-tabs-tab {
-    @apply text-sm px-2.5 py-1.5 transition rounded font-medium
+    @apply text-sm px-2.5 py-1.5 transition rounded-sm font-medium
     text-zinc-900/70 hover:bg-zinc-900/10 active:bg-zinc-900/20 border-transparent
     dark:text-zinc-100/70 dark:hover:bg-zinc-100/10 dark:active:bg-zinc-100/20
 }

@@ -235,7 +235,7 @@ export default function PictureCropInput({
         <>
           {value && (
             <div
-              className={clsx("flex shrink-0 rounded", previewSizeClassNames)}
+              className={clsx("flex shrink-0 rounded-sm", previewSizeClassNames)}
               style={
                 {
                   background: value
@@ -257,7 +257,7 @@ export default function PictureCropInput({
             className="mb-auto flex items-center gap-3 p-2"
             onClick={() => document.getElementById(id)?.click()}
           >
-            <div className="flex h-12 w-12 items-center justify-center rounded border border-zinc-800 p-3">
+            <div className="flex h-12 w-12 items-center justify-center rounded-sm border border-zinc-800 p-3">
               <PhotoIcon />
             </div>
             <div className="flex flex-col items-start gap-1.5">

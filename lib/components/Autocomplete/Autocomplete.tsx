@@ -6,7 +6,7 @@ import UnstyledAutocomplete, {
 import Input from "../Input";
 
 const defaultMenuItemsClassName =
-  "z-10 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-zinc-800";
+  "z-10 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-hidden dark:bg-zinc-800";
 
 export type AutocompleteProps<T extends { _id: string }> =
   UnstyledAutocompleteProps<T>;
@@ -50,7 +50,7 @@ export default function Autocomplete<T extends { _id: string }>({
         )}
         optionClassName={({ active }) =>
           clsx(
-            "cursor-default select-none px-4 py-2 data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50",
+            "cursor-default select-none px-4 py-2 data-disabled:cursor-not-allowed data-disabled:opacity-50",
             active && "bg-primary-600 text-white",
           )
         }

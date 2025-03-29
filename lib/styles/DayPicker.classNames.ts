@@ -6,7 +6,7 @@ export const dayPickerCaptionClassName =
 export const dayPickerNavButtonPreviousClassName = "left-2 top-2";
 export const dayPickerNavButtonNextClassName = "right-2 top-2";
 export const dayPickerNavButtonClassName = clsx(
-  "absolute border rounded p-1.5 [&_svg]:w-3 [&_svg]:h-3 transition",
+  "absolute border rounded-sm p-1.5 [&_svg]:w-3 [&_svg]:h-3 transition",
   "border-zinc-100 hover:bg-zinc-100 bg-white active:border-zinc-200",
   "dark:border-zinc-800 dark:hover:bg-zinc-800 dark:bg-zinc-900 dark:active:border-zinc-700 dark:fill-zinc-200",
   "disabled:opacity-50 disabled:cursor-not-allowed",
@@ -14,7 +14,7 @@ export const dayPickerNavButtonClassName = clsx(
 export const dayPickerHeadClassName = "text-xs dark:text-zinc-500";
 export const dayPickerHeadCellClassName = "font-normal";
 export const dayPickerDayClassName = clsx(
-  "w-8 h-8 rounded transition",
+  "w-8 h-8 rounded-sm transition",
   "text-zinc-700 hover:bg-black/10",
   "dark:text-zinc-300 dark:hover:bg-white/10",
   "disabled:opacity-30 disabled:cursor-not-allowed",
@@ -22,25 +22,25 @@ export const dayPickerDayClassName = clsx(
 );
 export const dayPickerDayRangeStartClassName = clsx(
   "ui-date-picker-day-range-start",
-  "!text-onPrimary dark:!text-onPrimary",
+  "text-onPrimary! dark:text-onPrimary!",
   "bg-primary-500 hover:bg-primary-500/50",
   "dark:bg-primary-600 dark:hover:bg-primary-600/50",
 );
 export const dayPickerDaySelectedClassName = clsx(
   "ui-date-picker-day-selected",
-  "[&:not(.ui-date-picker-day-range-middle)_button]:!text-onPrimary dark:[&:not(.ui-date-picker-day-range-middle)_button]:!text-onPrimary",
+  "[&:not(.ui-date-picker-day-range-middle)_button]:text-onPrimary! dark:[&:not(.ui-date-picker-day-range-middle)_button]:text-onPrimary!",
   "[&:not(.ui-date-picker-day-range-middle)]:bg-primary-500 hover:[&:not(.ui-date-picker-day-range-middle)]:bg-primary-500/50",
   "dark:[&:not(.ui-date-picker-day-range-middle)]:bg-primary-600 dark:hover:[&:not(.ui-date-picker-day-range-middle)]:bg-primary-600/50",
 );
 export const dayPickerDayRangeEndClassName = clsx(
   "ui-date-picker-day-range-end",
-  "!text-onPrimary dark:!text-onPrimary",
+  "text-onPrimary! dark:text-onPrimary!",
   "bg-primary-500 hover:bg-primary-500/50",
   "dark:bg-primary-600 dark:hover:bg-primary-600/50",
 );
 export const dayPickerTableClassName = "border-spacing-y-1 border-separate";
 export const dayPickerCellClassName = clsx(
-  "p-0 rounded",
+  "p-0 rounded-sm",
   "[&.ui-date-picker-day-outside]:opacity-40",
   "dark:[&.ui-date-picker-day-outside]:opacity-30",
 

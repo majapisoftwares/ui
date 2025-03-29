@@ -37,7 +37,7 @@ export default function Page() {
           {slides.map((s) => (
             <Carousel.Slide key={s} className="pl-4">
               <Stack className="w-44">
-                <div className="group overflow-hidden rounded border border-transparent transition-colors hover:border-primary-500">
+                <div className="group overflow-hidden rounded-sm border border-transparent transition-colors hover:border-primary-500">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src="https://www.themoviedb.org/t/p/w600_and_h900_bestv2/7JptBMGTikUK4CxJpG9cNTYAGjV.jpg"

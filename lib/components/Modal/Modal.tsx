@@ -109,7 +109,7 @@ function ModalContainer({
   className?: string;
 }) {
   return (
-    <Stack className={clsx("!gap-4 px-4 pb-4 pt-5 sm:p-6", className)}>
+    <Stack className={clsx("gap-4! px-4 pb-4 pt-5 sm:p-6", className)}>
       {children}
     </Stack>
   );
