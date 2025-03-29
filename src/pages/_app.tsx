@@ -3,7 +3,6 @@ import "../../lib/bootstrap/suppressConsoleLog";
 import { DefaultSeo } from "next-seo";
 import "../globals.css";
 import AppProps from "../../lib/bootstrap/AppProps";
-import colors from "tailwindcss/colors";
 import { hydrateNavigationDrawerState } from "../../lib/components/NavigationDrawer";
 import Notifications from "../../lib/components/Notifications";
 import setupNProgress from "../../lib/bootstrap/nprogress";
@@ -17,7 +16,7 @@ dayjs.extend(localizedFormat);
 const appName = "@italodeandra/ui";
 const appDescription = "Demo of @italodeandra/ui";
 const appKeywords = "ui";
-const appThemeColor = colors.sky["500"];
+const appThemeColor = "#00a6f4";
 
 setupNProgress(appThemeColor);
 

@@ -179,6 +179,10 @@ export const menu = [
         href: "/tabs",
       },
       {
+        title: "Tabs Switcher",
+        href: "/tabs-switcher",
+      },
+      {
         title: "Dialogs",
         href: "/dialogs",
       },
