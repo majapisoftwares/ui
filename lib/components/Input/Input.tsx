@@ -2,7 +2,7 @@ import UnstyledInput, { UnstyledInputProps } from "../Input/UnstyledInput";
 import { defaultTextStyles } from "../Text";
 import { ExclamationCircleIcon } from "@heroicons/react/20/solid";
 import InputIcon from "./InputIcon";
-import { cloneElement } from "react";
+import { cloneElement, Fragment } from "react";
 import recursiveChildrenMap from "../../utils/recursiveChildrenMap";
 import clsx from "../../utils/clsx";
 
@@ -117,9 +117,14 @@ function Input<Select extends boolean | undefined>({
       {recursiveChildrenMap<{
         disabled?: boolean;
       }>(children, (child) =>
-        cloneElement(child, {
-          disabled: readOnly || disabled || child.props.disabled,
-        }),
+        cloneElement(
+          child,
+          child.type !== Fragment
+            ? {
+                disabled: readOnly || disabled || child.props.disabled,
+              }
+            : undefined,
+        ),
       )}
     </UnstyledInput>
   );
