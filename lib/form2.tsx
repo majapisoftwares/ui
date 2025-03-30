@@ -7,6 +7,7 @@ import {
   FieldValues,
   useForm as useRHForm,
   UseFormProps,
+  UseFormReturn,
   UseFormStateReturn,
 } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -23,7 +24,7 @@ export function useForm<
   ...props
 }: UseFormProps<TFieldValues> & {
   schema?: TSchema;
-}) {
+}): UseFormReturn<TFieldValues> {
   const jsonProps = JSON.stringify(props);
   const config = useMemo(
     () => ({
