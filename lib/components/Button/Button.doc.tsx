@@ -239,13 +239,13 @@ const examples: (
   createExample(
     <Button
       variant="custom"
-      className="border-transparent bg-purple-500 text-onPrimary hover:bg-purple-500/80 active:border-purple-700 dark:active:border-purple-300"
+      className="text-on-primary border-transparent bg-purple-500 hover:bg-purple-500/80 active:border-purple-700 dark:active:border-purple-300"
     >
       Custom color
     </Button>,
     `<Button
   variant="custom"
-  className="border-transparent bg-purple-500 text-onPrimary hover:bg-purple-500/80 active:border-purple-700 dark:active:border-purple-300"
+  className="border-transparent bg-purple-500 text-on-primary hover:bg-purple-500/80 active:border-purple-700 dark:active:border-purple-300"
 >
   Custom color
 </Button>`,

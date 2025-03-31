@@ -51,7 +51,7 @@ export default function Dialog({
           className={clsx(
             "ui-dialog-overlay",
             "fixed inset-0 z-20 flex items-center justify-center bg-black/50",
-            "will-change-[opacity,transform] data-[state=closed]:animate-fadeOut data-[state=open]:animate-slideUpAndFade",
+            "data-[state=closed]:animate-fade-out data-[state=open]:animate-slide-up-and-fade will-change-[opacity,transform]",
             overlayClassName,
           )}
         >
@@ -59,7 +59,7 @@ export default function Dialog({
             className={clsx(
               modalContentClassName,
               "ui-dialog-content",
-              "relative p-0 focus:outline-none",
+              "relative p-0 focus:outline-hidden",
               contentClassName,
               contentProps?.className,
             )}
@@ -76,7 +76,7 @@ export default function Dialog({
                 <RDialog.Title
                   className={clsx(
                     "ui-dialog-title",
-                    "text-lg font-medium leading-none text-zinc-900 dark:text-zinc-50",
+                    "text-lg leading-none font-medium text-zinc-900 dark:text-zinc-50",
                     titleClassName,
                   )}
                 >
@@ -99,7 +99,7 @@ export default function Dialog({
                 <RDialog.Close asChild>
                   <Button
                     className={clsx(
-                      "absolute right-1 top-1 p-1.5",
+                      "absolute top-1 right-1 p-1.5",
                       "ui-dialog-close-button",
                       closeButtonClassName,
                     )}

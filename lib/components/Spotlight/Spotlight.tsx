@@ -79,21 +79,21 @@ export default function Spotlight<T extends object>({
       <Dialog.Portal>
         <Dialog.Overlay
           className={clsx(
-            "fixed inset-0 z-20 flex justify-center bg-black/30 backdrop-blur-sm",
-            "will-change-[opacity,transform] data-[state=closed]:animate-fadeOut data-[state=open]:animate-slideUpAndFade",
+            "fixed inset-0 z-20 flex justify-center bg-black/30 backdrop-blur-xs",
+            "data-[state=closed]:animate-fade-out data-[state=open]:animate-slide-up-and-fade will-change-[opacity,transform]",
           )}
         >
           <Dialog.Content
             className={clsx(
-              "fixed mx-auto w-full max-w-screen-md px-4 py-4 focus:outline-none md:py-8",
-              "will-change-[transform,opacity] data-[state=closed]:animate-fadeOut data-[state=open]:animate-elasticSlideUpAndFade",
+              "fixed mx-auto w-full max-w-(--breakpoint-md) px-4 py-4 focus:outline-hidden md:py-8",
+              "data-[state=closed]:animate-fade-out data-[state=open]:animate-elastic-slide-up-and-fade will-change-[transform,opacity]",
             )}
           >
             <VisuallyHidden.Root>
               <Dialog.Title />
               <Dialog.Description />
             </VisuallyHidden.Root>
-            <div className="flex w-full flex-col justify-center rounded border border-zinc-800 bg-zinc-900">
+            <div className="flex w-full flex-col justify-center rounded-sm border border-zinc-800 bg-zinc-900">
               <div className="px-4 py-4">
                 <Input
                   className="w-full bg-zinc-900"
@@ -136,7 +136,7 @@ export default function Spotlight<T extends object>({
                                   alt={getItemLabel(item)}
                                   width={200}
                                   height={378}
-                                  className="h-16 w-28 rounded object-cover"
+                                  className="h-16 w-28 rounded-sm object-cover"
                                 />
                               )}
                               <div className="text-white">
@@ -185,7 +185,7 @@ export default function Spotlight<T extends object>({
                               alt={getItemLabel(item)}
                               width={200}
                               height={378}
-                              className="max-h-16 max-w-28 rounded object-cover"
+                              className="max-h-16 max-w-28 rounded-sm object-cover"
                             />
                           )}
                           <div className="text-white">{getItemLabel(item)}</div>

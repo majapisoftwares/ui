@@ -71,7 +71,7 @@ export default function Carousel({
             >
               <ChevronLeftIcon />
             </Button>
-            <div className="flex-grow" />
+            <div className="grow" />
             <Button
               icon
               variant="text"

@@ -1,4 +1,4 @@
-import { Switch as HuiSwitch } from "@headlessui/react";
+import { Switch as RSwitch } from "radix-ui";
 import clsx from "../../utils/clsx";
 import { ReactNode } from "react";
 import Input, { UnstyledInputCommonProps } from "../Input";
@@ -28,14 +28,10 @@ export default function Switch({
   disabled,
 }: SwitchProps) {
   return (
-    <HuiSwitch.Group
-      as="div"
-      className={clsx(className, "flex items-center")}
-      data-disabled={disabled || undefined}
-    >
-      <HuiSwitch
+    <div className={clsx(className, "flex items-center")}>
+      <RSwitch.Root
         checked={checked}
-        onChange={onChange}
+        onCheckedChange={onChange}
         className={clsx(
           {
             "bg-primary-600": checked,
@@ -43,32 +39,26 @@ export default function Switch({
             "cursor-pointer": !readOnly && !disabled,
             "cursor-not-allowed": disabled,
           },
-          "relative inline-flex h-6 w-11 flex-shrink-0 rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:ring-offset-zinc-900",
+          "focus:ring-primary-500 relative inline-flex h-6 w-11 shrink-0 rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:ring-2 focus:ring-offset-2 focus:outline-hidden dark:ring-offset-zinc-900",
           switchClassName,
         )}
         disabled={readOnly || disabled}
       >
         {srLabel && <span className="sr-only">{srLabel}</span>}
-        <span
+        <RSwitch.Thumb
           aria-hidden="true"
           className={clsx(
-            {
-              "translate-x-5": checked,
-              "translate-x-0": !checked,
-            },
-            "pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out",
+            "pointer-events-none inline-block h-5 w-5 translate-x-0 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out data-[state=checked]:translate-x-5",
             pointerClassName,
           )}
         />
-      </HuiSwitch>
+      </RSwitch.Root>
       {rightLabel && (
-        <HuiSwitch.Label as="span" className="ml-3">
-          <span className="text-sm text-zinc-500 dark:text-zinc-300">
-            {rightLabel}
-          </span>
-        </HuiSwitch.Label>
+        <span className="ml-3 text-sm text-zinc-500 dark:text-zinc-300">
+          {rightLabel}
+        </span>
       )}
-    </HuiSwitch.Group>
+    </div>
   );
 }
 

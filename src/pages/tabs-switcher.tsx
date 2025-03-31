@@ -2,9 +2,10 @@ import { getCookies } from "cookies-next";
 import { GetServerSideProps } from "next";
 import { NextSeo } from "next-seo";
 import Breadcrumbs from "../../lib/components/Breadcrumbs";
-import CopyButton from "../../lib/components/CopyButton";
 import Stack from "../../lib/components/Stack";
 import getPublicLayout from "../views/publicLayout";
+import { useState } from "react";
+import TabsSwitcher, { Tab } from "../../lib/components/TabsSwitcher";
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => ({
   props: {
@@ -12,17 +13,28 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => ({
   },
 });
 
-const pages = [{ title: "Copy button" }];
+const pages = [{ title: "Tabs Switcher" }];
 
 export default function Page() {
+  const [tab, setTab] = useState("home");
+
   return (
     <>
       <NextSeo title={pages[0].title} />
       <Breadcrumbs pages={pages} className="mb-2 md:mx-2" />
       <Stack className="p-2">
-        <div className="group relative max-w-[300px] rounded-sm bg-zinc-200 p-4 dark:bg-zinc-900">
-          This text will be copied
-          <CopyButton text="This text will be copied" />
+        <div className="flex justify-start">
+          <TabsSwitcher value={tab} onChange={setTab}>
+            <Tab value="home">Home View</Tab>
+            <Tab value="profile">Profile</Tab>
+            <Tab value="settings">Settings</Tab>
+          </TabsSwitcher>
+        </div>
+
+        <div>
+          {tab === "home" && <p>Welcome to the Home page.</p>}
+          {tab === "profile" && <p>This is your Profile page.</p>}
+          {tab === "settings" && <p>Adjust your Settings here.</p>}
         </div>
       </Stack>
     </>

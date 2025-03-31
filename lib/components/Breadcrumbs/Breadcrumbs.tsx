@@ -30,7 +30,7 @@ export default function Breadcrumbs({
     <nav className={clsx("flex", className)} aria-label="Breadcrumb">
       <ol
         role="list"
-        className="flex w-full space-x-4 bg-white px-6 shadow dark:border-y dark:border-zinc-800 dark:bg-zinc-900 md:w-auto md:rounded-md md:dark:border-x"
+        className="flex w-full space-x-4 bg-white px-6 shadow-sm dark:border-y dark:border-zinc-800 dark:bg-zinc-900 md:w-auto md:rounded-md md:dark:border-x"
       >
         <li className="flex">
           <div className="flex items-center">
@@ -38,7 +38,7 @@ export default function Breadcrumbs({
               href={homeHref}
               className="text-zinc-400 hover:text-zinc-500 dark:hover:text-zinc-200"
             >
-              <HomeIcon className="h-5 w-5 flex-shrink-0" aria-hidden="true" />
+              <HomeIcon className="h-5 w-5 shrink-0" aria-hidden="true" />
               <span className="sr-only">Home</span>
             </NextLink>
           </div>
@@ -49,7 +49,7 @@ export default function Breadcrumbs({
             <li key={page.title} className="flex">
               <div className="flex items-center">
                 <svg
-                  className="h-full w-6 flex-shrink-0 text-zinc-200 dark:text-zinc-800"
+                  className="h-full w-6 shrink-0 text-zinc-200 dark:text-zinc-800"
                   viewBox="0 0 24 44"
                   preserveAspectRatio="none"
                   fill="currentColor"
@@ -61,10 +61,10 @@ export default function Breadcrumbs({
                 <Text
                   href={page.href}
                   className={clsx(
-                    "ml-4 text-sm font-medium !text-zinc-500 dark:!text-zinc-400",
+                    "ml-4 text-sm font-medium text-zinc-500! dark:text-zinc-400!",
                     {
                       "cursor-default": !page.href,
-                      "hover:!text-zinc-700 dark:hover:!text-zinc-200":
+                      "hover:text-zinc-700! dark:hover:text-zinc-200!":
                         !!page.href,
                     },
                   )}
@@ -81,7 +81,7 @@ export default function Breadcrumbs({
           );
         })}
         {loading && (
-          <li className="!ml-auto flex items-center">
+          <li className="ml-auto! flex items-center">
             <Loading className="-mr-3 ml-4" />
           </li>
         )}

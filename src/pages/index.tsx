@@ -84,7 +84,7 @@ export default function Page() {
         <Stack className="max-w-xl gap-5">
           <p className="mt-1 text-4xl font-bold tracking-tight text-gray-900 dark:text-gray-100 sm:text-5xl lg:text-6xl">
             Extremely{" "}
-            <span className="bg-gradient-to-r from-emerald-500 to-sky-500 bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-emerald-500 to-sky-500 bg-clip-text text-transparent">
               beautiful
             </span>{" "}
             designed user interface.
@@ -100,13 +100,13 @@ export default function Page() {
               variant="light"
               color="default"
               trailing={<ArrowLongRightIcon />}
-              className="!px-4 !text-lg"
+              className="px-4! text-lg!"
               {...getExampleCodeMouseEvents(`<Button
   href="/getting-started"
   variant="outlined"
   color="primary"
   trailing={<ArrowLongRightIcon />}
-  className="!px-4 !text-lg"
+  className="px-4! text-lg!"
 >
   Get started
 </Button>;`)}

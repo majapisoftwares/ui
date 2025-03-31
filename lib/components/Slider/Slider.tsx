@@ -52,7 +52,7 @@ export default function Slider({
         <RSlider.Thumb
           key={n}
           className={clsx(
-            "block h-5 w-5 rounded-full bg-white shadow-md ring-primary-500 ring-offset-2 ring-offset-zinc-100 transition hover:bg-primary-500 focus:outline-none focus-visible:shadow-lg focus-visible:ring-2",
+            "block h-5 w-5 rounded-full bg-white shadow-md ring-primary-500 ring-offset-2 ring-offset-zinc-100 transition hover:bg-primary-500 focus:outline-hidden focus-visible:shadow-lg focus-visible:ring-2",
             thumbClassName,
           )}
         />

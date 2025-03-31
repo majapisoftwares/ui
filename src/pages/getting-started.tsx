@@ -14,7 +14,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => ({
 
 function Quote({ children }: { children: ReactNode }) {
   return (
-    <span className="mx-1 select-all rounded bg-slate-800 px-1.5 py-1 text-white">
+    <span className="mx-1 select-all rounded-sm bg-slate-800 px-1.5 py-1 text-white">
       {children}
     </span>
   );
