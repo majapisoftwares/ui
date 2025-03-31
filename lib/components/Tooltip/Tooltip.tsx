@@ -34,7 +34,7 @@ function Tooltip({
             className={clsx(
               "z-20 rounded-sm bg-zinc-950 px-2 py-1 text-center text-sm text-zinc-50 shadow-sm",
               "dark:bg-zinc-50 dark:text-zinc-950",
-              "will-change-[transform,opacity] data-[state=closed]:animate-fadeOut data-[state=delayed-open]:data-[side=bottom]:animate-elasticSlideUpAndFade data-[state=delayed-open]:data-[side=left]:animate-elasticSlideRightAndFade data-[state=delayed-open]:data-[side=right]:animate-elasticSlideLeftAndFade data-[state=delayed-open]:data-[side=top]:animate-elasticSlideDownAndFade",
+              "data-[state=closed]:animate-fade-out data-[state=delayed-open]:data-[side=bottom]:animate-elastic-slide-up-and-fade data-[state=delayed-open]:data-[side=left]:animate-elastic-slide-right-and-fade data-[state=delayed-open]:data-[side=right]:animate-elastic-slide-left-and-fade data-[state=delayed-open]:data-[side=top]:animate-elastic-slide-down-and-fade will-change-[transform,opacity]",
               className,
             )}
             sideOffset={5}

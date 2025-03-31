@@ -80,13 +80,13 @@ export default function Spotlight<T extends object>({
         <Dialog.Overlay
           className={clsx(
             "fixed inset-0 z-20 flex justify-center bg-black/30 backdrop-blur-xs",
-            "will-change-[opacity,transform] data-[state=closed]:animate-fadeOut data-[state=open]:animate-slideUpAndFade",
+            "data-[state=closed]:animate-fade-out data-[state=open]:animate-slide-up-and-fade will-change-[opacity,transform]",
           )}
         >
           <Dialog.Content
             className={clsx(
               "fixed mx-auto w-full max-w-(--breakpoint-md) px-4 py-4 focus:outline-hidden md:py-8",
-              "will-change-[transform,opacity] data-[state=closed]:animate-fadeOut data-[state=open]:animate-elasticSlideUpAndFade",
+              "data-[state=closed]:animate-fade-out data-[state=open]:animate-elastic-slide-up-and-fade will-change-[transform,opacity]",
             )}
           >
             <VisuallyHidden.Root>
