@@ -22,19 +22,19 @@ export const dayPickerDayClassName = clsx(
 );
 export const dayPickerDayRangeStartClassName = clsx(
   "ui-date-picker-day-range-start",
-  "text-onPrimary! dark:text-onPrimary!",
+  "text-on-primary! dark:text-on-primary!",
   "bg-primary-500 hover:bg-primary-500/50",
   "dark:bg-primary-600 dark:hover:bg-primary-600/50",
 );
 export const dayPickerDaySelectedClassName = clsx(
   "ui-date-picker-day-selected",
-  "[&:not(.ui-date-picker-day-range-middle)_button]:text-onPrimary! dark:[&:not(.ui-date-picker-day-range-middle)_button]:text-onPrimary!",
+  "[&:not(.ui-date-picker-day-range-middle)_button]:text-on-primary! dark:[&:not(.ui-date-picker-day-range-middle)_button]:text-on-primary!",
   "[&:not(.ui-date-picker-day-range-middle)]:bg-primary-500 hover:[&:not(.ui-date-picker-day-range-middle)]:bg-primary-500/50",
   "dark:[&:not(.ui-date-picker-day-range-middle)]:bg-primary-600 dark:hover:[&:not(.ui-date-picker-day-range-middle)]:bg-primary-600/50",
 );
 export const dayPickerDayRangeEndClassName = clsx(
   "ui-date-picker-day-range-end",
-  "text-onPrimary! dark:text-onPrimary!",
+  "text-on-primary! dark:text-on-primary!",
   "bg-primary-500 hover:bg-primary-500/50",
   "dark:bg-primary-600 dark:hover:bg-primary-600/50",
 );
