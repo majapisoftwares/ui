@@ -7,6 +7,13 @@ import {
 } from "react";
 import clsx from "../../utils/clsx";
 
+type TabElement = ReactElement<{
+  value: string;
+  active?: boolean;
+  onClick?: () => void;
+  id?: string;
+}>;
+
 export default function TabsSwitcher({
   value,
   onChange,
@@ -16,12 +23,7 @@ export default function TabsSwitcher({
 }: {
   value?: string;
   onChange?: (value: string) => void;
-  children: ReactElement<{
-    value: string;
-    active?: boolean;
-    onClick?: () => void;
-    id?: string;
-  }>[];
+  children: TabElement | TabElement[];
   overflowHidden?: boolean;
   className?: string;
 }) {
