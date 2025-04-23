@@ -12,6 +12,9 @@ type TabElement = ReactElement<{
   active?: boolean;
   onClick?: () => void;
   id?: string;
+  variant?: "filled" | "outlined";
+  className?: string;
+  cursorClassName?: string;
 }>;
 
 export default function TabsSwitcher({
@@ -20,27 +23,38 @@ export default function TabsSwitcher({
   children,
   overflowHidden,
   className,
+  variant = "filled",
+  tabClassName,
+  cursorClassName,
+  tabsClassName,
 }: {
   value?: string;
   onChange?: (value: string) => void;
   children: TabElement | TabElement[];
   overflowHidden?: boolean;
   className?: string;
+  variant?: "filled" | "outlined";
+  tabClassName?: string;
+  cursorClassName?: string;
+  tabsClassName?: string;
 }) {
   const id = useId();
   return (
     <div
       className={clsx(
-        "rounded-full bg-zinc-200 p-1 dark:bg-zinc-900",
+        {
+          "rounded-full bg-zinc-200 p-1 dark:bg-zinc-900": variant === "filled",
+        },
         className,
       )}
     >
       <div
-        className={clsx("rounded-full", {
+        className={clsx({
+          "rounded-full": variant === "filled",
           "overflow-hidden": overflowHidden,
         })}
       >
-        <div className="relative flex">
+        <div className={clsx("relative flex", tabsClassName)}>
           {Children.map(children, (child) => {
             if (isValidElement(child)) {
               const childValue = child.props.value;
@@ -49,6 +63,9 @@ export default function TabsSwitcher({
                 active: isActive,
                 onClick: () => onChange?.(childValue),
                 id,
+                variant,
+                className: tabClassName,
+                cursorClassName,
               });
             }
             return child;

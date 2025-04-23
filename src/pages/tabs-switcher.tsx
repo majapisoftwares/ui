@@ -36,6 +36,20 @@ export default function Page() {
           {tab === "profile" && <p>This is your Profile page.</p>}
           {tab === "settings" && <p>Adjust your Settings here.</p>}
         </div>
+
+        <div className="flex justify-start">
+          <TabsSwitcher value={tab} onChange={setTab} variant="outlined">
+            <Tab value="home">Home View</Tab>
+            <Tab value="profile">Profile</Tab>
+            <Tab value="settings">Settings</Tab>
+          </TabsSwitcher>
+        </div>
+
+        <div>
+          {tab === "home" && <p>Welcome to the Home page.</p>}
+          {tab === "profile" && <p>This is your Profile page.</p>}
+          {tab === "settings" && <p>Adjust your Settings here.</p>}
+        </div>
       </Stack>
     </>
   );

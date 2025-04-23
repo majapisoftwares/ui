@@ -13,6 +13,8 @@ export default function Tab({
   children,
   className,
   id,
+  variant,
+  cursorClassName,
 }: {
   value: string;
   active?: boolean;
@@ -20,6 +22,8 @@ export default function Tab({
   children: ReactNode;
   className?: string;
   id?: string;
+  variant?: "filled" | "outlined";
+  cursorClassName?: string;
 }) {
   return (
     <Button
@@ -27,17 +31,24 @@ export default function Tab({
       className={clsx(
         "relative",
         {
-          "text-white": active,
+          "text-white": active && variant === "filled",
         },
         className,
       )}
       variant="text"
-      rounded
+      rounded={variant === "filled"}
     >
       {active && (
         <motion.div
           layoutId={id}
-          className="bg-primary-500 absolute inset-0 rounded-full"
+          className={clsx(
+            "bg-primary-500 absolute",
+            {
+              "inset-0 rounded-full": variant === "filled",
+              "right-0 bottom-0 left-0 h-0.5": variant === "outlined",
+            },
+            cursorClassName,
+          )}
           transition={{ type: "spring", stiffness: 500, damping: 30 }}
         />
       )}
