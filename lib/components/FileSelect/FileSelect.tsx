@@ -39,7 +39,7 @@ const translateAllowedType = (type: string) =>
       "PPTX",
     ".webp": "WEBP",
     "image/webp": "WEBP",
-  })[type];
+  })[type] || type;
 
 export interface FileSelectProps {
   uploadAFileText?: string;
@@ -64,6 +64,7 @@ export interface FileSelectProps {
   disabled?: boolean;
   additionalBottomInfo?: ReactNode;
   ref?: Ref<HTMLInputElement>;
+  innerClassName?: string;
 }
 
 const defaultIcon = <DocumentIcon />;
@@ -96,6 +97,7 @@ function FileSelect({
   onRejectFiles,
   error,
   ref,
+  innerClassName,
 }: FileSelectProps) {
   const innerId = useId();
   id = id || innerId;
@@ -161,30 +163,40 @@ function FileSelect({
         drop(ref);
       }}
       className={clsx(
-        "flex justify-center rounded-md border-2 border-dashed px-6 pb-6 pt-5",
+        "flex justify-center rounded-md border-2 border-dashed px-6 pt-5 pb-6",
+        "border-zinc-300 hover:border-zinc-400 dark:border-zinc-700 dark:hover:border-zinc-600",
+        "data-is-over:border-primary-300 data-is-over:dark:border-primary-700",
+        "data-disabled:cursor-not-allowed data-disabled:border-zinc-200",
+        "data-error:border-error-500",
         className,
-        {
-          "border-primary-300 dark:border-primary-700": isOver,
-          "border-zinc-300 hover:border-zinc-400 dark:border-zinc-700 dark:hover:border-zinc-600":
-            !disabled && !error,
-          "cursor-not-allowed border-zinc-200 dark:border-zinc-800": disabled,
-          "border-error-500": error,
-        },
       )}
+      data-is-over={isOver || undefined}
+      data-error={error || undefined}
+      data-disabled={disabled || undefined}
       onMouseMove={!disabled ? () => setPasteEnabled(true) : undefined}
       onMouseOut={!disabled ? () => setPasteEnabled(false) : undefined}
     >
       {uploading ? (
-        <div className="flex flex-col items-center justify-center text-center">
+        <div
+          className={clsx(
+            "flex flex-col items-center justify-center gap-2 text-center",
+            innerClassName,
+          )}
+        >
           <Loading
-            className={clsx("mb-2 h-10 w-10", {
+            className={clsx("h-10 w-10", {
               "text-primary-500": isOver,
             })}
           />
           <div>{uploadingText}</div>
         </div>
       ) : !canDrop || disabled ? (
-        <div className="relative flex flex-col items-center justify-center space-y-1 text-center">
+        <div
+          className={clsx(
+            "relative flex flex-col items-center justify-center gap-2 text-center",
+            innerClassName,
+          )}
+        >
           {cloneElement(icon, {
             className: clsx(
               "mx-auto h-12 w-12 text-zinc-400",
@@ -195,7 +207,7 @@ function FileSelect({
             <label
               htmlFor={id}
               className={clsx(
-                "relative rounded-md font-medium text-primary-600 focus-within:outline-hidden focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2 hover:text-primary-500 dark:ring-offset-slate-900",
+                "text-primary-600 focus-within:ring-primary-500 hover:text-primary-500 relative rounded-md font-medium focus-within:ring-2 focus-within:ring-offset-2 focus-within:outline-hidden dark:ring-offset-slate-900",
                 {
                   "cursor-pointer": !disabled,
                   "cursor-not-allowed": disabled,
@@ -227,9 +239,14 @@ function FileSelect({
           {additionalBottomInfo}
         </div>
       ) : (
-        <div className="flex flex-col items-center justify-center text-center">
+        <div
+          className={clsx(
+            "flex flex-col items-center justify-center gap-2 text-center",
+            innerClassName,
+          )}
+        >
           <ArrowUpTrayIcon
-            className={clsx("mb-2 w-10 text-7xl", {
+            className={clsx("w-10 text-7xl", {
               "text-primary-500": isOver,
             })}
           />

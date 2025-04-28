@@ -64,6 +64,8 @@ function FileInput({
   maxConcurrentUploads = 1,
   fileAdditionalInfo,
   ref,
+  fileSelectClassName,
+  previewFileClassName,
   ...props
 }: Pick<
   InputProps<false>,
@@ -95,6 +97,8 @@ function FileInput({
     loading?: boolean;
     maxConcurrentUploads?: number;
     fileAdditionalInfo?: (file: FileInputFile, index: number) => ReactNode;
+    fileSelectClassName?: string;
+    previewFileClassName?: string;
   }) {
   const [uploading, setUploading] = useState(false);
   const [innerValue, setInnerValue] = useState<FileInputFile[]>(value || []);
@@ -247,6 +251,7 @@ function FileInput({
             openText={openText}
             additionalInfo={fileAdditionalInfo}
             index={index}
+            className={previewFileClassName}
           />
         ))}
         {readOnly && !innerValue.length && (
@@ -255,6 +260,7 @@ function FileInput({
         {!readOnly && (!limit || innerValue.length < limit) && (
           <FileSelect
             {...props}
+            className={fileSelectClassName}
             id={id}
             onAcceptFiles={handleAcceptFiles}
             limit={limit ? limit - innerValue.length : undefined}

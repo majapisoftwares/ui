@@ -10,6 +10,7 @@ import {
 } from "@heroicons/react/20/solid";
 import { FileFile, FileInputFile, FileUrl } from "./FileInput";
 import { ReactNode } from "react";
+import clsx from "../../utils/clsx";
 
 const videoExtensions = [".mp4"];
 const imageExtensions = [".png", ".jpg", ".jpeg", ".webp"];
@@ -23,6 +24,7 @@ export function PreviewFile({
   display = "info",
   additionalInfo,
   index,
+  className,
 }: {
   file: FileInputFile;
   readOnly?: boolean;
@@ -32,6 +34,7 @@ export function PreviewFile({
   display?: "info" | "preview" | "both";
   additionalInfo?: (file: FileInputFile, index: number) => ReactNode;
   index: number;
+  className?: string;
 }) {
   const url = (file as FileFile).file
     ? URL.createObjectURL((file as FileFile).file)
@@ -49,7 +52,12 @@ export function PreviewFile({
   }
 
   return (
-    <div className="group relative flex flex-wrap items-center justify-center rounded-md bg-zinc-200 dark:bg-zinc-800">
+    <div
+      className={clsx(
+        "group relative flex flex-wrap items-center justify-center rounded-md bg-zinc-200 dark:bg-zinc-800",
+        className,
+      )}
+    >
       {["preview", "both"].includes(display) &&
         (isVideo ? (
           <video className="max-h-96 rounded-md" src={url} controls />
@@ -106,7 +114,7 @@ export function PreviewFile({
           icon
           variant="filled"
           color="default"
-          className="absolute right-2 top-2 group-hover:opacity-100 sm:opacity-0"
+          className="absolute top-2 right-2 group-hover:opacity-100 sm:opacity-0"
           onClick={handleDeleteClick}
         >
           <TrashIcon />
