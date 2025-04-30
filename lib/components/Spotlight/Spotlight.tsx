@@ -33,6 +33,14 @@ export default function Spotlight<T extends object>({
   showSeeMoreButton,
   onSeeMoreClick,
   seeMoreHref,
+  className,
+  contentClassName,
+  iconClassName,
+  inputClassName,
+  buttonClassName,
+  noResultsClassName,
+  recentSearchClassName,
+  textButton,
 }: {
   recentSearchesId: string;
   open: boolean;
@@ -49,6 +57,14 @@ export default function Spotlight<T extends object>({
   showSeeMoreButton?: boolean;
   onSeeMoreClick?: () => void;
   seeMoreHref?: string;
+  className?: string;
+  contentClassName?: string;
+  iconClassName?: string;
+  inputClassName?: string;
+  buttonClassName?: string;
+  noResultsClassName?: string;
+  recentSearchClassName?: string;
+  textButton: string;
 }) {
   const [recentQueries, setRecentQueries] = useLocalStorage<T[]>(
     `spotlight-recent-queries-${recentSearchesId}`,
@@ -93,14 +109,24 @@ export default function Spotlight<T extends object>({
               <Dialog.Title />
               <Dialog.Description />
             </VisuallyHidden.Root>
-            <div className="flex w-full flex-col justify-center rounded-sm border border-zinc-800 bg-zinc-900">
+            <div
+              className={clsx(
+                "flex w-full flex-col justify-center rounded-sm border border-zinc-800 bg-zinc-900",
+                className,
+              )}
+            >
               <div className="px-4 py-4">
                 <Input
-                  className="w-full bg-zinc-900"
-                  inputClassName="border-none rounded-t-md rounded-b-none dark:bg-zinc-900 dark:focus:ring-0"
+                  className={clsx("w-full bg-zinc-900", contentClassName)}
+                  inputClassName={clsx(
+                    "border-none rounded-t-md rounded-b-none dark:bg-zinc-900 dark:focus:ring-0",
+                    inputClassName,
+                  )}
                   autoFocus={true}
                   leading={
-                    <MagnifyingGlassIcon className="h-5 w-5 text-white" />
+                    <MagnifyingGlassIcon
+                      className={clsx("h-5 w-5 text-white", iconClassName)}
+                    />
                   }
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
@@ -117,7 +143,12 @@ export default function Spotlight<T extends object>({
                         </div>
                       )}
                       {!loading && !results?.length && (
-                        <div className="flex justify-center border-b border-zinc-800 px-6 py-10 text-zinc-600">
+                        <div
+                          className={clsx(
+                            "flex justify-center border-b border-zinc-800 px-6 py-10 text-zinc-600",
+                            noResultsClassName,
+                          )}
+                        >
                           No result found
                         </div>
                       )}
@@ -149,12 +180,15 @@ export default function Spotlight<T extends object>({
                               <Button
                                 variant="filled"
                                 type="submit"
-                                className="w-full dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700"
+                                className={clsx(
+                                  "w-full dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700",
+                                  buttonClassName,
+                                )}
                                 trailing={<ChevronRightIcon />}
                                 onClick={onSeeMoreClick}
                                 href={seeMoreHref}
                               >
-                                See more
+                                {textButton}
                               </Button>
                             </div>
                           )}
@@ -164,11 +198,21 @@ export default function Spotlight<T extends object>({
                   ) : (
                     <>
                       {recentQueries?.length ? (
-                        <div className="px-6 py-2 text-zinc-400">
+                        <div
+                          className={clsx(
+                            "px-6 py-2 text-zinc-400",
+                            recentSearchClassName,
+                          )}
+                        >
                           Recently searched
                         </div>
                       ) : (
-                        <div className="flex justify-center border-zinc-800 px-6 py-10 text-zinc-600">
+                        <div
+                          className={clsx(
+                            "flex justify-center border-zinc-800 px-6 py-10 text-zinc-600",
+                            noResultsClassName,
+                          )}
+                        >
                           No recent search
                         </div>
                       )}
