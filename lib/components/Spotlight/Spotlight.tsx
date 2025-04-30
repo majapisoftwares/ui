@@ -40,7 +40,10 @@ export default function Spotlight<T extends object>({
   buttonClassName,
   noResultsClassName,
   recentSearchClassName,
-  textButton,
+  buttonLabel,
+  noRecentSearchLabel,
+  recentlySearchedLabel,
+  noResultsLabel,
 }: {
   recentSearchesId: string;
   open: boolean;
@@ -64,7 +67,10 @@ export default function Spotlight<T extends object>({
   buttonClassName?: string;
   noResultsClassName?: string;
   recentSearchClassName?: string;
-  textButton: string;
+  buttonLabel: string;
+  noRecentSearchLabel: string;
+  recentlySearchedLabel: string;
+  noResultsLabel: string;
 }) {
   const [recentQueries, setRecentQueries] = useLocalStorage<T[]>(
     `spotlight-recent-queries-${recentSearchesId}`,
@@ -149,7 +155,7 @@ export default function Spotlight<T extends object>({
                             noResultsClassName,
                           )}
                         >
-                          No result found
+                          {noResultsLabel}
                         </div>
                       )}
                       {!loading && !!results?.length && (
@@ -188,7 +194,7 @@ export default function Spotlight<T extends object>({
                                 onClick={onSeeMoreClick}
                                 href={seeMoreHref}
                               >
-                                {textButton}
+                                {buttonLabel}
                               </Button>
                             </div>
                           )}
@@ -204,7 +210,7 @@ export default function Spotlight<T extends object>({
                             recentSearchClassName,
                           )}
                         >
-                          Recently searched
+                          {recentlySearchedLabel}
                         </div>
                       ) : (
                         <div
@@ -213,7 +219,7 @@ export default function Spotlight<T extends object>({
                             noResultsClassName,
                           )}
                         >
-                          No recent search
+                          {noRecentSearchLabel}
                         </div>
                       )}
                       {recentQueries?.map((item) => (
