@@ -40,10 +40,10 @@ export default function Spotlight<T extends object>({
   buttonClassName,
   noResultsClassName,
   recentSearchClassName,
-  buttonLabel,
-  noRecentSearchLabel,
-  recentlySearchedLabel,
-  noResultsLabel,
+  buttonLabel = "See more",
+  noRecentSearchLabel = "No recent search",
+  recentlySearchedLabel = "Recently searched",
+  noResultsLabel = "No result found",
 }: {
   recentSearchesId: string;
   open: boolean;
@@ -155,7 +155,7 @@ export default function Spotlight<T extends object>({
                             noResultsClassName,
                           )}
                         >
-                          {noResultsLabel || "No result found"}
+                          {noResultsLabel}
                         </div>
                       )}
                       {!loading && !!results?.length && (
@@ -194,7 +194,7 @@ export default function Spotlight<T extends object>({
                                 onClick={onSeeMoreClick}
                                 href={seeMoreHref}
                               >
-                                {buttonLabel || "See more"}
+                                {buttonLabel}
                               </Button>
                             </div>
                           )}
@@ -210,7 +210,7 @@ export default function Spotlight<T extends object>({
                             recentSearchClassName,
                           )}
                         >
-                          {recentlySearchedLabel || "Recently searched"}
+                          {recentlySearchedLabel}
                         </div>
                       ) : (
                         <div
@@ -219,7 +219,7 @@ export default function Spotlight<T extends object>({
                             noResultsClassName,
                           )}
                         >
-                          {noRecentSearchLabel || "No recent search"}
+                          {noRecentSearchLabel}
                         </div>
                       )}
                       {recentQueries?.map((item) => (
