@@ -327,6 +327,17 @@ input[type="checkbox"]:indeterminate {
     }
 
     --animate-slow-pulse: pulse 4s linear infinite;
+
+    --animate-bubble: bubble 4s infinite ease-in-out;
+    @keyframes bubble {
+        0%,
+        100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-10px);
+        }
+    }
 }
 
 /*
