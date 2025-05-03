@@ -10,7 +10,7 @@ void main() {
 `;
 
 const FRAG = `#version 300 es
-precision 2highp float;
+precision highp float;
 
 uniform float uTime;
 uniform float uAmplitude;
