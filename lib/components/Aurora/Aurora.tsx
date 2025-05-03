@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { Color, Mesh, Program, Renderer, Triangle } from "ogl";
+import clsx from "../../utils/clsx";
 
 const VERT = `#version 300 es
 in vec2 position;
@@ -9,7 +10,7 @@ void main() {
 `;
 
 const FRAG = `#version 300 es
-precision highp float;
+precision 2highp float;
 
 uniform float uTime;
 uniform float uAmplitude;
@@ -113,6 +114,7 @@ interface AuroraProps {
   blend?: number;
   time?: number;
   speed?: number;
+  className?: string;
 }
 
 export default function Aurora(props: AuroraProps) {
@@ -120,6 +122,7 @@ export default function Aurora(props: AuroraProps) {
     colorStops = ["#00d8ff", "#7cff67", "#00d8ff"],
     amplitude = 1.0,
     blend = 0.5,
+    className,
   } = props;
   const propsRef = useRef<AuroraProps>(props);
   propsRef.current = props;
@@ -211,5 +214,5 @@ export default function Aurora(props: AuroraProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [amplitude]);
 
-  return <div ref={ctnDom} className="h-full w-full" />;
+  return <div ref={ctnDom} className={clsx("h-full w-full", className)} />;
 }
