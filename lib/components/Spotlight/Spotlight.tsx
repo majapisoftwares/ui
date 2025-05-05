@@ -33,6 +33,8 @@ export default function Spotlight<T extends object>({
   showSeeMoreButton,
   onSeeMoreClick,
   seeMoreHref,
+  overlayClassName,
+  dialogContentClassName,
   className,
   contentClassName,
   iconClassName,
@@ -60,6 +62,8 @@ export default function Spotlight<T extends object>({
   showSeeMoreButton?: boolean;
   onSeeMoreClick?: () => void;
   seeMoreHref?: string;
+  overlayClassName?: string;
+  dialogContentClassName?: string;
   className?: string;
   contentClassName?: string;
   iconClassName?: string;
@@ -103,12 +107,14 @@ export default function Spotlight<T extends object>({
           className={clsx(
             "fixed inset-0 z-20 flex justify-center bg-black/30 backdrop-blur-xs",
             "data-[state=closed]:animate-fade-out data-[state=open]:animate-slide-up-and-fade will-change-[opacity,transform]",
+            overlayClassName,
           )}
         >
           <Dialog.Content
             className={clsx(
               "fixed mx-auto w-full max-w-(--breakpoint-md) px-4 py-4 focus:outline-hidden md:py-8",
               "data-[state=closed]:animate-fade-out data-[state=open]:animate-elastic-slide-up-and-fade will-change-[transform,opacity]",
+              dialogContentClassName,
             )}
           >
             <VisuallyHidden.Root>
