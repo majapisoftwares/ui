@@ -1,5 +1,5 @@
 .ui-theme-default .ui-multi-text {
-  @apply border rounded-sm flex flex-wrap gap-2 items-center px-2 py-1 shadow-xs transition-all
+  @apply border rounded-md flex flex-wrap gap-1 items-center px-2.5 py-0.5 shadow-xs transition-all
     border-zinc-300 bg-white
     dark:border-zinc-700 dark:bg-zinc-800
     data-readonly:border-dashed
@@ -21,12 +21,8 @@
 
 .ui-theme-default .ui-multi-text-item {
   @apply rounded-sm flex items-center px-2 py-1 gap-2 max-w-full
-    bg-zinc-100
+    bg-zinc-200
     dark:bg-zinc-700;
-}
-
-.ui-theme-default .ui-multi-text-item:first-of-type {
-  @apply -ml-1;
 }
 
 .ui-theme-default .ui-multi-text-item-content {

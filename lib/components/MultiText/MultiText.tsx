@@ -7,7 +7,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { isEqual } from "lodash-es";
+import { isEqual, uniq } from "lodash-es";
 import { useDeepCompareEffect } from "react-use";
 import { XMarkIcon } from "@heroicons/react/20/solid";
 import InputWrapper from "../Input2/InputWrapper";
@@ -129,36 +129,42 @@ function MultiText({
         data-loading={loading ? "" : undefined}
         data-readonly={readOnly ? "" : undefined}
       >
-        {innerValue.map((item, i) => {
-          const removeItem = () => {
-            const newValue = [...innerValue];
-            newValue.splice(i, 1);
-            setInnerValue(newValue);
-            inputRef.current?.focus();
-          };
-          return (
-            <span
-              className="ui-multi-text-item"
-              key={i}
-              onClick={(e) => e.stopPropagation()}
-              onDoubleClick={() => {
-                setInputValue(item);
-                removeItem();
-              }}
-            >
-              <span className="ui-multi-text-item-content">{format(item)}</span>
-              {!readOnly && (
-                <button
-                  className="ui-multi-text-delete-button"
-                  onClick={removeItem}
-                  type="button"
+        {!!innerValue?.length && (
+          <div className="-mx-2 flex w-full flex-wrap gap-0.5">
+            {innerValue.map((item, i) => {
+              const removeItem = () => {
+                const newValue = [...innerValue];
+                newValue.splice(i, 1);
+                setInnerValue(newValue);
+                inputRef.current?.focus();
+              };
+              return (
+                <span
+                  className="ui-multi-text-item"
+                  key={i}
+                  onClick={(e) => e.stopPropagation()}
+                  onDoubleClick={() => {
+                    setInputValue(item);
+                    removeItem();
+                  }}
                 >
-                  <XMarkIcon className="ui-multi-text-delete-icon" />
-                </button>
-              )}
-            </span>
-          );
-        })}
+                  <span className="ui-multi-text-item-content">
+                    {format(item)}
+                  </span>
+                  {!readOnly && (
+                    <button
+                      className="ui-multi-text-delete-button"
+                      onClick={removeItem}
+                      type="button"
+                    >
+                      <XMarkIcon className="ui-multi-text-delete-icon" />
+                    </button>
+                  )}
+                </span>
+              );
+            })}
+          </div>
+        )}
         <input
           id={id}
           ref={inputRef}
@@ -170,9 +176,17 @@ function MultiText({
             setInputValue(e.target.value);
           }}
           onBlur={(e) => {
-            setInvalid(false);
-            setInputValue("");
             setInnerFocused(false);
+            const value = e.currentTarget.value;
+            if (value) {
+              if (!validate || validate(value)) {
+                setInvalid(false);
+                setInnerValue(uniq([...(innerValue || []), value]));
+                setInputValue("");
+              } else {
+                setInvalid(true);
+              }
+            }
             onBlur?.(e);
           }}
           onKeyDown={(e) => {
@@ -180,7 +194,7 @@ function MultiText({
             if (e.code === "Enter") {
               e.preventDefault();
               if (!validate || validate(value)) {
-                setInnerValue([...innerValue, value]);
+                setInnerValue(uniq([...(innerValue || []), value]));
                 setInputValue("");
               } else {
                 setInvalid(true);
