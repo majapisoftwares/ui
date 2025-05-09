@@ -3,6 +3,9 @@
 @import './styles/Input.css' layer(base);
 @import './styles/Tabs.css' layer(base);
 @import './styles/Pagination.css' layer(base);
+@source "../node_modules/@majapisoftwares/ui";
+@source "../node_modules/@majapisoftwares/auth";
+@source "../node_modules/@majapisoftwares/tasks";
 
 @custom-variant dark (&:where(.dark, .dark *));
 @custom-variant not-dark (html:not(.dark) &);
@@ -11,7 +14,6 @@
 @custom-variant touch (html.touch &);
 @plugin "@tailwindcss/typography";
 @plugin "@tailwindcss/forms";
-@source "../node_modules/@majapisoftwares";
 
 body.ui-theme-default {
     @apply flex h-full flex-col
