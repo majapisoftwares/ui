@@ -1,3 +1,3 @@
-import eslintConfig from "@italodeandra/next/eslint.config.mjs"
+import eslintConfig from "@majapisoftwares/next/eslint.config.mjs";
 
 export default eslintConfig;
