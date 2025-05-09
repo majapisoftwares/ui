@@ -19,6 +19,8 @@ import { isEqual } from "lodash-es";
 import Text from "../Text";
 import { PreviewFile } from "./PreviewFile";
 import concurrentForOf from "@italodeandra/next/utils/concurrentForOf";
+import paginated from "@italodeandra/next/utils/paginated";
+import Pagination from "../Pagination";
 
 export type FileFile = {
   _id: string;
@@ -66,6 +68,7 @@ function FileInput({
   ref,
   fileSelectClassName,
   previewFileClassName,
+  filesPerPage = 10,
   ...props
 }: Pick<
   InputProps<false>,
@@ -99,9 +102,19 @@ function FileInput({
     fileAdditionalInfo?: (file: FileInputFile, index: number) => ReactNode;
     fileSelectClassName?: string;
     previewFileClassName?: string;
+    filesPerPage?: number;
   }) {
   const [uploading, setUploading] = useState(false);
   const [innerValue, setInnerValue] = useState<FileInputFile[]>(value || []);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const paginatedValue = paginated(innerValue, currentPage - 1, filesPerPage);
+  useEffect(() => {
+    const totalPages = Math.ceil(innerValue.length / filesPerPage);
+    if (currentPage > totalPages && totalPages > 0) {
+      setCurrentPage(totalPages);
+    }
+  }, [innerValue.length, currentPage, filesPerPage]);
 
   useDeepCompareEffect(() => {
     if (value && !isEqual(value, innerValue)) {
@@ -240,7 +253,7 @@ function FileInput({
           "min-h-[140px]": !!innerValue.length || !readOnly,
         })}
       >
-        {innerValue.map((file, index) => (
+        {paginatedValue.map((file, index) => (
           <PreviewFile
             key={index}
             file={file}
@@ -254,6 +267,15 @@ function FileInput({
             className={previewFileClassName}
           />
         ))}
+        {innerValue.length > filesPerPage && (
+          <Pagination
+            className="col-span-2 mx-auto"
+            currentPage={currentPage}
+            totalItems={innerValue.length}
+            onChangePage={setCurrentPage}
+            itemsPerPage={filesPerPage}
+          />
+        )}
         {readOnly && !innerValue.length && (
           <Text variant="secondary">{emptyText}</Text>
         )}
