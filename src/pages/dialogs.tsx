@@ -10,7 +10,7 @@ import { showNotification } from "../../lib/components/Notifications";
 import Group from "../../lib/components/Group";
 import { useState } from "react";
 import Dialog from "../../lib/components/Dialog/Dialog";
-import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
+import isomorphicObjectId from "@majapisoftwares/next/utils/isomorphicObjectId";
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => ({
   props: {

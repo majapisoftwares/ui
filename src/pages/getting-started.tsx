@@ -14,7 +14,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => ({
 
 function Quote({ children }: { children: ReactNode }) {
   return (
-    <span className="mx-1 select-all rounded-sm bg-slate-800 px-1.5 py-1 text-white">
+    <span className="mx-1 rounded-sm bg-slate-800 px-1.5 py-1 text-white select-all">
       {children}
     </span>
   );
@@ -40,7 +40,7 @@ export default function Page() {
       </Code>
       <Text>Install the library with its dependencies:</Text>
       <Code language="bash" copy>
-        {`npm i -E @italodeandra/ui @italodeandra/next
+        {`npm i -E @majapisoftwares/ui @majapisoftwares/next
 npm i -E tailwindcss @tailwindcss/typography @tailwindcss/forms postcss autoprefixer focus-visible postcss-focus-visible
 npm i -E clsx valtio @fontsource/inter next-seo @badrap/bar-of-progress framer-motion @heroicons/react cookies-next bson-objectid bson`}
       </Code>

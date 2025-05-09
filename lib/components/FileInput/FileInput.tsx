@@ -14,12 +14,12 @@ import {
   InputProps,
 } from "../Input";
 import FileSelect, { FileSelectProps } from "../FileSelect";
-import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
+import isomorphicObjectId from "@majapisoftwares/next/utils/isomorphicObjectId";
 import { isEqual } from "lodash-es";
 import Text from "../Text";
 import { PreviewFile } from "./PreviewFile";
-import concurrentForOf from "@italodeandra/next/utils/concurrentForOf";
-import paginated from "@italodeandra/next/utils/paginated";
+import concurrentForOf from "@majapisoftwares/next/utils/concurrentForOf";
+import paginated from "@majapisoftwares/next/utils/paginated";
 import Pagination from "../Pagination";
 
 export type FileFile = {

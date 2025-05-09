@@ -10,7 +10,7 @@ import {
   removeNotification,
   showNotification,
 } from "../../lib/components/Notifications";
-import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
+import isomorphicObjectId from "@majapisoftwares/next/utils/isomorphicObjectId";
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => ({
   props: {

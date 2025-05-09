@@ -7,7 +7,7 @@ import { FileSelectProvider } from "../../lib/components/FileSelect";
 import Stack from "../../lib/components/Stack";
 import { useState } from "react";
 import FileInput, { FileInputFile } from "../../lib/components/FileInput";
-import wait from "@italodeandra/next/utils/wait";
+import wait from "@majapisoftwares/next/utils/wait";
 import { showNotification } from "../../lib/components/Notifications";
 import numeral from "numeral";
 

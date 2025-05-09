@@ -7,11 +7,11 @@ import Breadcrumbs from "../../lib/components/Breadcrumbs";
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 import Spotlight from "../../lib/components/Spotlight";
 import Stack from "../../lib/components/Stack";
-import wait from "@italodeandra/next/utils/wait";
+import wait from "@majapisoftwares/next/utils/wait";
 import { QueryClientProvider, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import useDebounce from "../../lib/hooks/useDebouncedValue";
-import getQueryClient from "@italodeandra/next/api/getQueryClient";
+import getQueryClient from "@majapisoftwares/next/api/getQueryClient";
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => ({
   props: {

@@ -1,5 +1,5 @@
 import { proxy, ref } from "valtio";
-import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
+import isomorphicObjectId from "@majapisoftwares/next/utils/isomorphicObjectId";
 import ms, { StringValue } from "ms";
 import { CSSProperties, ReactElement, ReactNode } from "react";
 
