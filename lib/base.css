@@ -11,6 +11,7 @@
 @custom-variant touch (html.touch &);
 @plugin "@tailwindcss/typography";
 @plugin "@tailwindcss/forms";
+@source "../node_modules/@majapisoftwares";
 
 body.ui-theme-default {
     @apply flex h-full flex-col
