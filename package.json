@@ -7,7 +7,7 @@
   "publishConfig": {
     "@majapisoftwares:registry": "https://npm.pkg.github.com"
   },
-  "version": "4.0.1",
+  "version": "4.0.2",
   "type": "module",
   "scripts": {
     "dev": "next dev",
