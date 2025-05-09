@@ -9,8 +9,7 @@
     "lint": "next lint",
     "lib:build": "shx rm -rf dist && tsc --build lib/tsconfig.json && shx cp -r package.json lib/base.css lib/styles dist",
     "lib:pre-publish": "npm run lib:build && cd dist && json -I -f package.json -e \"this.dependencies=undefined; this.devDependencies=undefined; this.scripts=undefined;\"",
-    "lib:publish": "npm run lib:pre-publish && cd dist && yalc publish",
-    "yalc-update": "shx rm -rf .next && yalc update",
+    "lib:publish": "npm run lib:pre-publish && cd dist && npm publish",
     "prepare": "husky"
   },
   "dependencies": {
