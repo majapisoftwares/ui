@@ -4,9 +4,6 @@
     "type": "git",
     "url": "https://github.com/majapisoftwares/ui.git"
   },
-  "publishConfig": {
-    "@majapisoftwares:registry": "https://npm.pkg.github.com"
-  },
   "version": "4.0.2",
   "type": "module",
   "scripts": {
