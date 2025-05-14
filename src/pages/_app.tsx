@@ -13,8 +13,8 @@ import "react-image-crop/dist/ReactCrop.css";
 
 dayjs.extend(localizedFormat);
 
-const appName = "@italodeandra/ui";
-const appDescription = "Demo of @italodeandra/ui";
+const appName = "@majapisoftwares/ui";
+const appDescription = "Demo of @majapisoftwares/ui";
 const appKeywords = "ui";
 const appThemeColor = "#00a6f4";
 

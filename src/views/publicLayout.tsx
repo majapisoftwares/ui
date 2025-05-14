@@ -13,12 +13,7 @@ export default function getPublicLayout(children: ReactNode) {
     <>
       <Header />
       <NavigationDrawer>
-        {/* eslint-disable-next-line react/jsx-no-undef */}
-        <Footer
-          companyName={
-            <Link href="https://italodeandra.de">Ítalo de Andrade</Link>
-          }
-        >
+        <Footer companyName={<Link href="https://majapi.com">Majapi</Link>}>
           <div className="h-16" />
           {children}
         </Footer>

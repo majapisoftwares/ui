@@ -25,7 +25,7 @@ const data = [
     _id: "1",
     name: "Ítalo Andrade",
     title: "King",
-    email: "italodeandra@gmail.com",
+    email: "italo@majapi.com",
     role: "Give orders",
     url: "https://italodeandra.de",
   },

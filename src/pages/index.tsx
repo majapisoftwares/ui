@@ -3,7 +3,6 @@ import { GetServerSideProps } from "next";
 import getPublicLayout from "../views/publicLayout";
 import Button from "../../lib/components/Button";
 import Stack from "../../lib/components/Stack";
-import { ArrowLongRightIcon } from "@heroicons/react/20/solid";
 import Group from "../../lib/components/Group";
 import Input from "../../lib/components/Input";
 import { SwitchInput } from "../../lib/components/Switch";
@@ -82,7 +81,7 @@ export default function Page() {
     <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
       <Group className="grid grid-cols-1 gap-10 md:grid-cols-2">
         <Stack className="max-w-xl gap-5">
-          <p className="mt-1 text-4xl font-bold tracking-tight text-gray-900 dark:text-gray-100 sm:text-5xl lg:text-6xl">
+          <p className="mt-1 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl dark:text-gray-100">
             Extremely{" "}
             <span className="bg-linear-to-r from-emerald-500 to-sky-500 bg-clip-text text-transparent">
               beautiful
@@ -93,26 +92,6 @@ export default function Page() {
             A collection of components, hooks and utility functions for creating
             unique interfaces without forgetting to be responsive, accessible
             and artistic at the same.
-          </p>
-          <p>
-            <Button
-              href="/getting-started"
-              variant="light"
-              color="default"
-              trailing={<ArrowLongRightIcon />}
-              className="px-4! text-lg!"
-              {...getExampleCodeMouseEvents(`<Button
-  href="/getting-started"
-  variant="outlined"
-  color="primary"
-  trailing={<ArrowLongRightIcon />}
-  className="px-4! text-lg!"
->
-  Get started
-</Button>;`)}
-            >
-              Get started
-            </Button>
           </p>
         </Stack>
         <div className="max-w-full md:ml-auto">

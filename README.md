@@ -1,1 +1,1 @@
-https://ui.italodeandra.de/getting-started
+https://ui.majapi.com/

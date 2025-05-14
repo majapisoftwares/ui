@@ -20,7 +20,7 @@ export default function Header() {
       <NextLink href="/" className="ml-3">
         <Image src="/favicon.ico" width={34} height={34} alt="Logo" />
       </NextLink>
-      <span className="ml-2 text-xl font-medium">@italodeandra/ui</span>
+      <span className="ml-2 text-xl font-medium">@majapisoftwares/ui</span>
       <div className="grow" />
       <ModeToggle />
     </UiHeader>

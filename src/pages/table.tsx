@@ -43,13 +43,13 @@ export default function Page() {
           <Table.Body>
             <Table.Row
               onClick={useCallback(
-                () => window.open("https://italodeandra.de", "_blank"),
+                () => window.open("https://majapi.com", "_blank"),
                 [],
               )}
             >
               <Table.Cell>Ítalo Andrade</Table.Cell>
               <Table.Cell>King</Table.Cell>
-              <Table.Cell>italodeandra@gmail.com</Table.Cell>
+              <Table.Cell>italo@majapi.com</Table.Cell>
               <Table.Cell>Give orders</Table.Cell>
               <Table.Cell actions>
                 <Table.ActionButton title="Edit">
