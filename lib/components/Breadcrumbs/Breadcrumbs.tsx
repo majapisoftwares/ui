@@ -4,13 +4,25 @@ import Text from "../Text";
 import NextLink from "next/link";
 import Loading from "../Loading";
 import Skeleton from "../Skeleton";
+import { ReactElement } from "react";
+
+type BaseBreadcrumbPage = {
+  href?: string;
+  loading?: boolean;
+};
+
+export type BreadcrumbPage =
+  | (BaseBreadcrumbPage & {
+      title: string;
+      id?: string;
+    })
+  | (BaseBreadcrumbPage & {
+      title: ReactElement;
+      id: string;
+    });
 
 export type BreadcrumbsProps = {
-  pages?: {
-    title: string;
-    href?: string;
-    loading?: boolean;
-  }[];
+  pages?: Array<BreadcrumbPage>;
   homeHref?: string;
   className?: string;
   loading?: boolean;
@@ -30,7 +42,7 @@ export default function Breadcrumbs({
     <nav className={clsx("flex", className)} aria-label="Breadcrumb">
       <ol
         role="list"
-        className="flex w-full space-x-4 bg-white px-6 shadow-sm dark:border-y dark:border-zinc-800 dark:bg-zinc-900 md:w-auto md:rounded-md md:dark:border-x"
+        className="flex w-full space-x-4 bg-white px-6 shadow-sm md:w-auto md:rounded-md dark:border-y dark:border-zinc-800 dark:bg-zinc-900 md:dark:border-x"
       >
         <li className="flex">
           <div className="flex items-center">
@@ -46,7 +58,7 @@ export default function Breadcrumbs({
         {pages.map((page, i) => {
           const isLast = i === pages.length - 1;
           return (
-            <li key={page.title} className="flex">
+            <li key={page.id || page.title.toString()} className="flex">
               <div className="flex items-center">
                 <svg
                   className="h-full w-6 shrink-0 text-zinc-200 dark:text-zinc-800"

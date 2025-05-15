@@ -2,7 +2,7 @@ import Stack from "../../lib/components/Stack";
 import getPublicLayout from "../views/publicLayout";
 import { GetServerSideProps } from "next";
 import { getCookies } from "cookies-next";
-import Breadcrumbs from "../../lib/components/Breadcrumbs";
+import Breadcrumbs, { BreadcrumbPage } from "../../lib/components/Breadcrumbs";
 import { NextSeo } from "next-seo";
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => ({
@@ -11,16 +11,17 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => ({
   },
 });
 
-const pages = [
+const pages: BreadcrumbPage[] = [
   { title: "Projects", href: "#" },
   { title: "Project Nero", href: "#" },
+  { title: <div>Node</div>, id: "node" },
   { title: "Loading", loading: true },
 ];
 
 export default function Page() {
   return (
     <>
-      <NextSeo title={pages[0].title} />
+      <NextSeo title={pages[0].title.toString()} />
       <Breadcrumbs pages={pages} className="mb-2 md:mx-2" loading />
       <Stack className="p-2">
         <div>
