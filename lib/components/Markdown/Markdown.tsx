@@ -1,11 +1,12 @@
-import React, { useMemo } from "react";
+import React, { ComponentProps } from "react";
+import ReactMarkdown from "react-markdown";
 import clsx from "../../utils/clsx";
-import showdown, { ConverterOptions } from "showdown";
+import remarkGfm from "remark-gfm";
 
 export type MarkdownProps = {
   children?: string;
   className?: string;
-  options?: ConverterOptions;
+  options?: ComponentProps<typeof ReactMarkdown>;
 };
 
 export default function Markdown({
@@ -13,25 +14,21 @@ export default function Markdown({
   className,
   options,
 }: MarkdownProps) {
-  const converter = useMemo(
-    () => new showdown.Converter(options),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [JSON.stringify(options)],
-  );
-
   return (
     <div
       className={clsx(
-        "prose prose-zinc max-w-full dark:prose-invert",
+        "prose prose-zinc dark:prose-invert max-w-full",
+        "[&_.contains-task-list]:list-none [&_.contains-task-list]:pl-0",
+        "[&_.task-list-item_input[type='checkbox']]:-mt-1",
         className,
       )}
-      dangerouslySetInnerHTML={
-        children
-          ? {
-              __html: converter.makeHtml(children),
-            }
-          : undefined
-      }
-    />
+    >
+      <ReactMarkdown
+        remarkPlugins={[remarkGfm, ...(options?.remarkPlugins || [])]}
+        {...options}
+      >
+        {children}
+      </ReactMarkdown>
+    </div>
   );
 }

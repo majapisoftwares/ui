@@ -20,9 +20,7 @@ export default function Page() {
       <NextSeo title={pages[0].title} />
       <Breadcrumbs pages={pages} className="mb-2 md:mx-2" />
       <Stack className="p-2">
-        <Markdown
-          options={{ tasklists: true, simplifiedAutoLink: true }}
-        >{`# Hello, *world*!
+        <Markdown>{`# Hello, *world*!
 Just a link: https://reactjs.com.
 
 - [ ] Checkbox
