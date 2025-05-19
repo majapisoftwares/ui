@@ -16,7 +16,7 @@ export default function Accordion({
     <RAccordion.Root
       type={type}
       className={clsx("flex flex-col gap-2", className)}
-      collapsible
+      collapsible={type === "single" || undefined}
     >
       {children}
     </RAccordion.Root>
