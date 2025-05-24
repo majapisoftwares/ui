@@ -25,6 +25,8 @@ export function PreviewFile({
   additionalInfo,
   index,
   className,
+  filesPerPage,
+  currentPage,
 }: {
   file: FileInputFile;
   readOnly?: boolean;
@@ -35,6 +37,8 @@ export function PreviewFile({
   additionalInfo?: (file: FileInputFile, index: number) => ReactNode;
   index: number;
   className?: string;
+  filesPerPage: number;
+  currentPage: number;
 }) {
   const url = (file as FileFile).file
     ? URL.createObjectURL((file as FileFile).file)
@@ -105,7 +109,9 @@ export function PreviewFile({
                 </Group>
               )}
             </Stack>
-            {additionalInfo && additionalInfo(file, index)}
+            {additionalInfo &&
+              additionalInfo(file, index + (currentPage - 1) * filesPerPage)}
+            {/*{additionalInfo && additionalInfo(file, index)}*/}
           </Stack>
         </Group>
       )}

@@ -215,7 +215,6 @@ function FileInput({
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [innerValue]);
 
   const handleDeleteClick = useCallback(
@@ -265,6 +264,8 @@ function FileInput({
             additionalInfo={fileAdditionalInfo}
             index={index}
             className={previewFileClassName}
+            filesPerPage={filesPerPage}
+            currentPage={currentPage}
           />
         ))}
         {innerValue.length > filesPerPage && (

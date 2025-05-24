@@ -34,8 +34,8 @@ export default function Page() {
           label="Preview and info"
           onChange={(e) => setValue(e.target.value)}
           fileDisplay="both"
-          fileAdditionalInfo={() => (
-            <Button className="w-full">Custom action</Button>
+          fileAdditionalInfo={(_, index) => (
+            <Button className="w-full">Custom action {index}</Button>
           )}
         />
       </Stack>
