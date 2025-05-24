@@ -111,7 +111,6 @@ export function PreviewFile({
             </Stack>
             {additionalInfo &&
               additionalInfo(file, index + (currentPage - 1) * filesPerPage)}
-            {/*{additionalInfo && additionalInfo(file, index)}*/}
           </Stack>
         </Group>
       )}
