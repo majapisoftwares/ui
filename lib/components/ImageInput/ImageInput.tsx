@@ -12,13 +12,13 @@ const defaultIcon = (
   </svg>
 );
 
-function ImageInput({
+function ImageInput<PFP extends object>({
   icon = defaultIcon,
   uploadAFileText = "Upload an image",
   allowedFileTypes = [".png", ".jpg", ".jpeg", ".webp"],
   fileDisplay = "preview",
   ...props
-}: ComponentProps<typeof FileInput>) {
+}: ComponentProps<typeof FileInput<PFP>>) {
   return (
     <FileInput
       {...props}
