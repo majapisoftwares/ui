@@ -1,6 +1,7 @@
 import clsx from "../../utils/clsx";
 import {
   ComponentPropsWithRef,
+  ComponentType,
   ReactNode,
   useCallback,
   useEffect,
@@ -17,7 +18,7 @@ import FileSelect, { FileSelectProps } from "../FileSelect";
 import isomorphicObjectId from "@majapisoftwares/next/utils/isomorphicObjectId";
 import { isEqual } from "lodash-es";
 import Text from "../Text";
-import { PreviewFile } from "./PreviewFile";
+import { PreviewFile, PreviewFileProps } from "./PreviewFile";
 import concurrentForOf from "@majapisoftwares/next/utils/concurrentForOf";
 import paginated from "@majapisoftwares/next/utils/paginated";
 import Pagination from "../Pagination";
@@ -69,6 +70,7 @@ function FileInput({
   fileSelectClassName,
   previewFileClassName,
   filesPerPage = 10,
+  previewFileComponent,
   ...props
 }: Pick<
   InputProps<false>,
@@ -103,10 +105,13 @@ function FileInput({
     fileSelectClassName?: string;
     previewFileClassName?: string;
     filesPerPage?: number;
+    previewFileComponent?: ComponentType<PreviewFileProps>;
   }) {
   const [uploading, setUploading] = useState(false);
   const [innerValue, setInnerValue] = useState<FileInputFile[]>(value || []);
   const [currentPage, setCurrentPage] = useState(1);
+
+  const PreviewFileComponent = previewFileComponent || PreviewFile;
 
   const paginatedValue = paginated(innerValue, currentPage - 1, filesPerPage);
   useEffect(() => {
@@ -253,7 +258,7 @@ function FileInput({
         })}
       >
         {paginatedValue.map((file, index) => (
-          <PreviewFile
+          <PreviewFileComponent
             key={index}
             file={file}
             readOnly={readOnly}

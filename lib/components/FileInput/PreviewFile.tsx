@@ -11,9 +11,22 @@ import {
 import { FileFile, FileInputFile, FileUrl } from "./FileInput";
 import { ReactNode } from "react";
 import clsx from "../../utils/clsx";
+import checkIsVideo from "./isVideo";
+import checkIsImage from "./isImage";
 
-const videoExtensions = [".mp4"];
-const imageExtensions = [".png", ".jpg", ".jpeg", ".webp"];
+export type PreviewFileProps = {
+  file: FileInputFile;
+  readOnly?: boolean;
+  handleDeleteClick: () => void;
+  downloadText: string;
+  openText: string;
+  display?: "info" | "preview" | "both";
+  additionalInfo?: (file: FileInputFile, index: number) => ReactNode;
+  index: number;
+  className?: string;
+  filesPerPage: number;
+  currentPage: number;
+};
 
 export function PreviewFile({
   file,
@@ -27,29 +40,13 @@ export function PreviewFile({
   className,
   filesPerPage,
   currentPage,
-}: {
-  file: FileInputFile;
-  readOnly?: boolean;
-  handleDeleteClick: () => void;
-  downloadText: string;
-  openText: string;
-  display?: "info" | "preview" | "both";
-  additionalInfo?: (file: FileInputFile, index: number) => ReactNode;
-  index: number;
-  className?: string;
-  filesPerPage: number;
-  currentPage: number;
-}) {
+}: PreviewFileProps) {
   const url = (file as FileFile).file
     ? URL.createObjectURL((file as FileFile).file)
     : (file as FileUrl).url;
 
-  const isVideo =
-    file.type?.startsWith("video") ||
-    videoExtensions.some((e) => url.endsWith(e));
-  const isImage =
-    file.type?.startsWith("image") ||
-    imageExtensions.some((e) => url.endsWith(e));
+  const isVideo = file.type?.startsWith("video") || checkIsVideo(url);
+  const isImage = file.type?.startsWith("image") || checkIsImage(url);
 
   if (display === "preview" && !isVideo && !isImage) {
     display = "info";
