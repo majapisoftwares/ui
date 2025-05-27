@@ -4,7 +4,7 @@
     "type": "git",
     "url": "https://github.com/majapisoftwares/ui.git"
   },
-  "version": "4.1.2",
+  "version": "4.1.3",
   "type": "module",
   "scripts": {
     "dev": "next dev",
