@@ -39,7 +39,10 @@ export function CustomPreviewFile({
   downloadText,
   openText,
   className,
-}: PreviewFileProps) {
+  images,
+}: PreviewFileProps & {
+  images: FileInputFile[];
+}) {
   const url = (file as FileFile).file
     ? URL.createObjectURL((file as FileFile).file)
     : (file as FileUrl).url;
@@ -63,7 +66,7 @@ export function CustomPreviewFile({
         <Stack className="w-full overflow-hidden p-3">
           <Stack className="gap-1">
             <div className="flex-1 truncate" title={file.name}>
-              {file.name}
+              {file.name} {images.length}
             </div>
             {file.description && <div>{file.description}</div>}
             <Text size="sm">{file.type}</Text>
@@ -118,6 +121,9 @@ export default function Page() {
           value={images}
           onChange={(e) => setImages(e.target.value)}
           previewFileComponent={CustomPreviewFile}
+          previewFileProps={{
+            images,
+          }}
         />
       </Stack>
     </FileSelectProvider>

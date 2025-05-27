@@ -43,7 +43,7 @@ export type FileUrl = {
 
 export type FileInputFile = FileFile | FileUrl;
 
-function FileInput({
+function FileInput<PFP extends object>({
   error,
   className,
   helpText,
@@ -71,6 +71,7 @@ function FileInput({
   previewFileClassName,
   filesPerPage = 10,
   previewFileComponent,
+  previewFileProps,
   ...props
 }: Pick<
   InputProps<false>,
@@ -105,7 +106,8 @@ function FileInput({
     fileSelectClassName?: string;
     previewFileClassName?: string;
     filesPerPage?: number;
-    previewFileComponent?: ComponentType<PreviewFileProps>;
+    previewFileComponent?: ComponentType<PreviewFileProps & PFP>;
+    previewFileProps?: PFP;
   }) {
   const [uploading, setUploading] = useState(false);
   const [innerValue, setInnerValue] = useState<FileInputFile[]>(value || []);
@@ -271,6 +273,7 @@ function FileInput({
             className={previewFileClassName}
             filesPerPage={filesPerPage}
             currentPage={currentPage}
+            {...(previewFileProps as PFP)}
           />
         ))}
         {innerValue.length > filesPerPage && (
