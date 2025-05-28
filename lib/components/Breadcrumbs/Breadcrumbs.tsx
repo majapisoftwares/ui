@@ -42,7 +42,7 @@ export default function Breadcrumbs({
     <nav className={clsx("flex", className)} aria-label="Breadcrumb">
       <ol
         role="list"
-        className="flex w-full space-x-4 bg-white px-6 shadow-sm md:w-auto md:rounded-md dark:border-y dark:border-zinc-800 dark:bg-zinc-900 md:dark:border-x"
+        className="flex w-full space-x-4 overflow-auto bg-white px-6 whitespace-nowrap shadow-sm md:w-auto md:rounded-md dark:border-y dark:border-zinc-800 dark:bg-zinc-900 md:dark:border-x"
       >
         <li className="flex">
           <div className="flex items-center">
