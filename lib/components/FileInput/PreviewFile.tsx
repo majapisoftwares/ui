@@ -9,10 +9,11 @@ import {
   TrashIcon,
 } from "@heroicons/react/20/solid";
 import { FileFile, FileInputFile, FileUrl } from "./FileInput";
-import { ReactNode } from "react";
+import { memo, ReactNode } from "react";
 import clsx from "../../utils/clsx";
 import checkIsVideo from "./isVideo";
 import checkIsImage from "./isImage";
+import { isEqual } from "lodash-es";
 
 export type PreviewFileProps = {
   file: FileInputFile;
@@ -28,7 +29,7 @@ export type PreviewFileProps = {
   currentPage: number;
 };
 
-export function PreviewFile({
+function PreviewFile({
   file,
   readOnly,
   handleDeleteClick,
@@ -41,9 +42,19 @@ export function PreviewFile({
   filesPerPage,
   currentPage,
 }: PreviewFileProps) {
-  const url = (file as FileFile).file
-    ? URL.createObjectURL((file as FileFile).file)
-    : (file as FileUrl).url;
+  const url =
+    (file as FileUrl).url ||
+    ((file as FileFile).file
+      ? URL.createObjectURL((file as FileFile).file)
+      : undefined);
+
+  if (!url) {
+    return (
+      <div className={clsx("p-4 text-red-500", className)}>
+        Error: No URL or file provided for preview.
+      </div>
+    );
+  }
 
   const isVideo = file.type?.startsWith("video") || checkIsVideo(url);
   const isImage = file.type?.startsWith("image") || checkIsImage(url);
@@ -125,3 +136,5 @@ export function PreviewFile({
     </div>
   );
 }
+
+export default memo(PreviewFile, isEqual);

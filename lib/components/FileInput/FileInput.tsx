@@ -2,13 +2,15 @@ import clsx from "../../utils/clsx";
 import {
   ComponentPropsWithRef,
   ComponentType,
+  memo,
   ReactNode,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
-import { useDeepCompareEffect, useUpdateEffect } from "react-use";
+import { useDeepCompareEffect } from "react-use";
 import {
   defaultHelpTextClassName,
   defaultLabelClassName,
@@ -18,7 +20,7 @@ import FileSelect, { FileSelectProps } from "../FileSelect";
 import isomorphicObjectId from "@majapisoftwares/next/utils/isomorphicObjectId";
 import { isEqual } from "lodash-es";
 import Text from "../Text";
-import { PreviewFile, PreviewFileProps } from "./PreviewFile";
+import PreviewFile, { PreviewFileProps } from "./PreviewFile";
 import concurrentForOf from "@majapisoftwares/next/utils/concurrentForOf";
 import paginated from "@majapisoftwares/next/utils/paginated";
 import Pagination from "../Pagination";
@@ -113,7 +115,10 @@ function FileInput<PFP extends object>({
   const [innerValue, setInnerValue] = useState<FileInputFile[]>(value || []);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const PreviewFileComponent = previewFileComponent || PreviewFile;
+  const PreviewFileComponent = useMemo(
+    () => memo(previewFileComponent || PreviewFile, isEqual),
+    [previewFileComponent],
+  );
 
   const paginatedValue = paginated(innerValue, currentPage - 1, filesPerPage);
   useEffect(() => {
@@ -127,7 +132,7 @@ function FileInput<PFP extends object>({
     if (value && !isEqual(value, innerValue)) {
       setInnerValue(value);
     }
-  }, [{ value: value }]);
+  }, [{ value }]);
 
   const innerRef = useRef<HTMLInputElement>({
     get value() {
@@ -207,16 +212,18 @@ function FileInput<PFP extends object>({
     }
   };
 
-  useUpdateEffect(() => {
+  useDeepCompareEffect(() => {
     if (onChange) {
       onChange({
         target: {
           name,
           value: innerValue.map((file) => ({
             ...file,
-            url: (file as FileFile).file
-              ? URL.createObjectURL((file as FileFile).file)
-              : (file as FileUrl).url,
+            url:
+              (file as FileUrl).url ||
+              ((file as FileFile).file
+                ? URL.createObjectURL((file as FileFile).file)
+                : undefined),
           })),
         },
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -318,4 +325,4 @@ function FileInput<PFP extends object>({
 // noinspection JSUnusedGlobalSymbols
 export type FileInputProps = ComponentPropsWithRef<typeof FileInput>;
 
-export default FileInput;
+export default memo(FileInput, isEqual) as typeof FileInput;

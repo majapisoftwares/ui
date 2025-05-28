@@ -5,7 +5,7 @@ import { getCookies } from "cookies-next";
 import Breadcrumbs from "../../lib/components/Breadcrumbs";
 import { FileSelectProvider } from "../../lib/components/FileSelect";
 import Stack from "../../lib/components/Stack";
-import { useState } from "react";
+import { ChangeEvent, useCallback, useState } from "react";
 import FileInput, {
   FileFile,
   FileInputFile,
@@ -23,6 +23,8 @@ import {
 } from "@heroicons/react/20/solid";
 import { PreviewFileProps } from "../../lib/components/FileInput/PreviewFile";
 import checkIsVideo from "../../lib/components/FileInput/isVideo";
+import Input from "../../lib/components/Input";
+import { UseStateTuple } from "../../lib/types";
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => ({
   props: {
@@ -40,12 +42,37 @@ export function CustomPreviewFile({
   openText,
   className,
   images,
+  setImages,
 }: PreviewFileProps & {
   images: FileInputFile[];
+  setImages: UseStateTuple<FileInputFile[]>[1];
 }) {
-  const url = (file as FileFile).file
-    ? URL.createObjectURL((file as FileFile).file)
-    : (file as FileUrl).url;
+  const url =
+    (file as FileUrl).url ||
+    ((file as FileFile).file
+      ? URL.createObjectURL((file as FileFile).file)
+      : undefined);
+
+  const handleChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) =>
+      setImages((images) =>
+        images.map((f) => {
+          if (f.name === file.name) {
+            return { ...f, description: e.target.value };
+          }
+          return f;
+        }),
+      ),
+    [setImages, file.name],
+  );
+
+  if (!url) {
+    return (
+      <div className={clsx("p-4 text-red-500", className)}>
+        Error: No URL or file provided for preview.
+      </div>
+    );
+  }
 
   const isVideo = file.type?.startsWith("video") || checkIsVideo(url);
 
@@ -69,6 +96,7 @@ export function CustomPreviewFile({
               {file.name} {images.length}
             </div>
             {file.description && <div>{file.description}</div>}
+            <Input value={file.description || ""} onChange={handleChange} />
             <Text size="sm">{file.type}</Text>
             {!!file.size && (
               <Text size="sm">{numeral(file.size).format("0b")}</Text>
@@ -111,6 +139,12 @@ export function CustomPreviewFile({
 
 export default function Page() {
   const [images, setImages] = useState<FileInputFile[]>([]);
+
+  const handleChange = useCallback(
+    (e: { target: { value: FileInputFile[] } }) => setImages(e.target.value),
+    [setImages],
+  );
+
   return (
     <FileSelectProvider>
       <NextSeo title={pages[0].title} />
@@ -119,10 +153,11 @@ export default function Page() {
         <FileInput
           label="Attachments"
           value={images}
-          onChange={(e) => setImages(e.target.value)}
+          onChange={handleChange}
           previewFileComponent={CustomPreviewFile}
           previewFileProps={{
             images,
+            setImages,
           }}
         />
       </Stack>
