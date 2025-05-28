@@ -36,6 +36,8 @@ export default function Page() {
           renderProperty="name"
           loading
           placeholder="+ friend"
+          error
+          helpText="Test"
         />
         <form className="flex flex-col gap-2">
           <MultiSelect

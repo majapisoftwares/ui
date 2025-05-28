@@ -1,14 +1,8 @@
 import { Combobox } from "@headlessui/react";
 import Loading from "../Loading";
-import {
-  ReactNode,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import Input, {
+  defaultHelpTextClassName,
   defaultInputClassName,
   defaultLabelClassName,
   defaultLeadingInputClassName,
@@ -20,8 +14,8 @@ import Input, {
 import clsx from "../../utils/clsx";
 import { isEqual, take } from "lodash-es";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
-import Badge from "../Badge";
 import { useDeepCompareEffect } from "react-use";
+import { getValue, MultiSelectInput } from "./MultiSelectInput";
 
 const defaultMenuItemsClassName =
   "z-10 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-hidden dark:bg-zinc-800";
@@ -61,68 +55,6 @@ export interface MultiSelectProps<T extends object | string>
   valueProperty?: string | number;
 }
 
-function getValue<Id extends string | number, T extends object | string>(
-  id: Id,
-  item: T,
-): string | number {
-  return typeof item === "string"
-    ? item
-    : (item[id as unknown as keyof typeof item] as string | number);
-}
-
-function MultiSelectInput<
-  Id extends string | number,
-  T extends object | string,
->({
-  className,
-  selectedItems,
-  doRender,
-  removeItem,
-  valueProperty,
-  readOnly,
-  ...props
-}: {
-  className?: string;
-  selectedItems: T[];
-  doRender: (item: T) => ReactNode;
-  removeItem: (item: T) => () => void;
-  valueProperty: Id;
-  readOnly?: boolean;
-}) {
-  const ref = useRef<HTMLInputElement>(null);
-  return (
-    <div
-      className={clsx(
-        "flex flex-wrap border focus-within:border-primary-500 focus-within:ring-1 focus-within:ring-primary-500 dark:focus-within:border-primary-500",
-        className,
-      )}
-      onClick={() => ref.current?.focus()}
-    >
-      {!!selectedItems.length && (
-        <div className="flex flex-wrap items-center gap-1 p-1.5 pb-0">
-          {selectedItems.map((item) => (
-            <Badge
-              key={getValue(valueProperty, item)}
-              onActionClick={!readOnly ? removeItem(item) : undefined}
-            >
-              {doRender(item)}
-            </Badge>
-          ))}
-        </div>
-      )}
-      {!readOnly && (
-        <Combobox.Input
-          /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-          {...(props as any)}
-          ref={ref}
-          className="rounded-md border-none ring-transparent! disabled:cursor-not-allowed disabled:text-zinc-500 dark:bg-zinc-800 dark:disabled:bg-zinc-900/90 sm:text-sm"
-          readOnly={readOnly}
-        />
-      )}
-    </div>
-  );
-}
-
 export default function MultiSelect<T extends object | string>({
   placeholder,
   emptyText = "No item found.",
@@ -155,6 +87,7 @@ export default function MultiSelect<T extends object | string>({
   label,
   required,
   readOnly,
+  error,
   ...props
 }: MultiSelectProps<T>) {
   const [query, setQuery] = useState(defaultQuery);
@@ -219,14 +152,12 @@ export default function MultiSelect<T extends object | string>({
 
   useDeepCompareEffect(() => {
     onChange?.(selectedItems);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedItems || {}]);
 
   useDeepCompareEffect(() => {
     if (!isEqual(selectedItems, value)) {
       setSelectedItems(value || []);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value || {}]);
 
   const removeItem = useCallback(
@@ -251,6 +182,27 @@ export default function MultiSelect<T extends object | string>({
     ? take(filteredItems, itemsRenderLimit)
     : filteredItems;
 
+  let inputClassName = clsx(
+    defaultInputClassName,
+    "bg-white dark:bg-zinc-800 pl-0",
+    inputElementClassName,
+    {
+      "border-dashed": readOnly,
+    },
+  );
+  let helpTextClassName = defaultHelpTextClassName;
+
+  if (error) {
+    inputClassName = clsx(
+      inputClassName,
+      "border-error-300 dark:border-error-500 text-error-900 dark:text-error-500 placeholder-error-300 focus:border-error-500 dark:focus:border-error-500 focus:ring-error-500",
+    );
+    helpTextClassName = clsx(
+      helpTextClassName,
+      "text-error-600 dark:text-error-500",
+    );
+  }
+
   return (
     <div className={clsx("relative", className)}>
       <Combobox
@@ -273,14 +225,7 @@ export default function MultiSelect<T extends object | string>({
                 defaultTrailingClassName,
                 trailingClassName,
               )}
-              inputClassName={clsx(
-                defaultInputClassName,
-                "bg-white dark:bg-zinc-800 pl-0",
-                inputElementClassName,
-                {
-                  "border-dashed": readOnly,
-                },
-              )}
+              inputClassName={inputClassName}
               innerClassName={inputInnerClassName}
               trailingInputClassName={clsx(
                 defaultTrailingInputClassName,
@@ -299,6 +244,7 @@ export default function MultiSelect<T extends object | string>({
               label={label}
               readOnly={readOnly}
               valueProperty={valueProperty}
+              helpTextClassName={helpTextClassName}
             />
 
             {!readOnly &&
@@ -318,7 +264,7 @@ export default function MultiSelect<T extends object | string>({
                       <Combobox.Option
                         value={query}
                         className={({ active }) =>
-                          clsx("cursor-default select-none px-4 py-2", {
+                          clsx("cursor-default px-4 py-2 select-none", {
                             "bg-primary-600 text-white": active,
                           })
                         }
@@ -336,7 +282,7 @@ export default function MultiSelect<T extends object | string>({
                       key={getValue(valueProperty, item)}
                       value={item}
                       className={({ active }) =>
-                        clsx("cursor-default select-none px-4 py-2", {
+                        clsx("cursor-default px-4 py-2 select-none", {
                           "bg-primary-600 text-white": active,
                         })
                       }
