@@ -8,7 +8,7 @@ import {
   ArrowTopRightOnSquareIcon,
   TrashIcon,
 } from "@heroicons/react/20/solid";
-import { FileFile, FileInputFile, FileUrl } from "./FileInput";
+import { FileInputFile } from "./FileInput";
 import { memo, ReactNode } from "react";
 import clsx from "../../utils/clsx";
 import checkIsVideo from "./isVideo";
@@ -42,22 +42,8 @@ function PreviewFile({
   filesPerPage,
   currentPage,
 }: PreviewFileProps) {
-  const url =
-    (file as FileUrl).url ||
-    ((file as FileFile).file
-      ? URL.createObjectURL((file as FileFile).file)
-      : undefined);
-
-  if (!url) {
-    return (
-      <div className={clsx("p-4 text-red-500", className)}>
-        Error: No URL or file provided for preview.
-      </div>
-    );
-  }
-
-  const isVideo = file.type?.startsWith("video") || checkIsVideo(url);
-  const isImage = file.type?.startsWith("image") || checkIsImage(url);
+  const isVideo = file.type?.startsWith("video") || checkIsVideo(file.url);
+  const isImage = file.type?.startsWith("image") || checkIsImage(file.url);
 
   if (display === "preview" && !isVideo && !isImage) {
     display = "info";
@@ -72,11 +58,11 @@ function PreviewFile({
     >
       {["preview", "both"].includes(display) &&
         (isVideo ? (
-          <video className="max-h-96 rounded-md" src={url} controls />
+          <video className="max-h-96 rounded-md" src={file.url} controls />
         ) : (
           // eslint-disable-next-line @next/next/no-img-element
           <img
-            src={url}
+            src={file.url}
             alt={file.description}
             className="max-h-96 rounded-md"
           />
@@ -98,18 +84,18 @@ function PreviewFile({
               {!!file.size && (
                 <Text size="sm">{numeral(file.size).format("0b")}</Text>
               )}
-              {!url.startsWith("blob") && (
+              {!file.url.startsWith("blob") && (
                 <Group className="mr-auto">
                   <Button
                     leading={<ArrowTopRightOnSquareIcon />}
-                    href={url}
+                    href={file.url}
                     target="_blank"
                   >
                     {openText}
                   </Button>
                   <Button
                     leading={<ArrowDownTrayIcon />}
-                    href={url}
+                    href={file.url}
                     download={file.name}
                   >
                     {downloadText}

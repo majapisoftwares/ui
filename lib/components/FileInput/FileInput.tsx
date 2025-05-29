@@ -32,6 +32,7 @@ export type FileFile = {
   name: string;
   type: string;
   size: number;
+  url: string;
 };
 
 export type FileUrl = {
@@ -170,6 +171,7 @@ function FileInput<PFP extends object>({
             file,
             type: file.type,
             size: file.size,
+            url: URL.createObjectURL(file),
           })),
       ]);
     } else {
@@ -196,6 +198,7 @@ function FileInput<PFP extends object>({
               file,
               type: file.type,
               size: file.size,
+              url: URL.createObjectURL(file),
             });
             setInnerValue((value) => [...value, uploadedFile]);
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -217,14 +220,7 @@ function FileInput<PFP extends object>({
       onChange({
         target: {
           name,
-          value: innerValue.map((file) => ({
-            ...file,
-            url:
-              (file as FileUrl).url ||
-              ((file as FileFile).file
-                ? URL.createObjectURL((file as FileFile).file)
-                : undefined),
-          })),
+          value: innerValue,
         },
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
