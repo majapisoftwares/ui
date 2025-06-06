@@ -86,7 +86,7 @@ function WithQuery() {
         setOpen={setOpen}
         query={query}
         setQuery={setQuery}
-        loading={searchApi.isFetching}
+        loading={searchApi.isFetching || query !== debouncedQuery}
         results={searchApi.data}
         getItemPicture={(item) => item.picture}
         getItemHref={(item) => item.url}
