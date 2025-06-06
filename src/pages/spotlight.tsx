@@ -90,7 +90,10 @@ function WithQuery() {
         results={searchApi.data}
         getItemPicture={(item) => item.picture}
         getItemHref={(item) => item.url}
-        showSeeMoreButton
+        seeMoreHref="#"
+        onSubmit={() => {
+          setOpen(false);
+        }}
       />
     </>
   );

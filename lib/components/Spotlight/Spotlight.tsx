@@ -28,7 +28,6 @@ export default function Spotlight<T extends object>({
   getItemLabel = (item: Any) => item.name,
   getItemPicture,
   getItemHref,
-  showSeeMoreButton,
   onSeeMoreClick,
   seeMoreHref,
   overlayClassName,
@@ -40,10 +39,11 @@ export default function Spotlight<T extends object>({
   buttonClassName,
   noResultsClassName,
   recentSearchClassName,
-  buttonLabel = "See more",
+  seeMoreLabel = "See more",
   noRecentSearchLabel = "No recent search",
   recentlySearchedLabel = "Recently searched",
   noResultsLabel = "No result found",
+  onSubmit,
 }: {
   recentSearchesId: string;
   open: boolean;
@@ -57,7 +57,6 @@ export default function Spotlight<T extends object>({
   getItemPicture?: (item: T) => string;
   getItemHref?: (item: T) => string;
   onClickItem?: (item: T) => void;
-  showSeeMoreButton?: boolean;
   onSeeMoreClick?: () => void;
   seeMoreHref?: string;
   overlayClassName?: string;
@@ -69,10 +68,11 @@ export default function Spotlight<T extends object>({
   buttonClassName?: string;
   noResultsClassName?: string;
   recentSearchClassName?: string;
-  buttonLabel?: string;
+  seeMoreLabel?: string;
   noRecentSearchLabel?: string;
   recentlySearchedLabel?: string;
   noResultsLabel?: string;
+  onSubmit?: () => void;
 }) {
   const [recentQueries, setRecentQueries] = useLocalStorage<T[]>(
     `spotlight-recent-queries-${recentSearchesId}`,
@@ -143,6 +143,12 @@ export default function Spotlight<T extends object>({
                   }
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      onSubmit?.();
+                    }
+                  }}
                 />
               </div>
               <div className="w-full border-t border-zinc-200 p-4 dark:border-zinc-800">
@@ -193,7 +199,7 @@ export default function Spotlight<T extends object>({
                               </UnstyledButton>
                             </Fragment>
                           ))}
-                          {showSeeMoreButton && (
+                          {(onSeeMoreClick || seeMoreHref) && (
                             <Button
                               variant="filled"
                               type="submit"
@@ -205,7 +211,7 @@ export default function Spotlight<T extends object>({
                               onClick={onSeeMoreClick}
                               href={seeMoreHref}
                             >
-                              {buttonLabel}
+                              {seeMoreLabel}
                             </Button>
                           )}
                         </>
