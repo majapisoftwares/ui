@@ -1,10 +1,8 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import { VisuallyHidden } from "radix-ui";
-import { useCallback } from "react";
-import {
-  ChevronRightIcon,
-  MagnifyingGlassIcon,
-} from "@heroicons/react/24/solid";
+import { Fragment, useCallback } from "react";
+import { ChevronRightIcon } from "@heroicons/react/20/solid";
+import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 import { useLocalStorage } from "react-use";
 import { take, uniqBy } from "lodash-es";
 import Image from "next/image";
@@ -105,7 +103,7 @@ export default function Spotlight<T extends object>({
       <Dialog.Portal>
         <Dialog.Overlay
           className={clsx(
-            "fixed inset-0 z-20 flex justify-center bg-black/30 backdrop-blur-xs",
+            "fixed inset-0 z-20 flex justify-center bg-white/30 backdrop-blur-xs dark:bg-black/30",
             "data-[state=closed]:animate-fade-out data-[state=open]:animate-slide-up-and-fade will-change-[opacity,transform]",
             overlayClassName,
           )}
@@ -123,33 +121,36 @@ export default function Spotlight<T extends object>({
             </VisuallyHidden.Root>
             <div
               className={clsx(
-                "flex w-full flex-col justify-center rounded-sm border border-zinc-800 bg-zinc-900",
+                "flex w-full flex-col justify-center rounded-sm border border-zinc-200 bg-zinc-100 dark:border-zinc-800 dark:bg-zinc-900",
                 className,
               )}
             >
               <div className="px-4 py-4">
                 <Input
-                  className={clsx("w-full bg-zinc-900", contentClassName)}
+                  className={clsx("w-full", contentClassName)}
                   inputClassName={clsx(
-                    "border-none rounded-t-md rounded-b-none dark:bg-zinc-900 dark:focus:ring-0",
+                    "border-none rounded-none shadow-none rounded-b-none dark:bg-zinc-900 dark:focus:ring-0 focus:ring-0 bg-transparent",
                     inputClassName,
                   )}
                   autoFocus={true}
                   leading={
                     <MagnifyingGlassIcon
-                      className={clsx("h-5 w-5 text-white", iconClassName)}
+                      className={clsx(
+                        "h-5 w-5 text-black dark:text-white",
+                        iconClassName,
+                      )}
                     />
                   }
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                 />
               </div>
-              <div className="w-full border-t border-zinc-800">
-                <div className="flex flex-col">
+              <div className="w-full border-t border-zinc-200 p-4 dark:border-zinc-800">
+                <div className="flex flex-col gap-2">
                   {query ? (
                     <>
                       {loading && (
-                        <div className="flex items-center gap-4 px-4 py-2">
+                        <div className="flex items-center gap-4">
                           {getItemPicture && <Skeleton className="h-16 w-28" />}
                           <Skeleton className="h-6 w-32" />
                         </div>
@@ -157,7 +158,7 @@ export default function Spotlight<T extends object>({
                       {!loading && !results?.length && (
                         <div
                           className={clsx(
-                            "flex justify-center border-b border-zinc-800 px-6 py-10 text-zinc-600",
+                            "flex justify-center py-5 text-zinc-400 dark:text-zinc-600",
                             noResultsClassName,
                           )}
                         >
@@ -166,43 +167,46 @@ export default function Spotlight<T extends object>({
                       )}
                       {!loading && !!results?.length && (
                         <>
-                          {results.map((item) => (
-                            <UnstyledButton
-                              key={getItemId(item)}
-                              href={getItemHref?.(item)}
-                              className="flex w-full items-center gap-4 border-t border-zinc-800 px-4 py-2 hover:bg-zinc-800/90"
-                              onClick={handleItemClick(item)}
-                            >
-                              {getItemPicture && (
-                                <Image
-                                  src={getItemPicture(item)}
-                                  alt={getItemLabel(item)}
-                                  width={200}
-                                  height={378}
-                                  className="h-16 w-28 rounded-sm object-cover"
-                                />
+                          {results.map((item, i) => (
+                            <Fragment key={getItemId(item)}>
+                              {i > 0 && (
+                                <div className="h-px bg-zinc-200 dark:bg-zinc-800" />
                               )}
-                              <div className="text-white">
-                                {getItemLabel(item)}
-                              </div>
-                            </UnstyledButton>
+                              <UnstyledButton
+                                key={getItemId(item)}
+                                href={getItemHref?.(item)}
+                                className="flex w-full items-center gap-4 rounded-sm hover:bg-zinc-200/90 dark:hover:bg-zinc-800/90"
+                                onClick={handleItemClick(item)}
+                              >
+                                {getItemPicture && (
+                                  <Image
+                                    src={getItemPicture(item)}
+                                    alt={getItemLabel(item)}
+                                    width={200}
+                                    height={378}
+                                    className="h-16 w-28 rounded-sm object-cover"
+                                  />
+                                )}
+                                <div className="text-black dark:text-white">
+                                  {getItemLabel(item)}
+                                </div>
+                              </UnstyledButton>
+                            </Fragment>
                           ))}
                           {showSeeMoreButton && (
-                            <div className="flex w-full justify-center px-4 py-2">
-                              <Button
-                                variant="filled"
-                                type="submit"
-                                className={clsx(
-                                  "w-full dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700",
-                                  buttonClassName,
-                                )}
-                                trailing={<ChevronRightIcon />}
-                                onClick={onSeeMoreClick}
-                                href={seeMoreHref}
-                              >
-                                {buttonLabel}
-                              </Button>
-                            </div>
+                            <Button
+                              variant="filled"
+                              type="submit"
+                              className={clsx(
+                                "mt-2 w-full dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700",
+                                buttonClassName,
+                              )}
+                              trailing={<ChevronRightIcon />}
+                              onClick={onSeeMoreClick}
+                              href={seeMoreHref}
+                            >
+                              {buttonLabel}
+                            </Button>
                           )}
                         </>
                       )}
@@ -212,7 +216,7 @@ export default function Spotlight<T extends object>({
                       {recentQueries?.length ? (
                         <div
                           className={clsx(
-                            "px-6 py-2 text-zinc-400",
+                            "mb-2 text-zinc-600 dark:text-zinc-400",
                             recentSearchClassName,
                           )}
                         >
@@ -221,7 +225,7 @@ export default function Spotlight<T extends object>({
                       ) : (
                         <div
                           className={clsx(
-                            "flex justify-center border-zinc-800 px-6 py-10 text-zinc-600",
+                            "flex justify-center py-5 text-zinc-400 dark:text-zinc-600",
                             noResultsClassName,
                           )}
                         >
@@ -232,7 +236,7 @@ export default function Spotlight<T extends object>({
                         <UnstyledButton
                           key={getItemId(item)}
                           href={getItemHref?.(item)}
-                          className="flex w-full items-center gap-4 border-t border-zinc-800 px-4 py-2 hover:bg-zinc-800/90"
+                          className="flex w-full items-center gap-4 hover:bg-zinc-200/90 dark:hover:bg-zinc-800/90"
                           onClick={handleItemClick(item)}
                         >
                           {getItemPicture && (
@@ -244,7 +248,9 @@ export default function Spotlight<T extends object>({
                               className="max-h-16 max-w-28 rounded-sm object-cover"
                             />
                           )}
-                          <div className="text-white">{getItemLabel(item)}</div>
+                          <div className="text-black dark:text-white">
+                            {getItemLabel(item)}
+                          </div>
                         </UnstyledButton>
                       ))}
                     </>
