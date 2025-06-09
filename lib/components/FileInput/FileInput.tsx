@@ -257,8 +257,8 @@ function FileInput<PFP extends object>({
         </label>
       )}
       <div
-        className={clsx("grid grid-cols-1 gap-4", {
-          "md:grid-cols-2": !!innerValue.length,
+        className={clsx("flex flex-col gap-4", {
+          "md:grid md:grid-cols-2": !!innerValue.length,
           "min-h-[140px]": !!innerValue.length || !readOnly,
         })}
       >
