@@ -75,6 +75,7 @@ function FileInput<PFP extends object>({
   filesPerPage = 10,
   previewFileComponent,
   previewFileProps,
+  filesClassName,
   ...props
 }: Pick<
   InputProps<false>,
@@ -111,6 +112,7 @@ function FileInput<PFP extends object>({
     filesPerPage?: number;
     previewFileComponent?: ComponentType<PreviewFileProps & PFP>;
     previewFileProps?: PFP;
+    filesClassName?: string;
   }) {
   const [uploading, setUploading] = useState(false);
   const [innerValue, setInnerValue] = useState<FileInputFile[]>(value || []);
@@ -260,6 +262,7 @@ function FileInput<PFP extends object>({
         className={clsx("flex flex-col gap-4", {
           "md:grid md:grid-cols-2": !!innerValue.length,
           "min-h-[140px]": !!innerValue.length || !readOnly,
+          filesClassName,
         })}
       >
         {paginatedValue.map((file, index) => (
@@ -281,7 +284,7 @@ function FileInput<PFP extends object>({
         ))}
         {innerValue.length > filesPerPage && (
           <Pagination
-            className="col-span-2 mx-auto"
+            className="mx-auto md:col-span-2"
             currentPage={currentPage}
             totalItems={innerValue.length}
             onChangePage={setCurrentPage}
