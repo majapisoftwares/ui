@@ -259,11 +259,14 @@ function FileInput<PFP extends object>({
         </label>
       )}
       <div
-        className={clsx("flex flex-col gap-4", {
-          "md:grid md:grid-cols-2": !!innerValue.length,
-          "min-h-[140px]": !!innerValue.length || !readOnly,
+        className={clsx(
+          "flex flex-col gap-4",
+          {
+            "md:grid md:grid-cols-2": !!innerValue.length,
+            "min-h-[140px]": !!innerValue.length || !readOnly,
+          },
           filesClassName,
-        })}
+        )}
       >
         {paginatedValue.map((file, index) => (
           <PreviewFileComponent
