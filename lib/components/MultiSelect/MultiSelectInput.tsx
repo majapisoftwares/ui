@@ -22,15 +22,17 @@ export function MultiSelectInput<
   removeItem,
   valueProperty,
   readOnly,
+  items,
   ...props
 }: {
   className?: string;
-  selectedItems: T[];
+  selectedItems: string[];
   doRender: (item: T) => ReactNode;
   removeItem: (item: T) => () => void;
   valueProperty: Id;
   readOnly?: boolean;
   error?: boolean;
+  items?: T[];
 }) {
   const ref = useRef<HTMLInputElement>(null);
   return (
@@ -43,14 +45,20 @@ export function MultiSelectInput<
     >
       {!!selectedItems.length && (
         <div className="flex flex-wrap items-center gap-1 p-1.5 pb-0">
-          {selectedItems.map((item) => (
-            <Badge
-              key={getValue(valueProperty, item)}
-              onActionClick={!readOnly ? removeItem(item) : undefined}
-            >
-              {doRender(item)}
-            </Badge>
-          ))}
+          {selectedItems.map((selectedItem) => {
+            const item = items?.find(
+              (item) => getValue(valueProperty, item) === selectedItem,
+            );
+            if (!item) return null;
+            return (
+              <Badge
+                key={getValue(valueProperty, item)}
+                onActionClick={!readOnly ? removeItem(item) : undefined}
+              >
+                {doRender(item)}
+              </Badge>
+            );
+          })}
         </div>
       )}
       {!readOnly && (

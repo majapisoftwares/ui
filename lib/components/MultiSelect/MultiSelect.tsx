@@ -18,7 +18,7 @@ import { useDeepCompareEffect } from "react-use";
 import { getValue, MultiSelectInput } from "./MultiSelectInput";
 
 const defaultMenuItemsClassName =
-  "z-10 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-hidden dark:bg-zinc-800";
+  "z-10 rounded-md bg-white shadow-lg ring-1 ring-black/5 dark:ring-zinc-700 focus:outline-hidden dark:bg-zinc-800";
 
 export interface MultiSelectProps<T extends object | string>
   extends Omit<
@@ -208,7 +208,7 @@ export default function MultiSelect<T extends object | string>({
       <Combobox
         /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
         onChange={setSelectedItems as any}
-        value={selectedItems}
+        value={selectedItems.map((item) => getValue(valueProperty, item))}
         multiple
       >
         {({ open }) => (
@@ -245,6 +245,7 @@ export default function MultiSelect<T extends object | string>({
               readOnly={readOnly}
               valueProperty={valueProperty}
               helpTextClassName={helpTextClassName}
+              items={items}
             />
 
             {!readOnly &&
@@ -280,7 +281,7 @@ export default function MultiSelect<T extends object | string>({
                   {renderedItems.map((item) => (
                     <Combobox.Option
                       key={getValue(valueProperty, item)}
-                      value={item}
+                      value={getValue(valueProperty, item)}
                       className={({ active }) =>
                         clsx("cursor-default px-4 py-2 select-none", {
                           "bg-primary-600 text-white": active,
