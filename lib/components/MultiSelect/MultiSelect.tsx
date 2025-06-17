@@ -35,7 +35,7 @@ export interface MultiSelectProps<T extends object | string>
   items?: T[];
   filterProperty?: keyof T;
   filterFunction?: (item: T) => boolean;
-  onChange?: (items: T[]) => void;
+  onChange?: (items: string[]) => void;
   renderProperty?: keyof T;
   renderFunction?: (item: T) => ReactNode;
   query?: string;
@@ -48,11 +48,11 @@ export interface MultiSelectProps<T extends object | string>
   as?: typeof Input;
   static?: boolean;
   displayValue?: (item: T | null) => string;
-  value?: T[];
+  value?: string[];
   creatable?: boolean;
   getCreateLabel?: (query: string) => string;
   itemsRenderLimit?: number;
-  valueProperty?: string | number;
+  valueProperty?: string;
 }
 
 export default function MultiSelect<T extends object | string>({
@@ -91,7 +91,7 @@ export default function MultiSelect<T extends object | string>({
   ...props
 }: MultiSelectProps<T>) {
   const [query, setQuery] = useState(defaultQuery);
-  const [selectedItems, setSelectedItems] = useState<T[]>(value || []);
+  const [selectedItems, setSelectedItems] = useState<string[]>(value || []);
 
   // noinspection DuplicatedCode
   useEffect(() => {
