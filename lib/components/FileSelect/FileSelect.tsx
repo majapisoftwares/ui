@@ -16,6 +16,7 @@ import numeral from "numeral";
 import { ArrowUpTrayIcon } from "@heroicons/react/24/solid";
 import { DocumentIcon } from "@heroicons/react/24/outline";
 import Loading from "../Loading";
+import { uniq } from "lodash-es";
 
 const translateAllowedType = (type: string) =>
   ({
@@ -197,45 +198,47 @@ function FileSelect({
             innerClassName,
           )}
         >
-          {cloneElement(icon, {
-            className: clsx(
-              "mx-auto h-12 w-12 text-zinc-400",
-              icon.props.className,
-            ),
-          })}
-          <div className="text-sm">
-            <label
-              htmlFor={id}
-              className={clsx(
-                "text-primary-600 focus-within:ring-primary-500 hover:text-primary-500 relative rounded-md font-medium focus-within:ring-2 focus-within:ring-offset-2 focus-within:outline-hidden dark:ring-offset-slate-900",
-                {
-                  "cursor-pointer": !disabled,
-                  "cursor-not-allowed": disabled,
-                },
-              )}
-            >
-              <span>{uploadAFileText}</span>
-              {!disabled && (
-                <input
-                  id={id}
-                  name={id}
-                  type="file"
-                  className="sr-only"
-                  accept={allowedFileTypes?.join(",")}
-                  onChange={handleFileBrowse}
-                  multiple={limit !== 1}
-                  ref={ref}
-                />
-              )}
-            </label>
-            <span className="pl-1">{orDragAndDropText}</span>
+          <div className="relative flex flex-col items-center justify-center gap-2 text-center">
+            {cloneElement(icon, {
+              className: clsx(
+                "mx-auto h-12 w-12 text-zinc-400",
+                icon.props.className,
+              ),
+            })}
+            <div className="text-sm">
+              <label
+                htmlFor={id}
+                className={clsx(
+                  "text-primary-600 focus-within:ring-primary-500 hover:text-primary-500 relative rounded-md font-medium focus-within:ring-2 focus-within:ring-offset-2 focus-within:outline-hidden dark:ring-offset-slate-900",
+                  {
+                    "cursor-pointer": !disabled,
+                    "cursor-not-allowed": disabled,
+                  },
+                )}
+              >
+                <span>{uploadAFileText}</span>
+                {!disabled && (
+                  <input
+                    id={id}
+                    name={id}
+                    type="file"
+                    className="sr-only"
+                    accept={allowedFileTypes?.join(",")}
+                    onChange={handleFileBrowse}
+                    multiple={limit !== 1}
+                    ref={ref}
+                  />
+                )}
+              </label>
+              <span className="pl-1">{orDragAndDropText}</span>
+            </div>
+            <p className="text-xs text-zinc-500">
+              {allowedFileTypes
+                ? uniq(allowedFileTypes.map(translateAllowedType)).join(", ")
+                : anyFileText}{" "}
+              {upToText} {numeral(maxFileSize).format("0b")}
+            </p>
           </div>
-          <p className="text-xs text-zinc-500">
-            {allowedFileTypes
-              ? allowedFileTypes.map(translateAllowedType).join(", ")
-              : anyFileText}{" "}
-            {upToText} {numeral(maxFileSize).format("0b")}
-          </p>
           {additionalBottomInfo}
         </div>
       ) : (
