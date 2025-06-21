@@ -16,12 +16,12 @@ export default function Skeleton({
     >
       <div
         className={clsx(
-          "animate-shiny w-dull h-full",
+          "animate-skeleton-shiny h-full w-full",
           "bg-[linear-gradient(120deg,rgba(255,255,255,0)_0%,#e4e4e7,rgba(255,255,255,0)_100%)]",
           "dark:bg-[linear-gradient(120deg,rgba(255,255,255,0)_20%,#52525b,rgba(255,255,255,0)_80%)]",
         )}
         style={{
-          backgroundSize: "200% 100%",
+          backgroundSize: "400% 100%",
         }}
       />
     </div>

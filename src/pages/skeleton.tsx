@@ -20,8 +20,10 @@ export default function Page() {
       <NextSeo title={pages[0].title} />
       <Breadcrumbs pages={pages} className="mb-2 md:mx-2" />
       <Stack className="p-2">
-        <Skeleton className="h-20 w-96" />
+        <Skeleton className="h-20 w-full max-w-96" />
         <Skeleton className="h-9 w-9 rounded-full" />
+
+        <Skeleton className="h-screen w-full max-w-96" />
       </Stack>
     </>
   );
