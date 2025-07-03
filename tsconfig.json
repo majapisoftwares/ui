@@ -18,7 +18,8 @@
     "incremental": true,
     "verbatimModuleSyntax": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedIndexedAccess": true
+    "noUncheckedIndexedAccess": true,
+    "target": "ES2017"
   },
   "include": [
     "next-env.d.ts",
