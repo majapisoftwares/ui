@@ -17,9 +17,10 @@ export default function Markdown({
   return (
     <div
       className={clsx(
-        "prose prose-zinc dark:prose-invert max-w-full",
+        "prose prose-zinc dark:prose-invert max-w-full leading-normal",
         "[&_.contains-task-list]:list-none [&_.contains-task-list]:pl-0",
         "[&_.task-list-item_input[type='checkbox']]:-mt-1",
+        "prose-a:break-all",
         className,
       )}
     >
