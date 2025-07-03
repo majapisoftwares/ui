@@ -1,6 +1,6 @@
 import * as RDialog from "@radix-ui/react-dialog";
-import { DialogContentProps } from "@radix-ui/react-dialog";
-import { Fragment, ReactNode } from "react";
+import type { DialogContentProps } from "@radix-ui/react-dialog";
+import { Fragment, type ReactNode } from "react";
 import { XMarkIcon } from "@heroicons/react/20/solid";
 import Button from "../Button";
 import clsx from "../../utils/clsx";

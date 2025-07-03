@@ -1,8 +1,8 @@
 import { proxy, ref } from "valtio";
 import isomorphicObjectId from "@majapisoftwares/next/utils/isomorphicObjectId";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import { find } from "lodash-es";
-import { DialogProps } from "./Dialog";
+import type { DialogProps } from "./Dialog";
 
 export type IDialog = {
   _id: string;

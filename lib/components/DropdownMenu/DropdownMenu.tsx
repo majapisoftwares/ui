@@ -1,4 +1,4 @@
-import React, { ComponentProps, Fragment } from "react";
+import React, { type ComponentProps, Fragment } from "react";
 import * as RDropdownMenu from "@radix-ui/react-dropdown-menu";
 import clsx from "../../utils/clsx";
 import { CheckIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
@@ -192,7 +192,7 @@ function DropdownMenuSubTrigger({
         {children}
         <div
           className={clsx(
-            "absolute right-1.5 top-1.5 inline-flex items-center justify-center",
+            "absolute top-1.5 right-1.5 inline-flex items-center justify-center",
             "[&>svg]:h-4 [&>svg]:w-4",
           )}
         >

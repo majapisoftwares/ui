@@ -1,9 +1,9 @@
 import clsx from "../../utils/clsx";
 import {
-  ComponentPropsWithRef,
-  ComponentType,
+  type ComponentPropsWithRef,
+  type ComponentType,
   memo,
-  ReactNode,
+  type ReactNode,
   useCallback,
   useEffect,
   useMemo,
@@ -14,13 +14,13 @@ import { useDeepCompareEffect } from "react-use";
 import {
   defaultHelpTextClassName,
   defaultLabelClassName,
-  InputProps,
+  type InputProps,
 } from "../Input";
-import FileSelect, { FileSelectProps } from "../FileSelect";
+import FileSelect, { type FileSelectProps } from "../FileSelect";
 import isomorphicObjectId from "@majapisoftwares/next/utils/isomorphicObjectId";
 import { isEqual } from "lodash-es";
 import Text from "../Text";
-import PreviewFile, { PreviewFileProps } from "./PreviewFile";
+import PreviewFile, { type PreviewFileProps } from "./PreviewFile";
 import concurrentForOf from "@majapisoftwares/next/utils/concurrentForOf";
 import paginated from "@majapisoftwares/next/utils/paginated";
 import Pagination from "../Pagination";

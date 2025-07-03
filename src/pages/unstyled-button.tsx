@@ -1,5 +1,5 @@
 import getPublicLayout from "../views/publicLayout";
-import { GetServerSideProps } from "next";
+import type { GetServerSideProps } from "next";
 import { getCookies } from "cookies-next";
 import React from "react";
 import { UnstyledButtonDoc } from "../../lib/components/Button/UnstyledButton.doc";

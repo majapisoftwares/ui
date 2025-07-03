@@ -1,13 +1,13 @@
 import Text from "../Text";
 import Group from "../Group";
-import Button, { ButtonProps } from "./Button";
+import Button, { type ButtonProps } from "./Button";
 import { UserIcon } from "@heroicons/react/24/outline";
-import React, { cloneElement, Fragment, ReactElement } from "react";
+import { cloneElement, Fragment, type ReactElement } from "react";
 import {
   ExampleCode,
   useExampleCodeCallback,
 } from "../../../src/components/ExampleCode/ExampleCode";
-import { DocPageProps } from "../../../src/components/DocPage/DocPageProps";
+import type { DocPageProps } from "../../../src/components/DocPage/DocPageProps";
 import { DocPage } from "../../../src/components/DocPage/DocPage";
 import { HomeIcon } from "@heroicons/react/20/solid";
 

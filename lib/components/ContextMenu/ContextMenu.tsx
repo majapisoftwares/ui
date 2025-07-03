@@ -1,4 +1,4 @@
-import React, { ComponentProps, Fragment } from "react";
+import React, { type ComponentProps, Fragment } from "react";
 import * as RContextMenu from "@radix-ui/react-context-menu";
 import { CheckIcon } from "@heroicons/react/16/solid";
 import Link from "next/link";
@@ -163,7 +163,7 @@ function ContextMenuSubTrigger({
         {children}
         <div
           className={clsx(
-            "absolute right-1.5 top-1.5 inline-flex items-center justify-center",
+            "absolute top-1.5 right-1.5 inline-flex items-center justify-center",
             "[&>svg]:h-4 [&>svg]:w-4",
           )}
         >

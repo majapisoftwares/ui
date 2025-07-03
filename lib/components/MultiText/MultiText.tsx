@@ -1,7 +1,7 @@
 import {
-  ChangeEventHandler,
-  FocusEventHandler,
-  Ref,
+  type ChangeEventHandler,
+  type FocusEventHandler,
+  type Ref,
   useEffect,
   useId,
   useRef,
@@ -109,7 +109,6 @@ function MultiText({
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [innerValue]);
 
   return (

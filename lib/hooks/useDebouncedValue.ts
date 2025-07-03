@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import ms, {StringValue} from "ms";
+import ms, { type StringValue } from "ms";
 
 export default function useDebounce<T = unknown>(
   value: T,

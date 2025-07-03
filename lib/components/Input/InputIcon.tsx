@@ -1,4 +1,4 @@
-import { cloneElement, ReactElement } from "react";
+import { cloneElement, type ReactElement } from "react";
 import clsx from "../../utils/clsx";
 
 export default function InputIcon({

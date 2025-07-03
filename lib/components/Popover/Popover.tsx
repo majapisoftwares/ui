@@ -1,5 +1,5 @@
 import * as RPopover from "@radix-ui/react-popover";
-import React, { ComponentProps } from "react";
+import React, { type ComponentProps } from "react";
 import clsx from "../../utils/clsx";
 import {
   modalArrowClassName,

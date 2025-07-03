@@ -1,6 +1,11 @@
 import clsx from "../../utils/clsx";
 import Link from "next/link";
-import { ElementType, MouseEventHandler, ReactNode, useCallback } from "react";
+import {
+  type ElementType,
+  type MouseEventHandler,
+  type ReactNode,
+  useCallback,
+} from "react";
 
 const colorMap = {
   default: {

@@ -1,6 +1,6 @@
-import { ComponentProps } from "react";
-import Input, { InputProps } from "./Input";
-import { NumericFormat, NumericFormatProps } from "react-number-format";
+import type { ComponentProps } from "react";
+import Input, { type InputProps } from "./Input";
+import { NumericFormat, type NumericFormatProps } from "react-number-format";
 
 function NumericInput({
   ref,

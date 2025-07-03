@@ -4,7 +4,7 @@ import Text from "../Text";
 import NextLink from "next/link";
 import Loading from "../Loading";
 import Skeleton from "../Skeleton";
-import { ReactElement } from "react";
+import type { ReactElement } from "react";
 
 type BaseBreadcrumbPage = {
   href?: string;

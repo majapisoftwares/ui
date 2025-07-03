@@ -1,7 +1,7 @@
 import { Switch as RSwitch } from "radix-ui";
 import clsx from "../../utils/clsx";
-import { ReactNode } from "react";
-import Input, { UnstyledInputCommonProps } from "../Input";
+import type { ReactNode } from "react";
+import Input, { type UnstyledInputCommonProps } from "../Input";
 
 export interface SwitchProps {
   srLabel?: string;

@@ -6,7 +6,7 @@ import Input from "../../lib/components/Input";
 import Checkbox from "../../lib/components/Checkbox";
 import Button from "../../lib/components/Button";
 import { Json } from "../../lib/components/Code";
-import { GetServerSideProps } from "next";
+import type { GetServerSideProps } from "next";
 import { getCookies } from "cookies-next";
 import Breadcrumbs from "../../lib/components/Breadcrumbs";
 import NumericInput from "../../lib/components/Input/NumericInput";
@@ -53,7 +53,7 @@ export default function Page() {
 
   return (
     <form onSubmit={form.handleSubmit(onSubmit)}>
-      <NextSeo title={pages[0].title} />
+      <NextSeo title={pages[0]?.title} />
       <Breadcrumbs pages={pages} className="mb-2 md:mx-2" />
       <Stack className="max-w-xl p-2">
         <div>

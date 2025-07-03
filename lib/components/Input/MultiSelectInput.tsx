@@ -1,5 +1,5 @@
-import { ComponentProps } from "react";
-import Input, { InputProps } from "./Input";
+import type { ComponentProps } from "react";
+import Input, { type InputProps } from "./Input";
 import DropdownMenu from "../DropdownMenu";
 import Button from "../Button";
 import { ChevronDownIcon } from "@heroicons/react/16/solid";

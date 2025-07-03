@@ -1,6 +1,6 @@
-import Input, { InputProps } from "../Input";
+import Input, { type InputProps } from "../Input";
 import TextareaAutosize from "react-textarea-autosize";
-import { TextareaAutosizeProps } from "react-textarea-autosize/dist/declarations/src";
+import type { TextareaAutosizeProps } from "react-textarea-autosize";
 
 export type TextareaProps = InputProps<false> &
   Partial<

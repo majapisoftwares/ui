@@ -1,5 +1,5 @@
 import { ChevronUpIcon } from "@heroicons/react/20/solid";
-import { ReactNode, useId } from "react";
+import { type ReactNode, useId } from "react";
 import * as RAccordion from "@radix-ui/react-accordion";
 import clsx from "../../utils/clsx";
 

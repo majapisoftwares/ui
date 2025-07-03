@@ -2,7 +2,7 @@ import {
   Children,
   cloneElement,
   isValidElement,
-  ReactElement,
+  type ReactElement,
   useId,
 } from "react";
 import clsx from "../../utils/clsx";

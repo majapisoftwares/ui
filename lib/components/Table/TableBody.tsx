@@ -1,4 +1,4 @@
-import { ReactNode, useMemo } from "react";
+import { type ReactNode, useMemo } from "react";
 import TableHeadContext from "./TableHeadContext";
 import clsx from "../../utils/clsx";
 

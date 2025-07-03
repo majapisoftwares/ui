@@ -1,8 +1,8 @@
 import React, {
   cloneElement,
-  CSSProperties,
-  ReactElement,
-  ReactNode,
+  type CSSProperties,
+  type ReactElement,
+  type ReactNode,
   useEffect,
   useRef,
   useState,
@@ -82,7 +82,7 @@ export default function Resizable({
       <>
         <div
           className={clsx(
-            "absolute bottom-0 left-0 top-0 z-10 w-1 cursor-e-resize select-none transition-colors hover:bg-zinc-700",
+            "absolute top-0 bottom-0 left-0 z-10 w-1 cursor-e-resize transition-colors select-none hover:bg-zinc-700",
             {
               "bg-zinc-700": isResizing,
             },

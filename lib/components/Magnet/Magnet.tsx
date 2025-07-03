@@ -2,8 +2,8 @@ import React, {
   useState,
   useEffect,
   useRef,
-  ReactNode,
-  HTMLAttributes,
+  type ReactNode,
+  type HTMLAttributes,
 } from "react";
 import clsx from "../../utils/clsx";
 

@@ -1,13 +1,13 @@
 import {
-  ChangeEvent,
-  RefObject,
+  type ChangeEvent,
+  type RefObject,
   useCallback,
   useEffect,
   useId,
   useRef,
   useState,
 } from "react";
-import ReactCrop, { type Crop, PixelCrop } from "react-image-crop";
+import ReactCrop, { type Crop, type PixelCrop } from "react-image-crop";
 import useDebounceEffect from "../../hooks/useDebounceEffect";
 import { canvasPreview } from "./canvasPreview";
 import Skeleton from "../Skeleton";
@@ -235,7 +235,10 @@ export default function PictureCropInput({
         <>
           {value && (
             <div
-              className={clsx("flex shrink-0 rounded-sm", previewSizeClassNames)}
+              className={clsx(
+                "flex shrink-0 rounded-sm",
+                previewSizeClassNames,
+              )}
               style={
                 {
                   background: value

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import clsx from "../../utils/clsx";
 import UnstyledAutocomplete, {
-  UnstyledAutocompleteProps,
+  type UnstyledAutocompleteProps,
 } from "../Autocomplete/UnstyledAutocomplete";
 import Input from "../Input";
 

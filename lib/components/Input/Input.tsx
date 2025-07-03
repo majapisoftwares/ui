@@ -1,4 +1,4 @@
-import UnstyledInput, { UnstyledInputProps } from "../Input/UnstyledInput";
+import UnstyledInput, { type UnstyledInputProps } from "../Input/UnstyledInput";
 import { defaultTextStyles } from "../Text";
 import { ExclamationCircleIcon } from "@heroicons/react/20/solid";
 import InputIcon from "./InputIcon";

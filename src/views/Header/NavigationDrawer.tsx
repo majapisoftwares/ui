@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import { menu } from "../../menu";
 import UiNavigationDrawer, {
   NavigationItem,
@@ -26,10 +26,10 @@ export default function NavigationDrawer({
                       <Accordion.Trigger asChild>
                         <Button
                           variant="text"
-                          className="w-full justify-start border-transparent group"
+                          className="group w-full justify-start border-transparent"
                         >
                           {route.title}
-                          <ChevronUpIcon className="group-data-[state=open]:rotate-180 transition-transform ml-auto h-5 w-5" />
+                          <ChevronUpIcon className="ml-auto h-5 w-5 transition-transform group-data-[state=open]:rotate-180" />
                         </Button>
                       </Accordion.Trigger>
                     </Accordion.Header>

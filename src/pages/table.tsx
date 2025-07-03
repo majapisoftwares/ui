@@ -1,6 +1,6 @@
 import Stack from "../../lib/components/Stack";
 import getPublicLayout from "../views/publicLayout";
-import { GetServerSideProps } from "next";
+import type { GetServerSideProps } from "next";
 import { getCookies } from "cookies-next";
 import Table from "../../lib/components/Table";
 import { PencilIcon } from "@heroicons/react/24/outline";
@@ -21,7 +21,7 @@ const pages = [{ title: "Table" }];
 export default function Page() {
   return (
     <div className="flex flex-1 flex-col">
-      <NextSeo title={pages[0].title} />
+      <NextSeo title={pages[0]?.title} />
       <Breadcrumbs pages={pages} className="mb-2 md:mx-2" />
       <Stack className="flex flex-1 flex-col md:px-2 md:pb-2">
         <Table.Header

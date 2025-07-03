@@ -5,7 +5,7 @@ import {
   ExampleCode,
   useExampleCodeCallback,
 } from "../../../src/components/ExampleCode/ExampleCode";
-import { DocPageProps } from "../../../src/components/DocPage/DocPageProps";
+import type { DocPageProps } from "../../../src/components/DocPage/DocPageProps";
 import { DocPage } from "../../../src/components/DocPage/DocPage";
 import UnstyledButton from "./UnstyledButton";
 

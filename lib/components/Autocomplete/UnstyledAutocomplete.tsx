@@ -1,13 +1,19 @@
 import { Combobox } from "@headlessui/react";
 import Loading from "../Loading";
-import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
+import {
+  type ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import Input, {
   defaultInputClassName,
   defaultLeadingInputClassName,
   defaultTrailingClassName,
   defaultTrailingInputClassName,
   UnstyledInput,
-  UnstyledInputProps,
+  type UnstyledInputProps,
 } from "../Input";
 import clsx from "../../utils/clsx";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
@@ -138,7 +144,6 @@ export default function UnstyledAutocomplete<T extends { _id: string }>({
 
   useUpdateEffect(() => {
     onSelect?.(selectedItem);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedItem]);
 
   useEffect(() => {

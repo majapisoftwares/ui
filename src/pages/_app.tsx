@@ -2,7 +2,7 @@ import "@fontsource-variable/inter";
 import "../../lib/bootstrap/suppressConsoleLog";
 import { DefaultSeo } from "next-seo";
 import "../globals.css";
-import AppProps from "../../lib/bootstrap/AppProps";
+import type { AppProps } from "../../lib/bootstrap/AppProps";
 import { hydrateNavigationDrawerState } from "../../lib/components/NavigationDrawer";
 import Notifications from "../../lib/components/Notifications";
 import setupNProgress from "../../lib/bootstrap/nprogress";

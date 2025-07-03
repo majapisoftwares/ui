@@ -1,13 +1,13 @@
 import { proxy, ref, useSnapshot } from "valtio";
-import { FormEvent, useCallback } from "react";
-import {
+import { type FormEvent, useCallback } from "react";
+import type {
   ArrayKey,
   IsTuple,
   TupleKeys,
 } from "react-hook-form/dist/types/path/common";
 import { cloneDeep, get, isNil, merge, set, unset } from "lodash-es";
-import { Get, PartialDeep, RequiredDeep, WritableDeep } from "type-fest";
-import { DeepPartial } from "redux";
+import type { Get, PartialDeep, RequiredDeep, WritableDeep } from "type-fest";
+import type { DeepPartial } from "redux";
 import { useUnmount } from "react-use";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

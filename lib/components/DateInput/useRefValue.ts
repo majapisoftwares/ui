@@ -1,4 +1,4 @@
-import { Ref, useEffect, useRef } from "react";
+import { type Ref, useEffect, useRef } from "react";
 import dayjs from "dayjs";
 import "dayjs/locale/pt-br";
 

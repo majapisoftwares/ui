@@ -1,15 +1,15 @@
 import getPublicLayout from "../views/publicLayout";
 import { NextSeo } from "next-seo";
-import { GetServerSideProps } from "next";
+import type { GetServerSideProps } from "next";
 import { getCookies } from "cookies-next";
 import Breadcrumbs from "../../lib/components/Breadcrumbs";
 import { FileSelectProvider } from "../../lib/components/FileSelect";
 import Stack from "../../lib/components/Stack";
-import { ChangeEvent, useCallback, useState } from "react";
+import { type ChangeEvent, useCallback, useState } from "react";
 import FileInput, {
-  FileFile,
-  FileInputFile,
-  FileUrl,
+  type FileFile,
+  type FileInputFile,
+  type FileUrl,
 } from "../../lib/components/FileInput";
 import numeral from "numeral";
 import clsx from "../../lib/utils/clsx";
@@ -21,10 +21,10 @@ import {
   ArrowTopRightOnSquareIcon,
   TrashIcon,
 } from "@heroicons/react/20/solid";
-import { PreviewFileProps } from "../../lib/components/FileInput/PreviewFile";
+import type { PreviewFileProps } from "../../lib/components/FileInput/PreviewFile";
 import checkIsVideo from "../../lib/components/FileInput/isVideo";
 import Input from "../../lib/components/Input";
-import { UseStateTuple } from "../../lib/types";
+import type { UseStateTuple } from "../../lib/types";
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => ({
   props: {
@@ -147,7 +147,7 @@ export default function Page() {
 
   return (
     <FileSelectProvider>
-      <NextSeo title={pages[0].title} />
+      <NextSeo title={pages[0]?.title} />
       <Breadcrumbs pages={pages} className="mb-2 md:mx-2" />
       <Stack className="p-2">
         <FileInput

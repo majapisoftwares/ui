@@ -1,5 +1,5 @@
 import clsx from "../../utils/clsx";
-import { MouseEventHandler, ReactNode } from "react";
+import type { MouseEventHandler, ReactNode } from "react";
 
 export type TableRowProps = {
   children?: ReactNode;

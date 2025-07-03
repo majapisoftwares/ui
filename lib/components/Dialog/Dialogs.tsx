@@ -1,6 +1,6 @@
 import { useSnapshot } from "valtio";
 import dialogsState, { closeDialog } from "./dialogs.state";
-import { ReactNode, useEffect } from "react";
+import { type ReactNode, useEffect } from "react";
 import Dialog from "./Dialog";
 
 export default function Dialogs() {

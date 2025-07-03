@@ -1,5 +1,5 @@
 import clsx from "../../utils/clsx";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import TableActionButton from "./TableActionButton";
 import TableBody from "./TableBody";
 import TableCell from "./TableCell";
@@ -28,7 +28,7 @@ export default function Table({
         "overflow-hidden bg-white dark:bg-zinc-800",
         {
           "relative flex-1": autoHeight,
-          "shadow-sm ring-1 ring-black/5 dark:ring-white/10 md:rounded-lg":
+          "shadow-sm ring-1 ring-black/5 md:rounded-lg dark:ring-white/10":
             !hideBorder,
         },
         className,

@@ -1,5 +1,5 @@
 import { getCookies } from "cookies-next";
-import { GetServerSideProps } from "next";
+import type { GetServerSideProps } from "next";
 import { NextSeo } from "next-seo";
 import Breadcrumbs from "../../lib/components/Breadcrumbs";
 import CopyButton from "../../lib/components/CopyButton";
@@ -17,7 +17,7 @@ const pages = [{ title: "Copy button" }];
 export default function Page() {
   return (
     <>
-      <NextSeo title={pages[0].title} />
+      <NextSeo title={pages[0]?.title} />
       <Breadcrumbs pages={pages} className="mb-2 md:mx-2" />
       <Stack className="p-2">
         <div className="group relative max-w-[300px] rounded-sm bg-zinc-200 p-4 dark:bg-zinc-900">

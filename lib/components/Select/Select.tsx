@@ -1,4 +1,4 @@
-import { ComponentProps } from "react";
+import type { ComponentProps } from "react";
 import * as RSelect from "@radix-ui/react-select";
 import {
   CheckIcon,

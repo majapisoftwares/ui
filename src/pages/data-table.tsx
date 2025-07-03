@@ -1,11 +1,11 @@
 import Stack from "../../lib/components/Stack";
 import getPublicLayout from "../views/publicLayout";
-import { GetServerSideProps } from "next";
+import type { GetServerSideProps } from "next";
 import { getCookies } from "cookies-next";
 import { PencilIcon } from "@heroicons/react/24/outline";
 import { NextSeo } from "next-seo";
 import DataTable, {
-  DataTableProps,
+  type DataTableProps,
 } from "../../lib/components/Table/DataTable";
 import Button from "../../lib/components/Button";
 import { useCallback, useMemo, useState } from "react";
@@ -93,7 +93,7 @@ export default function Page() {
 
   return (
     <div className="flex flex-1 flex-col">
-      <NextSeo title={pages[0].title} />
+      <NextSeo title={pages[0]?.title} />
       <Breadcrumbs pages={pages} className="mb-2 md:mx-2" />
       <Stack className="flex flex-1 flex-col overflow-auto md:px-2 md:pb-2">
         <DataTable

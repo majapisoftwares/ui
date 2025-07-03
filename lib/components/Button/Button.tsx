@@ -1,6 +1,6 @@
-import UnstyledButton, { UnstyledButtonProps } from "./UnstyledButton";
+import UnstyledButton, { type UnstyledButtonProps } from "./UnstyledButton";
 import clsx from "../../utils/clsx";
-import { cloneElement, ReactElement, Ref } from "react";
+import { cloneElement, type ReactElement, type Ref } from "react";
 import Loading from "../Loading";
 
 const styles = {

@@ -33,7 +33,7 @@ function copyTextToClipboard(text: string) {
     },
     function (err) {
       console.error("Async: Could not copy text: ", err);
-    }
+    },
   );
 }
 
@@ -42,9 +42,9 @@ export default function copy2DToClipboard(array: (string | number)[][]) {
     row,
     cell;
   for (row = 0; row < array.length; row++) {
-    for (cell = 0; cell < array[row].length; cell++) {
-      csv += (array[row][cell] + "").replace(/[\n\t]+/g, " ");
-      if (cell + 1 < array[row].length) csv += "\t";
+    for (cell = 0; cell < array[row]!.length; cell++) {
+      csv += (array[row]![cell] + "").replace(/[\n\t]+/g, " ");
+      if (cell + 1 < array[row]!.length) csv += "\t";
     }
     if (row + 1 < array.length) csv += "\n";
   }

@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import Button from "../Button/Button";
 import { NextSeo } from "next-seo";
 
@@ -23,7 +23,7 @@ export default function ErrorPage({
     <Button
       variant="text"
       href={defaultActionHref}
-      className="inline-flex items-center rounded-md border border-transparent bg-white bg-opacity-75 px-4 py-2 text-sm font-medium text-black text-opacity-75 sm:bg-opacity-25 sm:hover:bg-opacity-50"
+      className="bg-opacity-75 text-opacity-75 sm:bg-opacity-25 sm:hover:bg-opacity-50 inline-flex items-center rounded-md border border-transparent bg-white px-4 py-2 text-sm font-medium text-black"
     >
       {defaultActionLabel}
     </Button>
@@ -38,13 +38,13 @@ export default function ErrorPage({
     >
       <NextSeo title={error.toString()} />
       <div className="mx-auto max-w-7xl px-4 py-16 text-center sm:px-6 sm:py-24 lg:px-8 lg:py-48">
-        <p className="text-base font-semibold text-black text-opacity-50">
+        <p className="text-opacity-50 text-base font-semibold text-black">
           {error}
         </p>
         <h1 className="mt-2 text-4xl font-bold tracking-tight text-white sm:text-5xl">
           {title}
         </h1>
-        <p className="mt-2 text-lg font-medium text-black text-opacity-50">
+        <p className="text-opacity-50 mt-2 text-lg font-medium text-black">
           {description}
         </p>
         <div className="mt-6">{action}</div>

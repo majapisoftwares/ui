@@ -1,4 +1,4 @@
-import { ComponentProps, DetailedHTMLProps, HTMLAttributes } from "react";
+import type { ComponentProps, DetailedHTMLProps, HTMLAttributes } from "react";
 import clsx from "../../utils/clsx";
 import NextLink from "next/link";
 import Link from "../Link";

@@ -8,8 +8,8 @@ import {
   ArrowTopRightOnSquareIcon,
   TrashIcon,
 } from "@heroicons/react/20/solid";
-import { FileInputFile } from "./FileInput";
-import { memo, ReactNode } from "react";
+import type { FileInputFile } from "./FileInput";
+import { memo, type ReactNode } from "react";
 import clsx from "../../utils/clsx";
 import checkIsVideo from "./isVideo";
 import checkIsImage from "./isImage";

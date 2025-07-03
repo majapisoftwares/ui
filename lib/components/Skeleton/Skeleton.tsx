@@ -1,5 +1,5 @@
 import clsx from "../../utils/clsx";
-import { DetailedHTMLProps, HTMLAttributes } from "react";
+import type { DetailedHTMLProps, HTMLAttributes } from "react";
 
 export default function Skeleton({
   className,

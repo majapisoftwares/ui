@@ -1,17 +1,19 @@
 import {
   cloneElement,
-  ComponentPropsWithoutRef,
+  type ComponentPropsWithoutRef,
   Fragment,
-  ReactElement,
-  ReactNode,
-  Ref,
+  type ReactElement,
+  type ReactNode,
+  type Ref,
 } from "react";
 import { Menu as HuiMenu, Transition } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import clsx from "../../utils/clsx";
 import Button from "../Button/Button";
-import UnstyledButton, { UnstyledButtonProps } from "../Button/UnstyledButton";
-import Text, { TextProps } from "../Text";
+import UnstyledButton, {
+  type UnstyledButtonProps,
+} from "../Button/UnstyledButton";
+import Text, { type TextProps } from "../Text";
 import { useMount } from "react-use";
 
 export const defaultMenuItemsClassName =

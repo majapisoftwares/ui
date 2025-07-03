@@ -1,5 +1,5 @@
 import * as RTooltip from "@radix-ui/react-tooltip";
-import { ReactNode, Ref } from "react";
+import type { ReactNode, Ref } from "react";
 import clsx from "../../utils/clsx";
 
 function Tooltip({

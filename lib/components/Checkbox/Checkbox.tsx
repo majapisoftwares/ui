@@ -1,7 +1,7 @@
 import {
-  DetailedHTMLProps,
-  InputHTMLAttributes,
-  ReactNode,
+  type DetailedHTMLProps,
+  type InputHTMLAttributes,
+  type ReactNode,
   useEffect,
   useId,
   useRef,

@@ -1,4 +1,4 @@
-import { ChangeEvent } from "react";
+import type { ChangeEvent } from "react";
 import { showNotification } from "../components/Notifications";
 import ExcelJS from "exceljs";
 
@@ -21,6 +21,10 @@ export default async function xlsxBlobToJson(
 
   // Assuming the data is in the first sheet
   const worksheet = workbook.worksheets[0]; // Get the first worksheet
+
+  if (!worksheet) {
+    return null;
+  }
 
   const jsonData: string[][] = [];
 
@@ -50,7 +54,7 @@ export default async function xlsxBlobToJson(
       wrongValues.push(row);
     } else {
       for (let i = 0; i < headers.length; i++) {
-        object[headers[i]] = row[i] as string;
+        object[headers[i]!] = row[i] as string;
       }
       json.push(object);
     }

@@ -1,5 +1,5 @@
 import { getCookies } from "cookies-next";
-import { GetServerSideProps } from "next";
+import type { GetServerSideProps } from "next";
 import { NextSeo } from "next-seo";
 import Breadcrumbs from "../../lib/components/Breadcrumbs";
 import Stack from "../../lib/components/Stack";
@@ -17,7 +17,7 @@ const pages = [{ title: "Skeleton" }];
 export default function Page() {
   return (
     <>
-      <NextSeo title={pages[0].title} />
+      <NextSeo title={pages[0]?.title} />
       <Breadcrumbs pages={pages} className="mb-2 md:mx-2" />
       <Stack className="p-2">
         <Skeleton className="h-20 w-full max-w-96" />

@@ -1,5 +1,9 @@
 import { Fragment } from "react";
-import { Highlight, Language, PrismTheme } from "prism-react-renderer";
+import {
+  Highlight,
+  type Language,
+  type PrismTheme,
+} from "prism-react-renderer";
 import clsx from "../../utils/clsx";
 import CopyButton from "../CopyButton";
 

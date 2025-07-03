@@ -1,5 +1,3 @@
-import { Dispatch, SetStateAction } from "react";
+import type { Dispatch, SetStateAction } from "react";
 
-type UseState<S> = [S, Dispatch<SetStateAction<S>>];
-
-export default UseState;
+export type UseState<S> = [S, Dispatch<SetStateAction<S>>];

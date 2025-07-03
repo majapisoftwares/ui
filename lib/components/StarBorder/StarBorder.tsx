@@ -1,4 +1,4 @@
-import React, { ComponentType } from "react";
+import { type ComponentType } from "react";
 import clsx from "../../utils/clsx";
 
 export type StarBorderProps<T extends React.ElementType> =

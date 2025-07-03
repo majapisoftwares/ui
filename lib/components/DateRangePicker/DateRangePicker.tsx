@@ -1,11 +1,11 @@
 import React, {
-  ComponentProps,
-  ReactElement,
-  ReactNode,
+  type ComponentProps,
+  type ReactElement,
+  type ReactNode,
   useMemo,
   useState,
 } from "react";
-import { DateRange, DayPicker } from "react-day-picker";
+import { type DateRange, DayPicker } from "react-day-picker";
 import dayjs from "dayjs";
 import { CalendarIcon } from "@heroicons/react/20/solid";
 import Button from "../Button";

@@ -1,5 +1,5 @@
 import { getCookies } from "cookies-next";
-import { GetServerSideProps } from "next";
+import type { GetServerSideProps } from "next";
 import { NextSeo } from "next-seo";
 import Alert from "../../lib/components/Alert";
 import Breadcrumbs from "../../lib/components/Breadcrumbs";
@@ -18,7 +18,7 @@ const pages = [{ title: "Alert" }];
 export default function Page() {
   return (
     <>
-      <NextSeo title={pages[0].title} />
+      <NextSeo title={pages[0]?.title} />
       <Breadcrumbs pages={pages} className="mb-2 md:mx-2" />
       <Stack className="p-2">
         <Alert title="Default alert">

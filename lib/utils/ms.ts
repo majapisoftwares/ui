@@ -1,4 +1,4 @@
-import vms, {StringValue} from "ms";
+import vms, { type StringValue } from "ms";
 
 const locale: Record<string, Record<string, string>> = {
   ["en"]: {
@@ -30,12 +30,12 @@ export function ms(
   value: number | StringValue,
   options?: { long: boolean; locale?: string },
 ) {
-  if (typeof value === "number") {
+  if (typeof value === "number" && options?.locale) {
     return vms(value, options)
-      .replace("day", locale[String(options?.locale)].day)
-      .replace("hour", locale[String(options?.locale)].hour)
-      .replace("minute", locale[String(options?.locale)].minute)
-      .replace("second", locale[String(options?.locale)].second);
+      .replace("day", locale[String(options.locale)]!.day!)
+      .replace("hour", locale[String(options.locale)]!.hour!)
+      .replace("minute", locale[String(options.locale)]!.minute!)
+      .replace("second", locale[String(options.locale)]!.second!);
   }
-  return vms(value);
+  return vms(value as StringValue);
 }

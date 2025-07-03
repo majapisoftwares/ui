@@ -8,7 +8,7 @@ function getTextNodesIn(node: Node) {
   } else {
     const children = node.childNodes;
     for (let i = 0, len = children.length; i < len; ++i) {
-      textNodes.push(...getTextNodesIn(children[i]));
+      textNodes.push(...getTextNodesIn(children[i]!));
     }
   }
   return textNodes;

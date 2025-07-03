@@ -198,8 +198,8 @@ const Threads: React.FC<ThreadsProps> = ({
     function update(t: number) {
       if (enableMouseInteraction) {
         const smoothing = 0.05;
-        currentMouse[0] += smoothing * (targetMouse[0] - currentMouse[0]);
-        currentMouse[1] += smoothing * (targetMouse[1] - currentMouse[1]);
+        currentMouse[0]! += smoothing * (targetMouse[0]! - currentMouse[0]!);
+        currentMouse[1]! += smoothing * (targetMouse[1]! - currentMouse[1]!);
         program.uniforms.uMouse.value[0] = currentMouse[0];
         program.uniforms.uMouse.value[1] = currentMouse[1];
       } else {

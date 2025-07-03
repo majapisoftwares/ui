@@ -3,7 +3,7 @@ import Stack from "../../lib/components/Stack";
 import getPublicLayout from "../views/publicLayout";
 import { InboxIcon } from "@heroicons/react/24/outline";
 import { NextSeo } from "next-seo";
-import { GetServerSideProps } from "next";
+import type { GetServerSideProps } from "next";
 import { getCookies } from "cookies-next";
 import Breadcrumbs from "../../lib/components/Breadcrumbs";
 import {
@@ -23,7 +23,7 @@ const pages = [{ title: "Notifications" }];
 export default function Page() {
   return (
     <>
-      <NextSeo title={pages[0].title} />
+      <NextSeo title={pages[0]?.title} />
       <Breadcrumbs pages={pages} className="mb-2 md:mx-2" />
       <Stack className="p-2">
         <div>

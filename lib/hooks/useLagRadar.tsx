@@ -59,7 +59,7 @@ function lagRadar(
     children = [],
   ) {
     const el = document.createElementNS("http://www.w3.org/2000/svg", tag);
-    Object.keys(props).forEach((prop) => el.setAttribute(prop, props[prop]));
+    Object.keys(props).forEach((prop) => el.setAttribute(prop, props[prop]!));
     children.forEach((child) => el.appendChild(child));
     return el;
   }
@@ -128,13 +128,13 @@ function lagRadar(
     const path = `M${tx} ${ty}A${radius} ${radius} 0 ${bigArc} 0 ${last.tx} ${last.ty}L${middle} ${middle}`;
     const hue = calcHue(rDelta / speed);
 
-    $arcs[framePtr % frames].setAttribute("d", path);
-    $arcs[framePtr % frames].setAttribute("fill", `hsl(${hue}, 80%, 40%)`);
+    $arcs[framePtr % frames]!.setAttribute("d", path);
+    $arcs[framePtr % frames]!.setAttribute("fill", `hsl(${hue}, 80%, 40%)`);
     $hand.setAttribute("d", `M${middle} ${middle}L${tx} ${ty}`);
     $hand.setAttribute("stroke", `hsl(${hue}, 80%, 60%)`);
 
     for (let i = 0; i < frames; i++) {
-      $arcs[(frames + framePtr - i) % frames].style.fillOpacity = (1 -
+      $arcs[(frames + framePtr - i) % frames]!.style.fillOpacity = (1 -
         i / frames) as unknown as string;
     }
 

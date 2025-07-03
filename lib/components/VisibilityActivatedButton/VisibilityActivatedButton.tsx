@@ -1,4 +1,4 @@
-import { ComponentProps, RefObject, useEffect, useRef } from "react";
+import { type ComponentProps, type RefObject, useEffect, useRef } from "react";
 import { useIntersection } from "react-use";
 import Button from "../Button";
 

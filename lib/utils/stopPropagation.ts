@@ -1,4 +1,4 @@
-import { MouseEvent, TouchEvent } from "react";
+import type { MouseEvent, TouchEvent } from "react";
 
 export default function stopPropagation(event: MouseEvent | TouchEvent) {
   event.stopPropagation();

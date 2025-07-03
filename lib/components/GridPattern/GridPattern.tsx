@@ -1,4 +1,4 @@
-import { SVGProps, useId } from "react";
+import { type SVGProps, useId } from "react";
 
 export default function GridPattern(props: SVGProps<SVGPatternElement>) {
   const patternId = useId();

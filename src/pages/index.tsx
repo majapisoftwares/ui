@@ -1,5 +1,5 @@
 import { getCookies } from "cookies-next";
-import { GetServerSideProps } from "next";
+import type { GetServerSideProps } from "next";
 import getPublicLayout from "../views/publicLayout";
 import Button from "../../lib/components/Button";
 import Stack from "../../lib/components/Stack";

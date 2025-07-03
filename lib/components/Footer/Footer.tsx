@@ -1,4 +1,4 @@
-import { cloneElement, ReactElement, ReactNode } from "react";
+import { cloneElement, type ReactElement, type ReactNode } from "react";
 
 export type FooterProps = {
   main?: {

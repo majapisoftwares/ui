@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import Button from "../Button";
 import clsx from "../../utils/clsx";
 

@@ -1,4 +1,10 @@
-import { Fragment, ReactNode, useCallback, useEffect, useState } from "react";
+import {
+  Fragment,
+  type ReactNode,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import { Dialog as HuiDialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import Button from "../Button/Button";
@@ -69,7 +75,7 @@ export default function Drawer({
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <div className="fixed inset-0 bg-black/70 bg-opacity-75 transition-opacity" />
+            <div className="bg-opacity-75 fixed inset-0 bg-black/70 transition-opacity" />
           </Transition.Child>
         ) : (
           <div className="fixed inset-0" />

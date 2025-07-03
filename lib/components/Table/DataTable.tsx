@@ -1,8 +1,8 @@
 import {
-  ComponentType,
+  type ComponentType,
   Fragment,
-  ReactElement,
-  ReactNode,
+  type ReactElement,
+  type ReactNode,
   useCallback,
   useEffect,
   useState,
@@ -224,7 +224,7 @@ export default function DataTable<RowData>({
             {actions && <Table.Cell />}
           </Table.Row>
           {isLoading && (
-            <tr className="absolute right-3 top-2 rounded-full bg-zinc-50/50 dark:bg-zinc-900/50">
+            <tr className="absolute top-2 right-3 rounded-full bg-zinc-50/50 dark:bg-zinc-900/50">
               <td>
                 <Loading className="mt-px" />
               </td>

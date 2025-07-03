@@ -1,4 +1,4 @@
-import { ReactNode, useRef } from "react";
+import { type ReactNode, useRef } from "react";
 import clsx from "../../utils/clsx";
 import Badge from "../Badge";
 import { Combobox } from "@headlessui/react";

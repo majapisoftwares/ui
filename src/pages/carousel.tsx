@@ -1,7 +1,7 @@
 import Stack from "../../lib/components/Stack";
 import getPublicLayout from "../views/publicLayout";
 import { NextSeo } from "next-seo";
-import { GetServerSideProps } from "next";
+import type { GetServerSideProps } from "next";
 import { getCookies } from "cookies-next";
 import Breadcrumbs from "../../lib/components/Breadcrumbs";
 import Carousel from "../../lib/components/Carousel";
@@ -22,7 +22,7 @@ export default function Page() {
 
   return (
     <>
-      <NextSeo title={pages[0].title} />
+      <NextSeo title={pages[0]?.title} />
       <Breadcrumbs pages={pages} className="mb-2 md:mx-2" />
       <Stack className="p-2">
         <Carousel
@@ -37,7 +37,7 @@ export default function Page() {
           {slides.map((s) => (
             <Carousel.Slide key={s} className="pl-4">
               <Stack className="w-44">
-                <div className="group overflow-hidden rounded-sm border border-transparent transition-colors hover:border-primary-500">
+                <div className="group hover:border-primary-500 overflow-hidden rounded-sm border border-transparent transition-colors">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src="https://www.themoviedb.org/t/p/w600_and_h900_bestv2/7JptBMGTikUK4CxJpG9cNTYAGjV.jpg"

@@ -1,9 +1,9 @@
 import {
-  ChangeEventHandler,
+  type ChangeEventHandler,
   cloneElement,
-  ReactElement,
-  ReactNode,
-  Ref,
+  type ReactElement,
+  type ReactNode,
+  type Ref,
   useCallback,
   useEffect,
   useId,

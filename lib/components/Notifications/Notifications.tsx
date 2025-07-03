@@ -1,4 +1,4 @@
-import { AnimatePresence, motion, MotionStyle } from "motion/react";
+import { AnimatePresence, motion, type MotionStyle } from "motion/react";
 import { useSnapshot } from "valtio";
 import notificationsState from "./notifications.state";
 import {
@@ -7,7 +7,12 @@ import {
 } from "@heroicons/react/24/outline";
 import { XMarkIcon } from "@heroicons/react/20/solid";
 import Button from "../Button";
-import { cloneElement, ReactElement, ReactNode, useEffect } from "react";
+import {
+  cloneElement,
+  type ReactElement,
+  type ReactNode,
+  useEffect,
+} from "react";
 import clsx from "../../utils/clsx";
 
 export default function Notifications({

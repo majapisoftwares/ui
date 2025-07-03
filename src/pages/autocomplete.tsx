@@ -1,5 +1,5 @@
 import { getCookies } from "cookies-next";
-import { GetServerSideProps } from "next";
+import type { GetServerSideProps } from "next";
 import { NextSeo } from "next-seo";
 import Autocomplete from "../../lib/components/Autocomplete";
 import Breadcrumbs from "../../lib/components/Breadcrumbs";
@@ -22,7 +22,7 @@ const people = [
 export default function Page() {
   return (
     <>
-      <NextSeo title={pages[0].title} />
+      <NextSeo title={pages[0]?.title} />
       <Breadcrumbs pages={pages} className="mb-2 md:mx-2" />
       <Stack className="p-2">
         <Autocomplete

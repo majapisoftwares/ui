@@ -1,4 +1,4 @@
-import React, { ComponentProps } from "react";
+import React, { type ComponentProps } from "react";
 import ReactMarkdown from "react-markdown";
 import clsx from "../../utils/clsx";
 import remarkGfm from "remark-gfm";

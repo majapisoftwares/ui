@@ -1,8 +1,8 @@
 import {
-  ComponentType,
-  DetailedHTMLProps,
-  InputHTMLAttributes,
-  ReactNode,
+  type ComponentType,
+  type DetailedHTMLProps,
+  type InputHTMLAttributes,
+  type ReactNode,
   useId,
 } from "react";
 import clsx from "../../utils/clsx";

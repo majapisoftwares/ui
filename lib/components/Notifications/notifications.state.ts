@@ -1,7 +1,7 @@
 import { proxy, ref } from "valtio";
 import isomorphicObjectId from "@majapisoftwares/next/utils/isomorphicObjectId";
-import ms, { StringValue } from "ms";
-import { CSSProperties, ReactElement, ReactNode } from "react";
+import ms, { type StringValue } from "ms";
+import type { CSSProperties, ReactElement, ReactNode } from "react";
 
 type Notification = {
   _id: string;

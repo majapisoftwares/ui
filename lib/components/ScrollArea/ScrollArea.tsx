@@ -1,4 +1,4 @@
-import { ReactNode, Ref } from "react";
+import type { ReactNode, Ref } from "react";
 import { ScrollArea as RScrollArea } from "radix-ui";
 import clsx from "../../utils/clsx";
 
@@ -30,16 +30,16 @@ export default function ScrollArea({
         {children}
       </RScrollArea.Viewport>
       <RScrollArea.Scrollbar
-        className="flex touch-none select-none bg-zinc-700 p-0.5 transition-colors duration-[160ms] ease-out hover:bg-zinc-600 data-[orientation=horizontal]:h-2.5 data-[orientation=vertical]:w-2.5 data-[orientation=horizontal]:flex-col"
+        className="flex touch-none bg-zinc-700 p-0.5 transition-colors duration-[160ms] ease-out select-none hover:bg-zinc-600 data-[orientation=horizontal]:h-2.5 data-[orientation=horizontal]:flex-col data-[orientation=vertical]:w-2.5"
         orientation="vertical"
       >
-        <RScrollArea.Thumb className="relative flex-1 rounded-[10px] bg-zinc-500 before:absolute before:left-1/2 before:top-1/2 before:size-full before:min-h-11 before:min-w-11 before:-translate-x-1/2 before:-translate-y-1/2 hover:bg-zinc-400" />
+        <RScrollArea.Thumb className="relative flex-1 rounded-[10px] bg-zinc-500 before:absolute before:top-1/2 before:left-1/2 before:size-full before:min-h-11 before:min-w-11 before:-translate-x-1/2 before:-translate-y-1/2 hover:bg-zinc-400" />
       </RScrollArea.Scrollbar>
       <RScrollArea.Scrollbar
-        className="flex touch-none select-none bg-zinc-700 p-0.5 transition-colors duration-[160ms] ease-out hover:bg-zinc-600 data-[orientation=horizontal]:h-2.5 data-[orientation=vertical]:w-2.5 data-[orientation=horizontal]:flex-col"
+        className="flex touch-none bg-zinc-700 p-0.5 transition-colors duration-[160ms] ease-out select-none hover:bg-zinc-600 data-[orientation=horizontal]:h-2.5 data-[orientation=horizontal]:flex-col data-[orientation=vertical]:w-2.5"
         orientation="horizontal"
       >
-        <RScrollArea.Thumb className="relative flex-1 rounded-[10px] bg-zinc-500 before:absolute before:left-1/2 before:top-1/2 before:size-full before:min-h-[44px] before:min-w-[44px] before:-translate-x-1/2 before:-translate-y-1/2" />
+        <RScrollArea.Thumb className="relative flex-1 rounded-[10px] bg-zinc-500 before:absolute before:top-1/2 before:left-1/2 before:size-full before:min-h-[44px] before:min-w-[44px] before:-translate-x-1/2 before:-translate-y-1/2" />
       </RScrollArea.Scrollbar>
       <RScrollArea.Corner className="bg-zinc-600" />
     </RScrollArea.Root>

@@ -1,5 +1,5 @@
 import clsx from "../../utils/clsx";
-import { ReactNode, useContext } from "react";
+import { type ReactNode, useContext } from "react";
 import TableHeadContext from "./TableHeadContext";
 
 export type TableCellProps = {

@@ -1,6 +1,6 @@
-import { ComponentProps } from "react";
-import Input, { InputProps } from "./Input";
-import { PatternFormat, PatternFormatProps } from "react-number-format";
+import type { ComponentProps } from "react";
+import Input, { type InputProps } from "./Input";
+import { PatternFormat, type PatternFormatProps } from "react-number-format";
 
 function PatternInput(
   props: Omit<PatternFormatProps, "customInput"> & InputProps<undefined>,

@@ -2,7 +2,7 @@ import { MoonIcon, SunIcon } from "@heroicons/react/24/outline";
 import Button from "../Button";
 import clsx from "../../utils/clsx";
 import useModeToggle from "./useModeToggle";
-import { Ref } from "react";
+import type { Ref } from "react";
 
 export interface ModeToggleProps {
   ariaLabel?: string;

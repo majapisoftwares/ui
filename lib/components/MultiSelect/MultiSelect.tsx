@@ -1,6 +1,12 @@
 import { Combobox } from "@headlessui/react";
 import Loading from "../Loading";
-import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
+import {
+  type ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import Input, {
   defaultHelpTextClassName,
   defaultInputClassName,
@@ -9,7 +15,7 @@ import Input, {
   defaultTrailingClassName,
   defaultTrailingInputClassName,
   UnstyledInput,
-  UnstyledInputProps,
+  type UnstyledInputProps,
 } from "../Input";
 import clsx from "../../utils/clsx";
 import { isEqual, take } from "lodash-es";

@@ -1,4 +1,4 @@
-import Input, { InputProps } from "../Input";
+import Input, { type InputProps } from "../Input";
 import { CalendarIcon } from "@heroicons/react/20/solid";
 import { useRefValue } from "./useRefValue";
 

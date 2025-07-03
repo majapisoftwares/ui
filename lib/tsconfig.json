@@ -13,6 +13,7 @@
     "**/*.tsx"
   ],
   "exclude": [
+    "../node_modules",
     "**/*.doc.tsx"
   ]
 }

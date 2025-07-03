@@ -1,4 +1,4 @@
-import { ChangeEvent } from "react";
+import type { ChangeEvent } from "react";
 import { showNotification } from "../components/Notifications";
 import blobToText from "./blobToText";
 
@@ -12,8 +12,7 @@ export default async function csvBlobToJson(
       message: "Nenhum arquivo foi selecionado",
     });
   }
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const csv = await blobToText(event.target.files![0], encoding);
+  const csv = await blobToText(event.target.files![0]!, encoding);
 
   event.target.value = "";
 
@@ -47,7 +46,7 @@ export default async function csvBlobToJson(
       wrongValues.push(values);
     } else {
       for (let i = 0; i < headers.length; i++) {
-        object[headers[i]] = values[i];
+        object[headers[i]!] = values[i]!;
       }
       json.push(object);
     }

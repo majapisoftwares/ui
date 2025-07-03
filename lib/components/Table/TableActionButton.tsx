@@ -1,11 +1,11 @@
 import clsx from "../../utils/clsx";
 import {
   cloneElement,
-  MouseEventHandler,
-  ReactElement,
-  ReactNode,
+  type MouseEventHandler,
+  type ReactElement,
+  type ReactNode,
 } from "react";
-import Button, { ButtonProps } from "../Button/Button";
+import Button, { type ButtonProps } from "../Button/Button";
 import Tooltip from "../Tooltip";
 
 export type TableActionButtonProps<T extends HTMLElement = HTMLButtonElement> =

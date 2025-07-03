@@ -1,6 +1,6 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import clsx from "../../utils/clsx";
-import Button, { ButtonProps } from "../Button";
+import Button, { type ButtonProps } from "../Button";
 
 export default function Tabs({
   children,

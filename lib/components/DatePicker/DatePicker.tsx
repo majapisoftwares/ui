@@ -1,16 +1,17 @@
 import React, {
-  ComponentProps,
-  ReactElement,
-  ReactNode,
+  type ComponentProps,
+  type ReactElement,
+  type ReactNode,
   useCallback,
   useMemo,
   useState,
 } from "react";
+import type { DayPickerProps } from "react-day-picker";
 import {
-  DateRange,
+  type DateRange,
   DayPicker,
-  Matcher,
-  ModifiersClassNames,
+  type Matcher,
+  type ModifiersClassNames,
 } from "react-day-picker";
 import dayjs from "dayjs";
 import { CalendarIcon } from "@heroicons/react/20/solid";
@@ -22,7 +23,6 @@ import {
   dayPickerButtonClassName,
   dayPickerClassNames,
 } from "../../styles/DayPicker.classNames";
-import type { DayPickerProps } from "react-day-picker/src/types/props";
 
 export type { DateRange };
 
