@@ -38,7 +38,7 @@ function SelectInput({
       <Select.Trigger
         placeholder={placeholder}
         buttonClassName={clsx(
-          "bg-white dark:hover:bg-zinc-700/70 dark:bg-zinc-800 w-full justify-between",
+          "bg-white dark:hover:bg-zinc-700/70 dark:bg-zinc-800 w-full justify-between min-h-[38px]",
           inputClassName,
         )}
       />

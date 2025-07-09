@@ -49,7 +49,6 @@ function MultiSelectInput({
           as={Button}
           {...props}
           name={name}
-          onChange={onChange}
           ref={innerRef}
           trailing={<ChevronDownIcon className="h-5 w-5 shrink-0" />}
           inputClassName={clsx(
@@ -86,7 +85,7 @@ function MultiSelectInput({
           <DropdownMenu.CheckboxItem
             key={option.name}
             checked={innerValue?.includes(option.value)}
-            onClick={() => setInnerValue(xor(value, [option.value]))}
+            onClick={() => setInnerValue(xor(innerValue, [option.value]))}
           >
             {option.name}
           </DropdownMenu.CheckboxItem>
