@@ -18,6 +18,7 @@ function MultiSelectInput({
   badgeClassName,
   name,
   onValueChange,
+  inputClassName,
   ...props
 }: Omit<InputProps<undefined>, "value"> & {
   options: { value: string; name: string }[];
@@ -57,6 +58,7 @@ function MultiSelectInput({
               "text-zinc-500 dark:text-zinc-500": isEmpty,
               "p-1.5": !isEmpty,
             },
+            inputClassName,
           )}
         >
           {isEmpty
