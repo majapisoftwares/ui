@@ -101,16 +101,18 @@ function SelectTrigger({
   children,
   readOnly,
   ref,
+  buttonClassName,
   ...props
 }: ComponentProps<typeof RSelect.Trigger> &
   ComponentProps<typeof Button> & {
     placeholder?: string;
+    buttonClassName?: string;
   }) {
   return (
     <RSelect.Trigger
       asChild
       {...props}
-      className={className}
+      className={clsx("data-[placeholder]:text-zinc-500", className)}
       ref={children ? ref : undefined}
     >
       {children || (
@@ -124,7 +126,7 @@ function SelectTrigger({
           }
           ref={ref}
           disabled={readOnly}
-          className="opacity-100"
+          className={clsx("rounded-md opacity-100", buttonClassName)}
         >
           <RSelect.Value placeholder={placeholder} />
         </Button>

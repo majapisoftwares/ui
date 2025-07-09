@@ -4,6 +4,7 @@ import DropdownMenu from "../DropdownMenu";
 import Button from "../Button";
 import { ChevronDownIcon } from "@heroicons/react/16/solid";
 import { xor } from "lodash-es";
+import clsx from "../../utils/clsx";
 
 function MultiSelectInput({
   options,
@@ -18,6 +19,8 @@ function MultiSelectInput({
   onChange?: (value: string[]) => void;
   emptyLabel?: string;
 }) {
+  const isEmpty = !value?.length;
+
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
@@ -25,17 +28,19 @@ function MultiSelectInput({
           as={Button}
           {...props}
           ref={ref}
-          trailing={<ChevronDownIcon />}
-          inputClassName="text-left dark:hover:bg-zinc-700/70"
+          trailing={<ChevronDownIcon className="h-5 w-5 shrink-0" />}
+          inputClassName={clsx("text-left dark:hover:bg-zinc-700/70 bg-white", {
+            "text-zinc-500 dark:text-zinc-500": isEmpty,
+          })}
         >
-          {value?.length
-            ? options
+          {isEmpty
+            ? emptyLabel
+            : options
                 .map((project) =>
                   value.includes(project.value) ? project.name : null,
                 )
                 .filter(Boolean)
-                .join(", ")
-            : emptyLabel}
+                .join(", ")}
         </Input>
       </DropdownMenu.Trigger>
       <DropdownMenu.Content>

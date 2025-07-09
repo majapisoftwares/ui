@@ -8,7 +8,8 @@ import getPublicLayout from "../views/publicLayout";
 import NumericInput from "../../lib/components/Input/NumericInput";
 import PatternInput from "../../lib/components/Input/PatternInput";
 import { useState } from "react";
-import SelectInput from "../../lib/components/Input/MultiSelectInput";
+import MultiSelectInput from "../../lib/components/Input/MultiSelectInput";
+import SelectInput from "../../lib/components/Input/SelectInput";
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => ({
   props: {
@@ -20,7 +21,8 @@ const pages = [{ title: "Input" }];
 
 export default function Page() {
   const [document, setDocument] = useState("");
-  const [selected, setSelected] = useState<string[]>([]);
+  const [multiSelected, setMultiSelected] = useState<string[]>([]);
+  const [selected, setSelected] = useState<string>();
 
   return (
     <>
@@ -69,6 +71,16 @@ export default function Page() {
           onValueChange={(val) => setDocument(val.value)}
           value={document}
         />
+        <MultiSelectInput
+          label="Mulsi select"
+          options={[
+            { name: "Option 1", value: "1" },
+            { name: "Option 2", value: "2" },
+            { name: "Option 3", value: "3" },
+          ]}
+          value={multiSelected}
+          onChange={setMultiSelected}
+        />
         <SelectInput
           label="Select"
           options={[
@@ -77,7 +89,8 @@ export default function Page() {
             { name: "Option 3", value: "3" },
           ]}
           value={selected}
-          onChange={setSelected}
+          onChange={(event) => setSelected(event.target.value)}
+          placeholder="Select an option"
         />
       </Stack>
     </>
