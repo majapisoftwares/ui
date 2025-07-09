@@ -5,6 +5,9 @@ import Button from "../Button";
 import { ChevronDownIcon } from "@heroicons/react/16/solid";
 import { xor } from "lodash-es";
 import clsx from "../../utils/clsx";
+import Badge from "../Badge";
+import useInputRefValue from "./useInputRefValue";
+import { useDeepCompareEffect } from "react-use";
 
 function MultiSelectInput({
   options,
@@ -12,14 +15,31 @@ function MultiSelectInput({
   onChange,
   emptyLabel = "None",
   ref,
+  badgeClassName,
+  name,
+  onValueChange,
   ...props
-}: Omit<InputProps<undefined>, "value" | "onChange"> & {
+}: Omit<InputProps<undefined>, "value"> & {
   options: { value: string; name: string }[];
   value?: string[];
-  onChange?: (value: string[]) => void;
+  onValueChange?: (value: string[]) => void;
   emptyLabel?: string;
+  badgeClassName?: string;
 }) {
-  const isEmpty = !value?.length;
+  const { innerRef, innerValue, setInnerValue } = useInputRefValue({
+    value,
+    ref,
+    name,
+    onChange,
+  });
+
+  const isEmpty = !innerValue?.length;
+
+  useDeepCompareEffect(() => {
+    if (onValueChange) {
+      onValueChange(innerValue || []);
+    }
+  }, [innerValue]);
 
   return (
     <DropdownMenu.Root>
@@ -27,33 +47,46 @@ function MultiSelectInput({
         <Input
           as={Button}
           {...props}
-          ref={ref}
+          name={name}
+          onChange={onChange}
+          ref={innerRef}
           trailing={<ChevronDownIcon className="h-5 w-5 shrink-0" />}
-          inputClassName={clsx("text-left dark:hover:bg-zinc-700/70 bg-white", {
-            "text-zinc-500 dark:text-zinc-500": isEmpty,
-          })}
+          inputClassName={clsx(
+            "text-left dark:hover:bg-zinc-700/70 bg-white gap-1.5 flex justify-start flex-wrap",
+            {
+              "text-zinc-500 dark:text-zinc-500": isEmpty,
+              "p-1.5": !isEmpty,
+            },
+          )}
         >
           {isEmpty
             ? emptyLabel
             : options
-                .map((project) =>
-                  value.includes(project.value) ? project.name : null,
-                )
-                .filter(Boolean)
-                .join(", ")}
+                .filter((option) => innerValue.includes(option.value))
+                .map((option, index) => (
+                  <Badge
+                    key={index}
+                    className={badgeClassName}
+                    onActionClick={() =>
+                      setInnerValue(xor(innerValue, [option.value]))
+                    }
+                  >
+                    {option.name}
+                  </Badge>
+                ))}
         </Input>
       </DropdownMenu.Trigger>
       <DropdownMenu.Content>
-        <DropdownMenu.Item onClick={() => onChange?.([])}>
+        <DropdownMenu.Item onClick={() => setInnerValue([])}>
           {emptyLabel}
         </DropdownMenu.Item>
-        {options.map((options) => (
+        {options.map((option) => (
           <DropdownMenu.CheckboxItem
-            key={options.name}
-            checked={value?.includes(options.value)}
-            onClick={() => onChange?.(xor(value, [options.value]))}
+            key={option.name}
+            checked={innerValue?.includes(option.value)}
+            onClick={() => setInnerValue(xor(value, [option.value]))}
           >
-            {options.name}
+            {option.name}
           </DropdownMenu.CheckboxItem>
         ))}
       </DropdownMenu.Content>

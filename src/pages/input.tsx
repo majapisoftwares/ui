@@ -10,6 +10,7 @@ import PatternInput from "../../lib/components/Input/PatternInput";
 import { useState } from "react";
 import MultiSelectInput from "../../lib/components/Input/MultiSelectInput";
 import SelectInput from "../../lib/components/Input/SelectInput";
+import { Icon } from "@iconify/react";
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => ({
   props: {
@@ -79,11 +80,21 @@ export default function Page() {
             { name: "Option 3", value: "3" },
           ]}
           value={multiSelected}
-          onChange={setMultiSelected}
+          onValueChange={setMultiSelected}
+          badgeClassName="rounded-md"
         />
         <SelectInput
           label="Select"
           options={[
+            {
+              name: (
+                <div className="flex items-center gap-2">
+                  <Icon icon="proicons:openai" className="size-4" />
+                  <span>ChatGPT</span>
+                </div>
+              ),
+              value: "gpt",
+            },
             { name: "Option 1", value: "1" },
             { name: "Option 2", value: "2" },
             { name: "Option 3", value: "3" },

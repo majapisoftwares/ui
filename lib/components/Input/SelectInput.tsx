@@ -1,15 +1,8 @@
-import {
-  type ComponentProps,
-  type ReactNode,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { type ComponentProps, type ReactNode } from "react";
 import Input, { type InputProps } from "./index";
 import Select from "../Select/Select";
 import clsx from "../../utils/clsx";
-import { useDeepCompareEffect } from "react-use";
-import { isEqual } from "lodash-es";
+import useInputRefValue from "./useInputRefValue";
 
 function SelectInput({
   options,
@@ -20,54 +13,17 @@ function SelectInput({
   value,
   name,
   ...props
-}: InputProps<undefined> & {
-  options: { value: string; name: string }[];
+}: InputProps<false> & {
+  options: { value: string; name: ReactNode }[];
   children?: ReactNode;
   placeholder?: string;
 }) {
-  const [innerValue, setInnerValue] = useState(value);
-
-  useDeepCompareEffect(() => {
-    if (value && !isEqual(value, innerValue)) {
-      setInnerValue(value);
-    }
-  }, [{ value }]);
-
-  const innerRef = useRef<HTMLInputElement>({
-    get value() {
-      return innerValue;
-    },
-    set value(value) {
-      setInnerValue(value);
-    },
-  } as unknown as HTMLInputElement);
-
-  useEffect(() => {
-    if (ref) {
-      if (typeof ref === "function") {
-        ref(innerRef.current);
-      } else {
-        try {
-          ref.current = innerRef.current;
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        } catch (e) {
-          // do nothing
-        }
-      }
-    }
-  }, [ref]);
-
-  useDeepCompareEffect(() => {
-    if (onChange) {
-      onChange({
-        target: {
-          name,
-          value: innerValue,
-        },
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } as any);
-    }
-  }, [innerValue]);
+  const { innerRef, innerValue, setInnerValue } = useInputRefValue({
+    value,
+    ref,
+    name,
+    onChange,
+  });
 
   return (
     <Input

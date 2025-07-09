@@ -6,6 +6,7 @@ import {
   type ReactNode,
   useCallback,
 } from "react";
+import preventDefault from "../../utils/preventDefault";
 
 const colorMap = {
   default: {
@@ -90,16 +91,16 @@ function Badge({
     >
       {children}
       {onActionClick && (
-        <button
-          type="button"
+        <div
           className={clsx(
-            "ml-0.5 inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full focus:text-white focus:outline-hidden",
+            "ml-1 inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full focus:text-white focus:outline-hidden",
             sizeMap.button[size],
             colorMap[color].button,
           )}
           onClick={handleActionClick}
+          onPointerDown={preventDefault}
         >
-          <span className="sr-only">Delete</span>
+          <span className="sr-only">Remove</span>
           <svg
             className="h-2 w-2"
             stroke="currentColor"
@@ -112,7 +113,7 @@ function Badge({
               d="M1 1l6 6m0-6L1 7"
             />
           </svg>
-        </button>
+        </div>
       )}
     </Component>
   );

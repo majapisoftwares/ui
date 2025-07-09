@@ -1,3 +1,5 @@
-export default function preventDefault(event: Event) {
+import type { UIEvent } from "react";
+
+export default function preventDefault(event: UIEvent) {
   event.preventDefault();
 }
