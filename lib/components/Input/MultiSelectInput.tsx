@@ -19,6 +19,7 @@ function MultiSelectInput({
   name,
   onValueChange,
   inputClassName,
+  emptyClassName,
   ...props
 }: Omit<InputProps<undefined>, "value"> & {
   options: { value: string; name: string }[];
@@ -26,6 +27,7 @@ function MultiSelectInput({
   onValueChange?: (value: string[]) => void;
   emptyLabel?: string;
   badgeClassName?: string;
+  emptyClassName?: string;
 }) {
   const { innerRef, innerValue, setInnerValue } = useInputRefValue({
     value,
@@ -42,6 +44,10 @@ function MultiSelectInput({
     }
   }, [innerValue]);
 
+  emptyClassName = isEmpty
+    ? clsx("text-zinc-500 dark:text-zinc-500", emptyClassName)
+    : "p-1.5";
+
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
@@ -53,10 +59,7 @@ function MultiSelectInput({
           trailing={<ChevronDownIcon className="h-5 w-5 shrink-0" />}
           inputClassName={clsx(
             "text-left dark:hover:bg-zinc-700/70 bg-white gap-1.5 flex justify-start flex-wrap",
-            {
-              "text-zinc-500 dark:text-zinc-500": isEmpty,
-              "p-1.5": !isEmpty,
-            },
+            emptyClassName,
             inputClassName,
           )}
         >
