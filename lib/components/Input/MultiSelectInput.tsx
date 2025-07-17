@@ -20,6 +20,7 @@ function MultiSelectInput({
   onValueChange,
   inputClassName,
   emptyClassName,
+  noneLabel = "None",
   ...props
 }: Omit<InputProps<undefined>, "value"> & {
   options: { value: string; name: string }[];
@@ -28,6 +29,7 @@ function MultiSelectInput({
   emptyLabel?: string;
   badgeClassName?: string;
   emptyClassName?: string;
+  noneLabel?: string;
 }) {
   const { innerRef, innerValue, setInnerValue } = useInputRefValue({
     value,
@@ -42,7 +44,7 @@ function MultiSelectInput({
     if (onValueChange) {
       onValueChange(innerValue || []);
     }
-  }, [innerValue]);
+  }, [innerValue || {}]);
 
   emptyClassName = isEmpty
     ? clsx("text-zinc-500 dark:text-zinc-500", emptyClassName)
@@ -82,7 +84,7 @@ function MultiSelectInput({
       </DropdownMenu.Trigger>
       <DropdownMenu.Content>
         <DropdownMenu.Item onClick={() => setInnerValue([])}>
-          {emptyLabel}
+          {noneLabel}
         </DropdownMenu.Item>
         {options.map((option) => (
           <DropdownMenu.CheckboxItem
