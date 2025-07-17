@@ -31,7 +31,7 @@ function SelectInput({
       {...props}
       ref={innerRef}
       {...{
-        value: innerValue,
+        value: innerValue ?? "",
         onValueChange: setInnerValue,
       }}
     >
