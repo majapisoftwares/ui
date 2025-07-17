@@ -55,7 +55,7 @@ export default function useInputRefValue<T>({
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
     }
-  }, [innerValue]);
+  }, [{ innerValue }]);
 
   return {
     innerRef,

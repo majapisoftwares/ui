@@ -44,7 +44,7 @@ function MultiSelectInput({
     if (onValueChange) {
       onValueChange(innerValue || []);
     }
-  }, [innerValue || {}]);
+  }, [{ innerValue }]);
 
   emptyClassName = isEmpty
     ? clsx("text-zinc-500 dark:text-zinc-500", emptyClassName)
