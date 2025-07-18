@@ -13,6 +13,7 @@ import NumericInput from "../../lib/components/Input/NumericInput";
 import { useEffect } from "react";
 import { z } from "zod";
 import { Controller, useForm } from "../../lib/form2";
+import MultiSelectInput from "../../lib/components/Input/MultiSelectInput";
 
 const schema = z.object({
   email: z.string().email().optional(),
@@ -22,6 +23,7 @@ const schema = z.object({
   remember: z.boolean(),
   price: z.number().optional(),
   name: z.string().optional(),
+  multiSelected: z.array(z.string()).optional(),
 });
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => ({
@@ -81,6 +83,17 @@ export default function Page() {
             <Input label="Name" {...form.register("name")} />
           </div>
         </div>
+
+        <MultiSelectInput
+          label="Multi select"
+          options={[
+            { name: "Option 1", value: "1" },
+            { name: "Option 2", value: "2" },
+            { name: "Option 3", value: "3" },
+          ]}
+          {...form.register("multiSelected")}
+          badgeClassName="rounded-md"
+        />
 
         {form.watch("remember") && (
           <div className="space-y-1">
