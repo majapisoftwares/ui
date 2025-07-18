@@ -7,7 +7,7 @@ import Stack from "../../lib/components/Stack";
 import getPublicLayout from "../views/publicLayout";
 import NumericInput from "../../lib/components/Input/NumericInput";
 import PatternInput from "../../lib/components/Input/PatternInput";
-import { useState } from "react";
+import { type ReactNode, useEffect, useState } from "react";
 import MultiSelectInput from "../../lib/components/Input/MultiSelectInput";
 import SelectInput from "../../lib/components/Input/SelectInput";
 import { Icon } from "@iconify/react";
@@ -24,15 +24,43 @@ const pages = [{ title: "Input" }];
 
 const formSchema = z.object({
   multiSelected: z.array(z.string()).optional(),
+  selected: z.string().optional(),
 });
 
 export default function Page() {
   const [document, setDocument] = useState("");
-  const [selected, setSelected] = useState<string>();
+  const [selectOptions, setSelectedOptions] = useState<
+    {
+      name: ReactNode;
+      value: string;
+    }[]
+  >([]);
 
   const form = useForm({
     schema: formSchema,
   });
+
+  useEffect(() => {
+    setTimeout(() => {
+      form.setValue("selected", "2");
+    }, 3000);
+    setTimeout(() => {
+      setSelectedOptions([
+        {
+          name: (
+            <div className="flex items-center gap-2">
+              <Icon icon="proicons:openai" className="size-4" />
+              <span>ChatGPT</span>
+            </div>
+          ),
+          value: "gpt",
+        },
+        { name: "Option 1", value: "1" },
+        { name: "Option 2", value: "2" },
+        { name: "Option 3", value: "3" },
+      ]);
+    }, 6000);
+  }, [form]);
 
   return (
     <>
@@ -82,7 +110,7 @@ export default function Page() {
           value={document}
         />
         <MultiSelectInput
-          label="Mulsi select"
+          label="Multi select"
           options={[
             { name: "Option 1", value: "1" },
             { name: "Option 2", value: "2" },
@@ -94,22 +122,8 @@ export default function Page() {
         <div className="flex gap-2">
           <SelectInput
             label="Select"
-            options={[
-              {
-                name: (
-                  <div className="flex items-center gap-2">
-                    <Icon icon="proicons:openai" className="size-4" />
-                    <span>ChatGPT</span>
-                  </div>
-                ),
-                value: "gpt",
-              },
-              { name: "Option 1", value: "1" },
-              { name: "Option 2", value: "2" },
-              { name: "Option 3", value: "3" },
-            ]}
-            value={selected}
-            onChange={(event) => setSelected(event.target.value)}
+            options={selectOptions}
+            {...form.register("selected")}
             placeholder="Select an option"
           />
           <SelectInput

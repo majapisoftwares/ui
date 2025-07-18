@@ -31,10 +31,10 @@ export default function NavigationItem({
   active =
     active === undefined
       ? exact
-        ? router.pathname === href ||
-          alternativeActiveHrefs?.some((href) => router.pathname === href)
-        : router.pathname.includes(href) ||
-          alternativeActiveHrefs?.some((href) => router.pathname.includes(href))
+        ? router.asPath === href ||
+          alternativeActiveHrefs?.some((href) => router.asPath === href)
+        : router.asPath.includes(href) ||
+          alternativeActiveHrefs?.some((href) => router.asPath.includes(href))
       : active;
 
   const isMobile = useMediaQuery(`(max-width: 1024px)`);
