@@ -1,4 +1,6 @@
-export default function stripMarkdown<T extends string>(markdown?: T) {
+export default function stripMarkdown<T extends string | undefined>(
+  markdown: T,
+): T {
   if (!markdown) return markdown;
 
   // Remove headers
@@ -34,5 +36,5 @@ export default function stripMarkdown<T extends string>(markdown?: T) {
   result = result.replace(/\n{2,}/g, "\n");
 
   // Trim leading and trailing spaces
-  return result.trim();
+  return result.trim() as T;
 }
