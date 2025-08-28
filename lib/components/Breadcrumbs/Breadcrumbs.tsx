@@ -73,7 +73,7 @@ export default function Breadcrumbs({
                 <Text
                   href={page.href}
                   className={clsx(
-                    "ml-4 text-sm font-medium text-zinc-500! dark:text-zinc-400!",
+                    "ml-4 text-sm font-medium text-zinc-500 no-underline dark:text-zinc-400",
                     {
                       "cursor-default": !page.href,
                       "hover:text-zinc-700! dark:hover:text-zinc-200!":
