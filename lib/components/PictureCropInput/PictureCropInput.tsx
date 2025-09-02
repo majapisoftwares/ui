@@ -17,6 +17,7 @@ import clsx from "clsx";
 import { CheckIcon, TrashIcon } from "@heroicons/react/20/solid";
 import Tooltip from "../Tooltip";
 import { useLatest } from "react-use";
+import { defaultLabelClassName } from "../Input";
 
 export type PictureCropInputRef = {
   handleCrop: () => Promise<void>;
@@ -33,9 +34,10 @@ export default function PictureCropInput({
   cropButtonClassName,
   aspect = 1,
   ref,
+  label,
 }: {
-  value: string;
-  onChange: (value: string) => void;
+  value?: string;
+  onChange: (value?: string) => void;
   loading?: boolean;
   className?: string;
   previewSizeClassNames?: string;
@@ -43,12 +45,14 @@ export default function PictureCropInput({
   cropButtonClassName?: string;
   aspect?: number;
   ref?: RefObject<PictureCropInputRef | null>;
+  label?: string;
 }) {
   const id = useId();
   const [src, setSrc] = useState<string>();
   const [crop, setCrop] = useState<Crop>();
   const cropRef = useLatest(crop);
   const [completedCrop, setCompletedCrop] = useState<PixelCrop>();
+  const completedCropRef = useLatest(completedCrop);
   const previewCanvasRef = useRef<HTMLCanvasElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
   const parentRef = useRef<HTMLDivElement>(null);
@@ -160,9 +164,22 @@ export default function PictureCropInput({
     return URL.createObjectURL(blob);
   }, [completedCrop]);
 
-  const handleCrop = useCallback(async () => {
-    onChange(await cropToBlobUrl());
+  const handleClear = useCallback(() => {
+    setCrop(undefined);
     setSrc(undefined);
+    setCompletedCrop(undefined);
+    onChange(undefined);
+  }, [onChange]);
+
+  const handleCrop = useCallback(async () => {
+    try {
+      onChange(await cropToBlobUrl());
+    } catch (e) {
+      console.error(e);
+    }
+    setCrop(undefined);
+    setSrc(undefined);
+    setCompletedCrop(undefined);
   }, [cropToBlobUrl, onChange]);
 
   useEffect(() => {
@@ -172,108 +189,125 @@ export default function PictureCropInput({
         completedCrop,
       };
     }
-  }, [completedCrop, handleCrop, ref]);
-
-  const handleClear = useCallback(() => {
-    setCrop(undefined);
-    setSrc(undefined);
-  }, []);
+  }, [completedCrop, completedCropRef, handleCrop, ref]);
 
   return (
-    <div ref={parentRef} className={clsx("flex gap-2", className)}>
-      {loading && <Skeleton className={previewSizeClassNames} />}
-      {src && (
-        <>
-          <ReactCrop
-            crop={crop}
-            onChange={(c) => setCrop(c)}
-            onComplete={(c) => setCompletedCrop(c)}
-            aspect={aspect}
-            minWidth={50 * aspect}
-            minHeight={50 * aspect}
-            className="max-h-96 max-w-96"
-            keepSelection
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              alt="Picture"
-              src={src}
-              // className="h-96 w-96 object-contain"
-              ref={imgRef}
-            />
-          </ReactCrop>
-          {completedCrop && (
-            <div
-              className={clsx("flex flex-col gap-2", previewContainerClassName)}
+    <div ref={parentRef} className={className}>
+      {label && (
+        <label htmlFor={id} className={defaultLabelClassName}>
+          {label}
+        </label>
+      )}
+      <div className="flex gap-2">
+        {loading && <Skeleton className={previewSizeClassNames} />}
+        {src && (
+          <>
+            <ReactCrop
+              crop={crop}
+              onChange={(c) => setCrop(c)}
+              onComplete={(c) => setCompletedCrop(c)}
+              aspect={aspect}
+              minWidth={50 * aspect}
+              minHeight={50 * aspect}
+              className="max-h-96 max-w-96"
+              keepSelection
             >
-              <canvas
-                ref={previewCanvasRef}
-                className={previewSizeClassNames}
-                style={{
-                  objectFit: "cover",
-                }}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                alt="Picture"
+                src={src}
+                // className="h-96 w-96 object-contain"
+                ref={imgRef}
               />
-              <div className="flex gap-2">
-                <Button
-                  onClick={handleCrop}
-                  className={clsx("w-full", cropButtonClassName)}
-                  leading={<CheckIcon />}
-                >
-                  Crop
-                </Button>
-                <Tooltip content="Clear">
-                  <Button onClick={handleClear} variant="text" icon>
-                    <TrashIcon />
+            </ReactCrop>
+            {completedCrop && (
+              <div
+                className={clsx(
+                  "flex flex-col gap-2",
+                  previewContainerClassName,
+                )}
+              >
+                <canvas
+                  ref={previewCanvasRef}
+                  className={previewSizeClassNames}
+                  style={{
+                    objectFit: "cover",
+                  }}
+                />
+                <div className="flex gap-2">
+                  <Button
+                    onClick={handleCrop}
+                    className={clsx("w-full", cropButtonClassName)}
+                    leading={<CheckIcon />}
+                  >
+                    Crop
                   </Button>
-                </Tooltip>
+                  <Tooltip content="Clear">
+                    <Button onClick={handleClear} variant="text" icon>
+                      <TrashIcon />
+                    </Button>
+                  </Tooltip>
+                </div>
               </div>
-            </div>
-          )}
-        </>
-      )}
-      {!src && (
-        <>
-          {value && (
-            <div
-              className={clsx(
-                "flex shrink-0 rounded-sm",
-                previewSizeClassNames,
-              )}
-              style={
-                {
-                  background: value
-                    ? `center / cover url(${value})`
-                    : undefined,
-                } as Record<string, string>
-              }
+            )}
+          </>
+        )}
+        {!src && (
+          <>
+            {value && (
+              <div
+                className={clsx(
+                  "flex shrink-0 rounded-sm",
+                  previewSizeClassNames,
+                )}
+                style={
+                  {
+                    background: value
+                      ? `center / cover url(${value})`
+                      : undefined,
+                  } as Record<string, string>
+                }
+              />
+            )}
+            <input
+              type="file"
+              id={id}
+              className="hidden"
+              onChange={onFileSelect}
+              accept=".jpg,.jpeg,.png"
             />
-          )}
-          <input
-            type="file"
-            id={id}
-            className="hidden"
-            onChange={onFileSelect}
-            accept=".jpg,.jpeg,.png"
-          />
-          <Button
-            variant="outlined"
-            className="mb-auto flex items-center gap-3 p-2"
-            onClick={() => document.getElementById(id)?.click()}
-          >
-            <div className="flex h-12 w-12 items-center justify-center rounded-sm border border-zinc-800 p-3">
-              <PhotoIcon />
-            </div>
-            <div className="flex flex-col items-start gap-1.5">
-              <div className="text-gray-10 text-sm font-medium">
-                {value ? "Change" : "Select"} picture
+            <Button
+              variant="outlined"
+              className="mb-auto flex items-center gap-3 p-2"
+              onClick={() => document.getElementById(id)?.click()}
+            >
+              <div className="flex h-12 w-12 items-center justify-center rounded-sm border border-zinc-800 p-3">
+                <PhotoIcon />
               </div>
-              <div className="text-xs text-zinc-500">
-                JPG, PNG - Max size 10MB
+              <div className="flex flex-col items-start gap-1.5">
+                <div className="text-gray-10 text-sm font-medium">
+                  {value ? "Change" : "Select"} picture
+                </div>
+                <div className="text-xs text-zinc-500">
+                  JPG, PNG - Max size 10MB
+                </div>
               </div>
-            </div>
-          </Button>
-        </>
-      )}
+            </Button>
+            {value && (
+              <Tooltip content="Clear">
+                <Button
+                  onClick={handleClear}
+                  variant="text"
+                  icon
+                  className="mb-auto"
+                >
+                  <TrashIcon />
+                </Button>
+              </Tooltip>
+            )}
+          </>
+        )}
+      </div>
     </div>
   );
 }

@@ -24,9 +24,10 @@ export default function Page() {
       <Breadcrumbs pages={pages} className="mb-2 md:mx-2" />
       <Stack className="p-2">
         <PictureCropInput
-          value={image}
+          label="Picture"
+          value={image || ""}
           onChange={async (value) => {
-            setImage(value);
+            setImage(value || "");
           }}
         />
       </Stack>
