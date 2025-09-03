@@ -20,7 +20,7 @@ export default function Page() {
       <NextSeo title={pages[0]?.title} />
       <Breadcrumbs pages={pages} className="mb-2 md:mx-2" />
       <Stack className="p-2">
-        <Accordion>
+        <Accordion type="multiple">
           <Accordion.Item title="Test 1">Test 1</Accordion.Item>
           <Accordion.Item title="Test 2">Test 2</Accordion.Item>
           <Accordion.Item title="Test 3">Test 3</Accordion.Item>
