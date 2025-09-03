@@ -1,22 +1,18 @@
 import { ChevronUpIcon } from "@heroicons/react/20/solid";
-import { type ReactNode, useId } from "react";
+import { type ComponentProps, type ReactNode, useId } from "react";
 import * as RAccordion from "@radix-ui/react-accordion";
 import clsx from "../../utils/clsx";
 
 export default function Accordion({
   children,
   className,
-  type = "multiple",
-}: {
-  children?: ReactNode;
-  className?: string;
-  type?: "single" | "multiple";
-}) {
+  ...props
+}: ComponentProps<typeof RAccordion.Root>) {
   return (
     <RAccordion.Root
-      type={type}
+      {...props}
       className={clsx("flex flex-col gap-2", className)}
-      collapsible={type === "single" || undefined}
+      {...(props.type === "single" ? { collapsible: true } : {})}
     >
       {children}
     </RAccordion.Root>
