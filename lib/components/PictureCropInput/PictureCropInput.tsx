@@ -29,10 +29,12 @@ export default function PictureCropInput({
   onChange,
   loading,
   className,
-  previewSizeClassNames = "h-52 w-52",
+  previewSizeClassNames = "w-52",
   previewContainerClassName,
   cropButtonClassName,
-  aspect = 1,
+  aspect,
+  minWidth,
+  minHeight,
   ref,
   label,
 }: {
@@ -44,6 +46,8 @@ export default function PictureCropInput({
   previewContainerClassName?: string;
   cropButtonClassName?: string;
   aspect?: number;
+  minWidth?: number;
+  minHeight?: number;
   ref?: RefObject<PictureCropInputRef | null>;
   label?: string;
 }) {
@@ -207,8 +211,8 @@ export default function PictureCropInput({
               onChange={(c) => setCrop(c)}
               onComplete={(c) => setCompletedCrop(c)}
               aspect={aspect}
-              minWidth={50 * aspect}
-              minHeight={50 * aspect}
+              minWidth={minWidth}
+              minHeight={minHeight}
               className="max-h-96 max-w-96"
               keepSelection
             >
