@@ -1,4 +1,6 @@
-export default function Loading({ className }: { className?: string }) {
+import { memo } from "react";
+
+function Loading({ className }: { className?: string }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -9,33 +11,33 @@ export default function Loading({ className }: { className?: string }) {
     >
       <circle cx="4" cy="12" r="3" fill="currentColor">
         <animate
-          id="svgSpinners3DotsFade0"
-          fill="freeze"
           attributeName="opacity"
-          begin="0;svgSpinners3DotsFade1.end-0.5s"
+          begin="0s"
           dur="1.5s"
-          values="1;0.2"
+          repeatCount="indefinite"
+          values="1;0.2;1"
         />
       </circle>
-      <circle cx="12" cy="12" r="3" fill="currentColor" opacity="0.4">
+      <circle cx="12" cy="12" r="3" fill="currentColor">
         <animate
-          fill="freeze"
           attributeName="opacity"
-          begin="svgSpinners3DotsFade0.begin+0.3s"
+          begin="0.3s"
           dur="1.5s"
-          values="1;0.2"
+          repeatCount="indefinite"
+          values="1;0.2;1"
         />
       </circle>
-      <circle cx="20" cy="12" r="3" fill="currentColor" opacity="0.3">
+      <circle cx="20" cy="12" r="3" fill="currentColor">
         <animate
-          id="svgSpinners3DotsFade1"
-          fill="freeze"
           attributeName="opacity"
-          begin="svgSpinners3DotsFade0.begin+0.6s"
+          begin="0.6s"
           dur="1.5s"
-          values="1;0.2"
+          repeatCount="indefinite"
+          values="1;0.2;1"
         />
       </circle>
     </svg>
   );
 }
+
+export default memo(Loading);
