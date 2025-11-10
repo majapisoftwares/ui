@@ -1,3 +1,6 @@
+import { CheckIcon, TrashIcon } from "@heroicons/react/20/solid";
+import { PhotoIcon } from "@heroicons/react/24/outline";
+import clsx from "clsx";
 import {
   type ChangeEvent,
   type RefObject,
@@ -8,16 +11,13 @@ import {
   useState,
 } from "react";
 import ReactCrop, { type Crop, type PixelCrop } from "react-image-crop";
-import useDebounceEffect from "../../hooks/useDebounceEffect";
-import { canvasPreview } from "./canvasPreview";
-import Skeleton from "../Skeleton";
-import Button from "../Button";
-import { PhotoIcon } from "@heroicons/react/24/outline";
-import clsx from "clsx";
-import { CheckIcon, TrashIcon } from "@heroicons/react/20/solid";
-import Tooltip from "../Tooltip";
 import { useLatest } from "react-use";
+import useDebounceEffect from "../../hooks/useDebounceEffect";
+import Button from "../Button";
 import { defaultLabelClassName } from "../Input";
+import Skeleton from "../Skeleton";
+import Tooltip from "../Tooltip";
+import { canvasPreview } from "./canvasPreview";
 
 export type PictureCropInputRef = {
   handleCrop: () => Promise<void>;
@@ -29,7 +29,7 @@ export default function PictureCropInput({
   onChange,
   loading,
   className,
-  previewSizeClassNames = "w-52",
+  previewSizeClassNames = "size-52",
   previewContainerClassName,
   cropButtonClassName,
   aspect,
@@ -202,7 +202,7 @@ export default function PictureCropInput({
           {label}
         </label>
       )}
-      <div className="flex gap-2">
+      <div className="flex items-start gap-2">
         {loading && <Skeleton className={previewSizeClassNames} />}
         {src && (
           <>
