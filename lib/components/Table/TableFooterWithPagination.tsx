@@ -30,7 +30,7 @@ export default function TableFooterWithPagination({
 }: TableFooterWithPaginationProps) {
   const pageCount =
     totalItems !== undefined && itemsPerPage !== undefined
-      ? Math.floor(totalItems / itemsPerPage)
+      ? Math.ceil(totalItems / itemsPerPage)
       : 0;
   const [page, setPage] = useState(currentPage);
   useEffect(() => {
@@ -67,7 +67,7 @@ export default function TableFooterWithPagination({
           {previousText}
         </Button>
         <Button
-          disabled={page === pageCount - 1}
+          disabled={page === pageCount}
           onClick={handlePageClick(page + 1)}
         >
           {nextText}
