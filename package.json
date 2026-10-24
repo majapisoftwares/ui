@@ -1,6 +1,6 @@
 {
   "name": "@majapisoftwares/ui",
-  "version": "6.0.0",
+  "version": "6.1.0",
   "description": "Shared Workbench UI and UX standards based on shadcn/ui",
   "publishConfig": {
     "access": "public"

@@ -46,7 +46,9 @@ export interface AppShellProps {
   header?: ReactNode;
   /** Rendered at the end of the header, e.g. locale or theme switchers. */
   actions?: ReactNode;
-  /** Sidebar footer, e.g. a user menu. */
+  /** Below the logo in the sidebar header, e.g. `WorkspaceSwitcher`. */
+  sidebarHeader?: ReactNode;
+  /** Sidebar footer, e.g. `UserMenu`. */
   footer?: ReactNode;
   defaultMode?: SidebarMode;
   defaultWidth?: number;
@@ -96,6 +98,7 @@ export function AppShell({
   header,
   actions,
   footer,
+  sidebarHeader,
   defaultMode,
   defaultWidth,
   fillHeight = false,
@@ -121,6 +124,7 @@ export function AppShell({
             <div className="hidden group-data-[collapsible=icon]:block">
               <SidebarCollapse />
             </div>
+            {sidebarHeader}
           </SidebarHeader>
           <SidebarContent>
             {navigation.map((group, index) => (

@@ -18,6 +18,10 @@ import {
 import { useMessages } from "@majapisoftwares/ui/lib/i18n";
 import { appName } from "@/lib/app";
 import { messages } from "@/messages";
+import {
+  ExampleUserMenu,
+  ExampleWorkspaceSwitcher,
+} from "@/components/sidebar-examples";
 
 const routes = { dashboard: "/", login: "/login", signup: "/signup" } as const;
 type RouteId = keyof typeof routes;
@@ -67,6 +71,8 @@ export function AppFrame({ children }: { children: ReactNode }) {
         </Breadcrumb>
       }
       actions={<PreferenceControls />}
+      sidebarHeader={<ExampleWorkspaceSwitcher />}
+      footer={<ExampleUserMenu />}
     >
       {children}
     </AppShell>

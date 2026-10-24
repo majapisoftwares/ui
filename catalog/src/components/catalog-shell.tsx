@@ -23,6 +23,10 @@ import {
   useDocumentTitle,
 } from "@majapisoftwares/ui/patterns/preferences";
 import { messages } from "@/messages";
+import {
+  ExampleUserMenu,
+  ExampleWorkspaceSwitcher,
+} from "@/components/sidebar-examples";
 
 const routes = {
   dashboard: "/",
@@ -80,6 +84,8 @@ export function CatalogShell({ children }: { children: ReactNode }) {
         </Breadcrumb>
       }
       actions={<PreferenceControls />}
+      sidebarHeader={<ExampleWorkspaceSwitcher />}
+      footer={<ExampleUserMenu />}
       // The dashboard demonstrates a table that fills the screen.
       fillHeight={activeId === "dashboard"}
     >

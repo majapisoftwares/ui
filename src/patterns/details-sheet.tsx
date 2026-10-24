@@ -30,7 +30,8 @@ export function DetailsSheet({
             <SheetDescription>{description}</SheetDescription>
           ) : null}
         </SheetHeader>
-        <div className="px-4 pb-8">{children}</div>
+        {/* Same inset as SheetHeader (p-6). */}
+        <div className="px-6 pb-8">{children}</div>
       </SheetContent>
     </Sheet>
   );
