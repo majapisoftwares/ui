@@ -9,6 +9,7 @@ export default tseslint.config(
       "**/.next/**",
       "artifacts/**",
       "starters/**",
+      "catalog/**",
     ],
   },
   js.configs.recommended,

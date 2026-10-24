@@ -1,9 +1,10 @@
+import type { ReactNode } from "react";
 import { Badge } from "../components/ui/badge";
 export function StatusBadge({
   children,
   tone = "neutral",
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
   tone?: "neutral" | "success" | "warning" | "danger";
 }) {
   return (
@@ -12,11 +13,11 @@ export function StatusBadge({
         tone === "danger"
           ? "destructive"
           : tone === "neutral"
-            ? "secondary"
+            ? "outline"
             : tone
       }
     >
-      <span className="wb-status-dot" aria-hidden="true" />
+      <span className="size-1.5 rounded-full bg-current" aria-hidden="true" />
       {children}
     </Badge>
   );

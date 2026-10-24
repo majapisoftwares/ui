@@ -1,58 +1,39 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { AppShell, type NavigationItem } from "../patterns/app-shell";
-import { PageHeader, MetricStrip } from "../patterns/page-header";
+import { AppShell, type AppShellProps } from "../patterns/app-shell";
+import { PageHeader, MetricStrip, type Metric } from "../patterns/page-header";
 import { DataTable, type DataTableProps } from "../patterns/data-table";
 
-export interface AdminDashboardProps<T> {
+export interface AdminDashboardProps<T> extends Omit<
+  AppShellProps,
+  "children"
+> {
   title: string;
-  description: string;
-  navigation: NavigationItem[];
-  activeId: string;
-  onNavigate: (id: string) => void;
-  metrics: Parameters<typeof MetricStrip>[0]["items"];
+  description?: string;
+  metrics: Metric[];
   table: DataTableProps<T>;
-  brand?: string;
-  brandMark?: ReactNode;
-  context?: ReactNode;
-  actions?: ReactNode;
+  /** Page-level actions next to the title. */
+  pageActions?: ReactNode;
   beforeTable?: ReactNode;
   afterTable?: ReactNode;
-  footer?: ReactNode;
 }
 export function AdminDashboard<T>({
   title,
   description,
-  navigation,
-  activeId,
-  onNavigate,
   metrics,
   table,
-  brand,
-  brandMark,
-  context,
-  actions,
+  pageActions,
   beforeTable,
   afterTable,
-  footer,
+  ...shell
 }: AdminDashboardProps<T>) {
   return (
-    <AppShell
-      title={title}
-      context={context}
-      navigation={navigation}
-      activeId={activeId}
-      onNavigate={onNavigate}
-      brand={brand}
-      brandMark={brandMark}
-      footer={footer}
-    >
+    <AppShell {...shell}>
       <PageHeader
-        eyebrow="Painel administrativo"
         title={title}
         description={description}
-        actions={actions}
+        actions={pageActions}
       />
       <MetricStrip items={metrics} />
       {beforeTable}

@@ -15,5 +15,5 @@
     "paths": { "@/*": ["./src/*"] },
     "ignoreDeprecations": "6.0"
   },
-  "include": ["src", "examples", "vite.config.ts"]
+  "include": ["src"]
 }

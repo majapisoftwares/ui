@@ -1,6 +1,5 @@
-import type { Metadata } from "next";
-import { AuthClient } from "@/components/auth-client";
-export const metadata: Metadata = { title: "Criar conta" };
+import { AuthView } from "@/components/auth-view";
+
 export default function SignupPage() {
-  return <AuthClient mode="signup" />;
+  return <AuthView mode="signup" />;
 }

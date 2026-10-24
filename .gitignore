@@ -8,4 +8,6 @@ artifacts/
 .wrangler/
 .vercel/
 *.tgz
-public/release.json
+catalog/public/release.json
+catalog/out/
+catalog/next-env.d.ts

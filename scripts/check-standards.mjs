@@ -19,6 +19,8 @@ async function visit(path) {
     if (!consumer && name.startsWith("components/ui/")) continue;
     if (consumer && /(?:^|\/)components\/ui\//.test(name))
       violations.push(`${name}: local UI primitive copies are forbidden`);
+    if (/components\/native-select|<NativeSelect\b/.test(text))
+      violations.push(`${name}: use Select (Base UI), not a native select`);
     if (/<(?:button|input|select|table|dialog)(?:\s|>)/.test(text))
       violations.push(`${name}: use the shared UI primitive`);
     if (

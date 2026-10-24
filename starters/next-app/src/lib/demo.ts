@@ -6,22 +6,7 @@ export interface DemoRecord {
 }
 // Replace this illustrative dataset with authorized server-side data in the product.
 export const demoRecords: DemoRecord[] = [
-  {
-    id: "dev",
-    name: "Ambiente de desenvolvimento",
-    region: "sa-east-1",
-    state: "running",
-  },
-  {
-    id: "review",
-    name: "Ambiente de revisão",
-    region: "sa-east-1",
-    state: "stopped",
-  },
-  {
-    id: "worker",
-    name: "Worker de integração",
-    region: "us-east-1",
-    state: "running",
-  },
+  { id: "dev", name: "development", region: "sa-east-1", state: "running" },
+  { id: "review", name: "review", region: "sa-east-1", state: "stopped" },
+  { id: "worker", name: "worker", region: "us-east-1", state: "running" },
 ];

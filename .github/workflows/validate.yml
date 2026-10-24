@@ -17,6 +17,9 @@ jobs:
       - run: npm run check:standards
       - run: npm run build
       - run: npm run test:starter
+      - run: npm run lint -w catalog
+      - run: npm run typecheck -w catalog
+      - run: npm run check:ui -w catalog
   next-starter:
     runs-on: ubuntu-latest
     defaults:

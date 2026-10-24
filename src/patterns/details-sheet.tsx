@@ -18,7 +18,7 @@ export function DetailsSheet({
   open: boolean;
   onOpenChange: (open: boolean) => void;
   title: string;
-  description: string;
+  description?: string;
   children: ReactNode;
 }) {
   return (
@@ -26,7 +26,9 @@ export function DetailsSheet({
       <SheetContent className="overflow-y-auto">
         <SheetHeader>
           <SheetTitle>{title}</SheetTitle>
-          <SheetDescription>{description}</SheetDescription>
+          {description ? (
+            <SheetDescription>{description}</SheetDescription>
+          ) : null}
         </SheetHeader>
         <div className="px-4 pb-8">{children}</div>
       </SheetContent>
@@ -39,11 +41,11 @@ export function DetailList({
   items: { label: string; value: ReactNode }[];
 }) {
   return (
-    <dl className="wb-details">
+    <dl className="grid gap-4 text-sm">
       {items.map((item) => (
-        <div key={item.label}>
-          <dt>{item.label}</dt>
-          <dd>{item.value}</dd>
+        <div key={item.label} className="grid gap-1">
+          <dt className="text-muted-foreground">{item.label}</dt>
+          <dd className="font-medium break-words">{item.value}</dd>
         </div>
       ))}
     </dl>

@@ -24,8 +24,12 @@ test("starter creates an independent project and refuses to overwrite it", async
   assert.equal(lock.name, pkg.name);
   assert.equal(lock.packages[""].name, pkg.name);
   assert.equal(pkg.dependencies.next, "16.4.3");
-  assert.equal(pkg.dependencies["@majapisoftwares/ui"], "5.0.0");
-  for (const route of ["dashboard", "login", "signup"])
+  const library = JSON.parse(
+    await readFile(new URL("../package.json", import.meta.url), "utf8"),
+  );
+  // The starter must always track the current library release.
+  assert.equal(pkg.dependencies["@majapisoftwares/ui"], library.version);
+  for (const route of ["(app)", "login", "signup"])
     assert.ok(
       await readFile(join(destination, "src/app", route, "page.tsx"), "utf8"),
     );

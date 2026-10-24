@@ -1,36 +1,30 @@
 import type { ReactNode } from "react";
+
+/** Centered auth page: brand on top, form card below, optional footer. */
 export function AuthLayout({
+  brand,
   children,
-  brand = "workbench",
-  brandMark = "w.",
-  title,
-  description,
-  aside,
   footer,
 }: {
+  brand?: ReactNode;
   children: ReactNode;
-  brand?: string;
-  brandMark?: ReactNode;
-  title: string;
-  description: string;
-  aside?: ReactNode;
   footer?: ReactNode;
 }) {
   return (
-    <main className="wb-auth">
-      <section className="wb-auth-intro">
-        <div className="wb-brand">
-          <span>{brandMark}</span>
-          {brand}
-        </div>
-        <div>
-          <h1>{title}</h1>
-          <p>{description}</p>
-        </div>
-        {aside}
-        <footer>{footer}</footer>
-      </section>
-      <section className="wb-auth-panel">{children}</section>
+    <main className="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10">
+      <div className="flex w-full max-w-sm flex-col gap-6">
+        {brand ? (
+          <div className="flex items-center gap-2 self-center font-medium">
+            {brand}
+          </div>
+        ) : null}
+        {children}
+        {footer ? (
+          <div className="text-center text-xs text-balance text-muted-foreground">
+            {footer}
+          </div>
+        ) : null}
+      </div>
     </main>
   );
 }

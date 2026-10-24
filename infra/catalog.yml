@@ -70,13 +70,14 @@ Resources:
           ViewerProtocolPolicy: redirect-to-https
           Compress: true
           CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6 # Managed-CachingOptimized
+        # Static Next.js export: unknown paths (S3 answers 403) get the 404 page.
         CustomErrorResponses:
           - ErrorCode: 403
-            ResponseCode: 200
-            ResponsePagePath: /index.html
+            ResponseCode: 404
+            ResponsePagePath: /404
           - ErrorCode: 404
-            ResponseCode: 200
-            ResponsePagePath: /index.html
+            ResponseCode: 404
+            ResponsePagePath: /404
 
   BucketPolicy:
     Type: AWS::S3::BucketPolicy
