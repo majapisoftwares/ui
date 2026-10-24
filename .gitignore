@@ -5,3 +5,6 @@ artifacts/
 .env*
 .next/
 *.tsbuildinfo
+.wrangler/
+.vercel/
+*.tgz

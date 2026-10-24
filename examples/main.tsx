@@ -187,6 +187,8 @@ function Catalog() {
     <div className={dark ? "dark" : ""}>
       <AppShell
         title="Padrões de produto"
+        brand="Majapi UI"
+        brandMark="m."
         context={
           <Button variant="outline" onClick={() => setDark(!dark)}>
             {dark ? "Tema claro" : "Tema escuro"}
@@ -197,7 +199,7 @@ function Catalog() {
         onNavigate={setView}
         footer={
           <>
-            @workbench/ui · v0.2.0
+            @majapisoftwares/ui · v5.0.0
             <br />
             Catálogo com dados demonstrativos
           </>

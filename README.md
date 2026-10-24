@@ -1,6 +1,6 @@
-# Workbench UI
+# Majapi UI
 
-Biblioteca pública `@workbench/ui`, base obrigatória de código, interface e experiência de **todos os apps atuais e futuros do Workbench**, baseada em shadcn/ui (**Base UI / base-nova**), React e Tailwind CSS v4. Repositório: https://github.com/majapisoftwares/workbench-ui.
+Biblioteca pública `@majapisoftwares/ui`, base obrigatória de código, interface e experiência de **todos os apps atuais e futuros do Workbench**, baseada em shadcn/ui (**Base UI / base-nova**), React e Tailwind CSS v4. Repositório: https://github.com/majapisoftwares/workbench-ui.
 
 ## Regra central
 
@@ -10,7 +10,7 @@ Composição de páginas, lógica de domínio, dados e permissões pertencem ao 
 
 ## Criar um app Next.js
 
-O starter completo fica em [starters/next-app](starters/next-app), com **Next.js 16.4.3** (latest estável verificado na criação), React, App Router, TypeScript, Tailwind e esta biblioteca já configurados. A dependência da UI é um commit público fixo; não depende de caminhos para este checkout.
+O starter completo fica em [starters/next-app](starters/next-app), com **Next.js 16.4.3** (latest estável verificado na criação), React, App Router, TypeScript, Tailwind e esta biblioteca já configurados. A dependência da UI é uma versão npm fixa; não depende de caminhos para este checkout.
 
 Dentro deste repositório:
 
@@ -34,16 +34,18 @@ Abra http://127.0.0.1:4318. O catálogo permite revisar componentes, temas claro
 
 ## Consumir
 
-Pacote distribuído pelo repositório Git público, com commit fixo no package.json e lockfile do consumidor, sem exigir credenciais para leitura. O campo private no package.json impede publicação acidental no npm e não torna o repositório privado. O pacote exporta fontes TSX para bundlers React/TypeScript (Vite ou Next.js), não para execução direta em Node sem transformação.
+Pacote público **@majapisoftwares/ui@5.0.0**, publicado na organização npm existente. Instale com `npm install --save-exact @majapisoftwares/ui@5.0.0` e versione o lockfile. O pacote exporta fontes TSX para bundlers React/TypeScript (Vite ou Next.js), não para execução direta em Node sem transformação. O starter e o gerador permanecem neste repositório Git, separados do pacote npm da biblioteca.
+
+O catálogo público está em **https://ui.majapi.com**. A versão 5 substitui a base 4.x com uma mudança incompatível de API e a base antes chamada @workbench/ui. Apps existentes em ^4 permanecem nessa linha até migração explícita.
 
 ```tsx
-import { Button } from "@workbench/ui/components/button";
-import { DataTable } from "@workbench/ui/patterns/data-table";
-import { AdminDashboard } from "@workbench/ui/templates/admin-dashboard";
-import { AuthLayout } from "@workbench/ui/templates/auth-layout";
-import { LoginForm } from "@workbench/ui/templates/login-form";
-import { SignupForm } from "@workbench/ui/templates/signup-form";
-import "@workbench/ui/styles.css";
+import { Button } from "@majapisoftwares/ui/components/button";
+import { DataTable } from "@majapisoftwares/ui/patterns/data-table";
+import { AdminDashboard } from "@majapisoftwares/ui/templates/admin-dashboard";
+import { AuthLayout } from "@majapisoftwares/ui/templates/auth-layout";
+import { LoginForm } from "@majapisoftwares/ui/templates/login-form";
+import { SignupForm } from "@majapisoftwares/ui/templates/signup-form";
+import "@majapisoftwares/ui/styles.css";
 ```
 
 O CSS inclui os tokens, fontes locais e o Tailwind, com `@source` da biblioteca. O app precisa processar esse CSS com Tailwind v4. Faça dedupe de react/react-dom no Vite se estiver desenvolvendo com um checkout local. Dependências de catálogo, como Vite, não entram no código executado pelo consumidor.

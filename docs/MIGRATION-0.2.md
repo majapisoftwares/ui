@@ -12,7 +12,7 @@ A base inicial era radix-nova. A versão 0.2 usa base-nova e @base-ui/react 1.9.
 
 ## Atualizar um produto
 
-1. Atualize a dependência @workbench/ui para o commit publicado da versão 0.2 e regenere o lockfile.
+1. Atualize a dependência @majapisoftwares/ui para o commit publicado da versão 0.2 e regenere o lockfile.
 2. Substitua asChild por render e nativeButton=false em links/triggers não nativos.
 3. Preserve imports dos padrões compostos, evitando reimplementar o comportamento no produto.
 4. Execute typecheck, lint/padrões, build e verificações de navegação, foco, overlays, campos e telas menores.

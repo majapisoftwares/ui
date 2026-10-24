@@ -1,16 +1,21 @@
 {
-  "name": "@workbench/ui",
-  "version": "0.2.0",
+  "name": "@majapisoftwares/ui",
+  "version": "5.0.0",
   "description": "Shared Workbench UI and UX standards based on shadcn/ui",
-  "private": true,
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/majapisoftwares/workbench-ui.git"
+  },
+  "homepage": "https://ui.majapi.com",
   "type": "module",
   "sideEffects": [
     "**/*.css"
   ],
   "files": [
     "scripts/check-standards.mjs",
-    "scripts/create-app.mjs",
-    "starters/next-app",
     "src",
     "components.json",
     "docs",
