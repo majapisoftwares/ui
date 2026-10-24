@@ -9,9 +9,10 @@ Parameters:
     Type: String
     Default: ''
     Description: ACM certificate in us-east-1. Leave empty until the certificate is ISSUED.
-  GitHubRepository:
+  GitHubSubjectPrefix:
     Type: String
-    Default: majapisoftwares/workbench-ui
+    Default: repo:majapisoftwares@81927410/workbench-ui@1431753710
+    Description: OIDC sub prefix (repo uses immutable subjects; see GET /repos/{repo}/actions/oidc/customization/sub).
 
 Conditions:
   HasCertificate: !Not [!Equals [!Ref CertificateArn, '']]
@@ -106,7 +107,7 @@ Resources:
             Condition:
               StringEquals:
                 token.actions.githubusercontent.com:aud: sts.amazonaws.com
-                token.actions.githubusercontent.com:sub: !Sub 'repo:${GitHubRepository}:ref:refs/heads/main'
+                token.actions.githubusercontent.com:sub: !Sub '${GitHubSubjectPrefix}:ref:refs/heads/main'
       Policies:
         - PolicyName: deploy-catalog
           PolicyDocument:
