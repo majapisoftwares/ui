@@ -1,5 +1,7 @@
 # Padrão v1 de código e UI/UX
 
+`LoginForm` aceita `mode="providers"` com `alternative` obrigatório para autenticação exclusiva por OAuth/SSO, sem campos de senha nem callback de credenciais. O modo padrão continua `credentials`. Catálogo e starter demonstram em `/login/provider`. A identidade autenticada usa `UserMenu` no slot `footer` do `AppShell`; tema, idioma e saída permanecem no padrão compartilhado.
+
 Base atual: shadcn base-luma com @base-ui/react. Os componentes interativos expõem fronteiras use client para uso no Next.js App Router. A migração da API Radix está documentada em MIGRATION-0.2.md.
 
 ## Arquitetura e código

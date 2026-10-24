@@ -23,7 +23,13 @@ function TextLink({ href, children }: { href: string; children: string }) {
   );
 }
 
-export function AuthView({ mode }: { mode: "login" | "signup" }) {
+export function AuthView({
+  mode,
+  providerOnly = false,
+}: {
+  mode: "login" | "signup";
+  providerOnly?: boolean;
+}) {
   const t = useMessages(messages);
   useDocumentTitle(`${mode === "login" ? t.login : t.signup} · Majapi UI`);
   return (
@@ -38,7 +44,16 @@ export function AuthView({ mode }: { mode: "login" | "signup" }) {
     >
       {mode === "login" ? (
         <LoginForm
-          onSubmit={() => undefined}
+          {...(providerOnly
+            ? { mode: "providers" as const }
+            : { onSubmit: () => undefined })}
+          alternative={
+            providerOnly ? (
+              <Button nativeButton={false} render={<Link href="/" />}>
+                {t.providerLogin}
+              </Button>
+            ) : undefined
+          }
           recovery={<TextLink href="/login">{t.forgot}</TextLink>}
           footer={
             <>

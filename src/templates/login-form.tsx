@@ -35,8 +35,7 @@ export interface LoginValues {
   email: string;
   password: string;
 }
-export interface LoginFormProps {
-  onSubmit: (values: LoginValues) => void;
+interface LoginFormOptions {
   pending?: boolean;
   error?: string;
   title?: string;
@@ -48,7 +47,13 @@ export interface LoginFormProps {
   alternative?: ReactNode;
   footer?: ReactNode;
 }
+export type LoginFormProps = LoginFormOptions &
+  (
+    | { mode?: "credentials"; onSubmit: (values: LoginValues) => void }
+    | { mode: "providers"; onSubmit?: never; alternative: ReactNode }
+  );
 export function LoginForm({
+  mode = "credentials",
   onSubmit,
   pending = false,
   error,
@@ -73,7 +78,7 @@ export function LoginForm({
           onSubmit={(event) => {
             event.preventDefault();
             const data = new FormData(event.currentTarget);
-            onSubmit({
+            onSubmit?.({
               email: String(data.get("email") ?? ""),
               password: String(data.get("password") ?? ""),
             });
@@ -86,36 +91,42 @@ export function LoginForm({
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
             ) : null}
-            <Field>
-              <FieldLabel htmlFor={`${id}-email`}>{t.email}</FieldLabel>
-              <Input
-                id={`${id}-email`}
-                name="email"
-                type="email"
-                autoComplete="username"
-                required
-                disabled={pending}
-              />
-            </Field>
-            <Field>
-              <div className="flex items-center">
-                <FieldLabel htmlFor={`${id}-password`}>{t.password}</FieldLabel>
-                {recovery ? (
-                  <div className="ml-auto text-sm">{recovery}</div>
-                ) : null}
-              </div>
-              <Input
-                id={`${id}-password`}
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                required
-                disabled={pending}
-              />
-            </Field>
-            <Button type="submit" disabled={pending}>
-              {pending ? t.pending : (submitLabel ?? t.submit)}
-            </Button>
+            {mode === "credentials" ? (
+              <>
+                <Field>
+                  <FieldLabel htmlFor={`${id}-email`}>{t.email}</FieldLabel>
+                  <Input
+                    id={`${id}-email`}
+                    name="email"
+                    type="email"
+                    autoComplete="username"
+                    required
+                    disabled={pending}
+                  />
+                </Field>
+                <Field>
+                  <div className="flex items-center">
+                    <FieldLabel htmlFor={`${id}-password`}>
+                      {t.password}
+                    </FieldLabel>
+                    {recovery ? (
+                      <div className="ml-auto text-sm">{recovery}</div>
+                    ) : null}
+                  </div>
+                  <Input
+                    id={`${id}-password`}
+                    name="password"
+                    type="password"
+                    autoComplete="current-password"
+                    required
+                    disabled={pending}
+                  />
+                </Field>
+                <Button type="submit" disabled={pending}>
+                  {pending ? t.pending : (submitLabel ?? t.submit)}
+                </Button>
+              </>
+            ) : null}
             {footer ? (
               <div className="text-center text-sm text-muted-foreground">
                 {footer}

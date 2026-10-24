@@ -25,7 +25,13 @@ function TextLink({ href, children }: { href: string; children: string }) {
 }
 
 // The forms only demonstrate UI: wire onSubmit to real server-side auth.
-export function AuthView({ mode }: { mode: "login" | "signup" }) {
+export function AuthView({
+  mode,
+  providerOnly = false,
+}: {
+  mode: "login" | "signup";
+  providerOnly?: boolean;
+}) {
   const t = useMessages(messages);
   useDocumentTitle(`${mode === "login" ? t.login : t.signup} · ${appName}`);
   return (
@@ -40,7 +46,16 @@ export function AuthView({ mode }: { mode: "login" | "signup" }) {
     >
       {mode === "login" ? (
         <LoginForm
-          onSubmit={() => undefined}
+          {...(providerOnly
+            ? { mode: "providers" as const }
+            : { onSubmit: () => undefined })}
+          alternative={
+            providerOnly ? (
+              <Button nativeButton={false} render={<Link href="/" />}>
+                {t.providerLogin}
+              </Button>
+            ) : undefined
+          }
           footer={
             <>
               {t.noAccount} <TextLink href="/signup">{t.signup}</TextLink>
