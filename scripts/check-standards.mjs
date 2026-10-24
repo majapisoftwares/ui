@@ -14,6 +14,8 @@ async function visit(path) {
     if (!/\.[jt]sx?$/.test(entry.name)) continue;
     const text = await readFile(file, "utf8"),
       name = relative(root, file).replaceAll("\\", "/");
+    if (/from\s+["'](?:radix-ui|@radix-ui\/)/.test(text))
+      violations.push(`${name}: the Workbench foundation uses Base UI`);
     if (!consumer && name.startsWith("components/ui/")) continue;
     if (consumer && /(?:^|\/)components\/ui\//.test(name))
       violations.push(`${name}: local UI primitive copies are forbidden`);

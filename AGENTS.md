@@ -1,5 +1,7 @@
 # Padrão obrigatório do Workbench
 
+- A base de primitivas é shadcn sobre Base UI (base-nova), não Radix. Use render para composição e nativeButton=false quando Button renderizar Link/a. Preserve as fronteiras use client da biblioteca em consumidores Next.js.
+
 - Esta biblioteca pública é a base obrigatória de todos os apps atuais e futuros do Workbench, incluindo administrativos, dashboards, login e cadastro. Leia README.md e docs/STANDARDS.md antes de alterar interfaces.
 - Antes de criar UI em um app, procure o componente, variante ou padrão existente aqui. Reutilize-o diretamente como dependência.
 - Se faltar uma capacidade reutilizável, contribua primeiro para esta biblioteca: adicione uma API genérica, documente o comportamento e mostre o uso no catálogo. Depois atualize o app para o commit publicado.

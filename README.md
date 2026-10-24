@@ -1,6 +1,6 @@
 # Workbench UI
 
-Biblioteca pública `@workbench/ui`, base obrigatória de código, interface e experiência de **todos os apps atuais e futuros do Workbench**, baseada em shadcn/ui (Radix Nova), React e Tailwind CSS v4. Repositório: https://github.com/majapisoftwares/workbench-ui.
+Biblioteca pública `@workbench/ui`, base obrigatória de código, interface e experiência de **todos os apps atuais e futuros do Workbench**, baseada em shadcn/ui (**Base UI / base-nova**), React e Tailwind CSS v4. Repositório: https://github.com/majapisoftwares/workbench-ui.
 
 ## Regra central
 
@@ -51,4 +51,4 @@ npm run build
 git diff --check
 ```
 
-Os componentes originais foram instalados pelo CLI shadcn 4.22.1, preset radix-nova. Atribuição upstream: [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). O Cloud Manager é o primeiro consumidor real.
+Os componentes foram instalados pelo CLI shadcn 4.22.1, preset base-nova e Base UI 1.9.0. A versão 0.2 migra a base anterior Radix; veja [docs/MIGRATION-0.2.md](docs/MIGRATION-0.2.md). Atribuição upstream: [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). O Cloud Manager é o primeiro consumidor real.

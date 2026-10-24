@@ -1,6 +1,6 @@
 # Third-party notices
 
-The primitives in src/components/ui were generated with shadcn/ui 4.22.1, radix-nova preset, from https://github.com/shadcn-ui/ui and https://ui.shadcn.com. They are distributed under the MIT License:
+The primitives in src/components/ui were generated with shadcn/ui 4.22.1, base-nova preset (Base UI), from https://github.com/shadcn-ui/ui and https://ui.shadcn.com. They are distributed under the MIT License:
 
 MIT License
 

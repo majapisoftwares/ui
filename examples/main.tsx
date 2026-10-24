@@ -197,7 +197,7 @@ function Catalog() {
         onNavigate={setView}
         footer={
           <>
-            @workbench/ui · v0.1.0
+            @workbench/ui · v0.2.0
             <br />
             Catálogo com dados demonstrativos
           </>
@@ -207,7 +207,7 @@ function Catalog() {
           eyebrow="Design system / biblioteca compartilhada"
           title="Um padrão. Todo o Workbench."
           description="Componentes e comportamentos que evoluem juntos, em todos os produtos."
-          actions={<StatusBadge tone="success">shadcn · Radix</StatusBadge>}
+          actions={<StatusBadge tone="success">shadcn · Base UI</StatusBadge>}
         />
         {view === "patterns" ? (
           <>

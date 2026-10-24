@@ -2,7 +2,15 @@ import js from "@eslint/js";
 import tseslint from "typescript-eslint";
 import hooks from "eslint-plugin-react-hooks";
 export default tseslint.config(
-  { ignores: ["dist/**", "node_modules/**", "artifacts/**"] },
+  {
+    ignores: [
+      "dist/**",
+      "**/node_modules/**",
+      "**/.next/**",
+      "artifacts/**",
+      "starters/**",
+    ],
+  },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {

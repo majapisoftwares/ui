@@ -1,3 +1,5 @@
+"use client";
+
 import type { ReactNode } from "react";
 import { AppShell, type NavigationItem } from "../patterns/app-shell";
 import { PageHeader, MetricStrip } from "../patterns/page-header";

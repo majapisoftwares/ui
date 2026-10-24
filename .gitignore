@@ -3,3 +3,5 @@ dist/
 artifacts/
 *.log
 .env*
+.next/
+*.tsbuildinfo

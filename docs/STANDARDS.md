@@ -1,5 +1,7 @@
 # Padrão v1 de código e UI/UX
 
+Base atual: shadcn base-nova com @base-ui/react. Os componentes interativos expõem fronteiras use client para uso no Next.js App Router. A migração da API Radix está documentada em MIGRATION-0.2.md.
+
 ## Arquitetura e código
 
 TypeScript em modo strict, React com componentes funcionais e composição. APIs genéricas tipadas; sem any para contornar contratos, estado derivado duplicado ou dependências de domínio na UI. Imports públicos por subpath, internos relativos. Dependências e lockfile versionados. Interface, acesso a dados, autorização e operações de infraestrutura permanecem separados. Entradas externas são validadas no servidor; erros e resultados incompletos são explícitos.
