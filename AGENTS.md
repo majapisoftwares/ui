@@ -1,5 +1,7 @@
 # Padrão obrigatório do Workbench
 
+- Novos apps web devem partir de starters/next-app, criado por npm run create:app -- <diretorio-novo>. O starter usa a versão estável do Next.js fixada e validada no manifesto; atualizações devem manter lockfile, CI e revisão de compatibilidade.
+
 - A base de primitivas é shadcn sobre Base UI (base-nova), não Radix. Use render para composição e nativeButton=false quando Button renderizar Link/a. Preserve as fronteiras use client da biblioteca em consumidores Next.js.
 
 - Esta biblioteca pública é a base obrigatória de todos os apps atuais e futuros do Workbench, incluindo administrativos, dashboards, login e cadastro. Leia README.md e docs/STANDARDS.md antes de alterar interfaces.

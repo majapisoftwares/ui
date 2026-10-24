@@ -1,0 +1,58 @@
+#!/usr/bin/env node
+import { access, cp, readFile, writeFile } from "node:fs/promises";
+import { resolve, basename } from "node:path";
+import { fileURLToPath, URL } from "node:url";
+
+const requested = process.argv[2];
+if (!requested || process.argv.length !== 3) {
+  console.error("Usage: npm run create:app -- <new-project-directory>");
+  process.exit(1);
+}
+const target = resolve(requested);
+const name = basename(target)
+  .toLowerCase()
+  .replace(/[^a-z0-9-]/g, "-");
+if (!/^[a-z0-9][a-z0-9-]{0,99}$/.test(name))
+  throw new Error("Choose a valid project directory name.");
+try {
+  await access(target);
+  throw new Error(
+    "Target directory already exists. Choose a new directory; no files were changed.",
+  );
+} catch (error) {
+  if (error.code !== "ENOENT") throw error;
+}
+const source = fileURLToPath(new URL("../starters/next-app", import.meta.url));
+const excluded = new Set([
+  "node_modules",
+  ".next",
+  ".git",
+  ".npmignore",
+  "gitignore.template",
+]);
+await cp(source, target, {
+  recursive: true,
+  errorOnExist: true,
+  force: false,
+  filter: (path) =>
+    !excluded.has(basename(path)) &&
+    !path.endsWith(".tsbuildinfo") &&
+    !basename(path).startsWith(".env"),
+});
+const gitignore = await readFile(
+  new URL("../starters/next-app/gitignore.template", import.meta.url),
+  "utf8",
+);
+await writeFile(resolve(target, ".gitignore"), gitignore);
+const packagePath = resolve(target, "package.json");
+const packageJson = JSON.parse(await readFile(packagePath, "utf8"));
+packageJson.name = name;
+await writeFile(packagePath, JSON.stringify(packageJson, null, 2) + "\n");
+const lockPath = resolve(target, "package-lock.json");
+const lock = JSON.parse(await readFile(lockPath, "utf8"));
+lock.name = name;
+lock.packages[""].name = name;
+await writeFile(lockPath, JSON.stringify(lock, null, 2) + "\n");
+console.log(
+  `Created ${target}\n\nNext steps:\n  cd "${target}"\n  npm ci\n  npm run dev\n\nRoutes: /dashboard, /login, /signup. Demo UI only; connect product authentication separately.`,
+);

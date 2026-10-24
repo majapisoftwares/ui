@@ -9,6 +9,8 @@
   ],
   "files": [
     "scripts/check-standards.mjs",
+    "scripts/create-app.mjs",
+    "starters/next-app",
     "src",
     "components.json",
     "docs",
@@ -23,6 +25,8 @@
     "./lib/utils": "./src/lib/utils.ts"
   },
   "scripts": {
+    "create:app": "node scripts/create-app.mjs",
+    "test:starter": "node --test scripts/create-app.test.mjs",
     "dev": "vite --host 127.0.0.1 --port 4318 --strictPort",
     "build": "tsc --noEmit && vite build",
     "typecheck": "tsc --noEmit",

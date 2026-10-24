@@ -8,6 +8,21 @@ Biblioteca pública `@workbench/ui`, base obrigatória de código, interface e e
 
 Composição de páginas, lógica de domínio, dados e permissões pertencem ao app. Primitivos, variantes, tokens e comportamentos reutilizáveis pertencem à biblioteca. Consulte [AGENTS.md](AGENTS.md) e [docs/STANDARDS.md](docs/STANDARDS.md).
 
+## Criar um app Next.js
+
+O starter completo fica em [starters/next-app](starters/next-app), com **Next.js 16.4.3** (latest estável verificado na criação), React, App Router, TypeScript, Tailwind e esta biblioteca já configurados. A dependência da UI é um commit público fixo; não depende de caminhos para este checkout.
+
+Dentro deste repositório:
+
+```sh
+npm run create:app -- ../meu-app
+cd ../meu-app
+npm ci
+npm run dev
+```
+
+O comando não sobrescreve diretórios existentes. Copia dashboard, login, cadastro, carregamento/erro/404, regras de agentes, lockfile e CI, sem node_modules, builds ou secrets. Customize por componentes, props e slots. As telas de autenticação são demonstrativas e devem ser conectadas à autenticação real do produto.
+
 ## Catálogo visual
 
 ```powershell
