@@ -1,6 +1,6 @@
 # Workbench Next.js starter
 
-Template independente de aplicativo com **Next.js 16.4.3**, React 19.3.1, TypeScript strict, App Router, Tailwind v4 e **@workbench/ui 0.2 / shadcn Base UI** já configurados. Gerado inicialmente por create-next-app 16.4.3 e adaptado para consumir a biblioteca compartilhada sem cópias de componentes.
+Template independente de aplicativo com **Next.js 16.4.3**, React 19.3.1, TypeScript strict, App Router, Tailwind v4 e **@majapisoftwares/ui 0.2 / shadcn Base UI** já configurados. Gerado inicialmente por create-next-app 16.4.3 e adaptado para consumir a biblioteca compartilhada sem cópias de componentes.
 
 ## Executar
 
@@ -18,7 +18,7 @@ Os formulários demonstram a UI e não enviam nem persistem credenciais. Dashboa
 ## Estrutura
 
 - `src/app`: páginas/layout Server Components por padrão, metadata e fronteiras de erro/carregamento.
-- `src/components`: composição de domínio em Client Components, importando diretamente `@workbench/ui`.
+- `src/components`: composição de domínio em Client Components, importando diretamente `@majapisoftwares/ui`.
 - `src/lib/demo.ts`: dataset ilustrativo substituível por dados autorizados no servidor.
 - `src/app/globals.css`: importa os tokens/estilos da biblioteca; não contém overrides de componentes.
 - `next.config.ts`: `transpilePackages`, cache components e o loader Tailwind/Turbopack gerado pelo Next.js 16.4.3. Root fixo no próprio projeto, independente do diretório pai.

@@ -5,8 +5,8 @@ import {
   EmptyTitle,
   EmptyDescription,
   EmptyContent,
-} from "@workbench/ui/components/empty";
-import { Button } from "@workbench/ui/components/button";
+} from "@majapisoftwares/ui/components/empty";
+import { Button } from "@majapisoftwares/ui/components/button";
 export default function NotFound() {
   return (
     <Empty>

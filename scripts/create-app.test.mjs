@@ -24,11 +24,7 @@ test("starter creates an independent project and refuses to overwrite it", async
   assert.equal(lock.name, pkg.name);
   assert.equal(lock.packages[""].name, pkg.name);
   assert.equal(pkg.dependencies.next, "16.4.3");
-  assert.ok(
-    pkg.dependencies["@workbench/ui"].startsWith(
-      "https://codeload.github.com/",
-    ),
-  );
+  assert.equal(pkg.dependencies["@majapisoftwares/ui"], "5.0.0");
   for (const route of ["dashboard", "login", "signup"])
     assert.ok(
       await readFile(join(destination, "src/app", route, "page.tsx"), "utf8"),

@@ -1,15 +1,15 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { AuthLayout } from "@workbench/ui/templates/auth-layout";
-import { LoginForm } from "@workbench/ui/templates/login-form";
-import { SignupForm } from "@workbench/ui/templates/signup-form";
-import { Button } from "@workbench/ui/components/button";
+import { AuthLayout } from "@majapisoftwares/ui/templates/auth-layout";
+import { LoginForm } from "@majapisoftwares/ui/templates/login-form";
+import { SignupForm } from "@majapisoftwares/ui/templates/signup-form";
+import { Button } from "@majapisoftwares/ui/components/button";
 import {
   Alert,
   AlertTitle,
   AlertDescription,
-} from "@workbench/ui/components/alert";
+} from "@majapisoftwares/ui/components/alert";
 export function AuthClient({ mode }: { mode: "login" | "signup" }) {
   const [submitted, setSubmitted] = useState(false);
   return (

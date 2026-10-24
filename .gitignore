@@ -8,3 +8,4 @@ artifacts/
 .wrangler/
 .vercel/
 *.tgz
+public/release.json

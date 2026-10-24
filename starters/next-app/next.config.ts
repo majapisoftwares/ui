@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  transpilePackages: ["@workbench/ui"],
+  transpilePackages: ["@majapisoftwares/ui"],
   /* config options here */
   cacheComponents: true,
   partialPrefetching: true,

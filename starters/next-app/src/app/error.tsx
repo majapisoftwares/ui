@@ -1,10 +1,10 @@
 "use client";
-import { Button } from "@workbench/ui/components/button";
+import { Button } from "@majapisoftwares/ui/components/button";
 import {
   Alert,
   AlertTitle,
   AlertDescription,
-} from "@workbench/ui/components/alert";
+} from "@majapisoftwares/ui/components/alert";
 export default function ErrorPage({
   reset,
 }: {

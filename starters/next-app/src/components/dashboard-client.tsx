@@ -2,20 +2,20 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { AdminDashboard } from "@workbench/ui/templates/admin-dashboard";
-import { DetailsSheet, DetailList } from "@workbench/ui/patterns/details-sheet";
-import { StatusBadge } from "@workbench/ui/patterns/status-badge";
-import { type DataColumn } from "@workbench/ui/patterns/data-table";
+import { AdminDashboard } from "@majapisoftwares/ui/templates/admin-dashboard";
+import { DetailsSheet, DetailList } from "@majapisoftwares/ui/patterns/details-sheet";
+import { StatusBadge } from "@majapisoftwares/ui/patterns/status-badge";
+import { type DataColumn } from "@majapisoftwares/ui/patterns/data-table";
 import {
   NativeSelect,
   NativeSelectOption,
-} from "@workbench/ui/components/native-select";
-import { Button } from "@workbench/ui/components/button";
+} from "@majapisoftwares/ui/components/native-select";
+import { Button } from "@majapisoftwares/ui/components/button";
 import {
   Alert,
   AlertTitle,
   AlertDescription,
-} from "@workbench/ui/components/alert";
+} from "@majapisoftwares/ui/components/alert";
 import { type DemoRecord } from "@/lib/demo";
 const columns: DataColumn<DemoRecord>[] = [
   {

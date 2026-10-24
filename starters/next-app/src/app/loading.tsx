@@ -1,4 +1,4 @@
-import { Skeleton } from "@workbench/ui/components/skeleton";
+import { Skeleton } from "@majapisoftwares/ui/components/skeleton";
 export default function Loading() {
   return (
     <main className="flex flex-col gap-5 p-8" aria-label="Carregando página">

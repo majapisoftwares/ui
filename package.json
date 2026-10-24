@@ -33,7 +33,7 @@
     "create:app": "node scripts/create-app.mjs",
     "test:starter": "node --test scripts/create-app.test.mjs",
     "dev": "vite --host 127.0.0.1 --port 4318 --strictPort",
-    "build": "tsc --noEmit && vite build",
+    "build": "node scripts/write-release.mjs && tsc --noEmit && vite build",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --max-warnings=0",
     "format:check": "prettier --check src examples scripts *.json *.ts *.md docs/*.md",

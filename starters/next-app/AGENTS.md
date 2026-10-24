@@ -1,6 +1,6 @@
 # Padrão obrigatório do app Workbench
 
-- A base de UI/UX é a biblioteca pública @workbench/ui, já instalada neste projeto. Leia https://github.com/majapisoftwares/workbench-ui/blob/main/docs/STANDARDS.md e o AGENTS.md da biblioteca.
+- A base de UI/UX é a biblioteca pública @majapisoftwares/ui, já instalada neste projeto. Leia https://github.com/majapisoftwares/workbench-ui/blob/main/docs/STANDARDS.md e o AGENTS.md da biblioteca.
 - Não copie primitivas shadcn, não crie components/ui e não use overrides locais. Se faltar capacidade reutilizável, contribua primeiro na biblioteca com documentação/exemplo, publique e atualize o commit fixo deste app.
 - A base de primitivas é Base UI (base-nova). Use render, não asChild; links via Button exigem nativeButton=false.
 - App Router: páginas/layout são Server Components por padrão. Interação e callbacks de UI ficam em Client Components; não envie funções comuns pela fronteira servidor/cliente.
