@@ -28,7 +28,13 @@ test("starter creates an independent project and refuses to overwrite it", async
     await readFile(new URL("../package.json", import.meta.url), "utf8"),
   );
   // The starter must always track the current library release.
-  assert.equal(pkg.dependencies["@majapisoftwares/ui"], library.version);
+  const uiRef = pkg.dependencies["@majapisoftwares/ui"];
+  if (uiRef.startsWith("https://codeload.github.com/majapisoftwares/ui/tar.gz/")) {
+    assert.match(uiRef, /\/[a-f0-9]{40}$/);
+    assert.equal(lock.packages["node_modules/@majapisoftwares/ui"].version, library.version);
+  } else {
+    assert.equal(uiRef, library.version);
+  }
   for (const route of ["(app)", "login", "signup"])
     assert.ok(
       await readFile(join(destination, "src/app", route, "page.tsx"), "utf8"),

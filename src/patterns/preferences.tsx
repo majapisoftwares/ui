@@ -32,6 +32,7 @@ const PreferencesContext = createContext<{
   theme: Theme;
   setTheme: (theme: Theme) => void;
 } | null>(null);
+const PreferencesReadyContext = createContext(true);
 
 function read(key: string) {
   try {
@@ -53,7 +54,7 @@ function write(key: string, value: string) {
  * Inline this in `<head>` (e.g. `<script dangerouslySetInnerHTML>`) so the
  * stored theme applies before paint.
  */
-export const preferencesScript = `try{var d=document.documentElement;if(localStorage.getItem("theme")==="dark")d.classList.add("dark");var l=localStorage.getItem("locale");if(l!=="en"&&l!=="pt-BR"){l="en";var a=navigator.languages||[];for(var i=0;i<a.length;i++){if(/^pt/i.test(a[i])){l="pt-BR";break}if(/^en/i.test(a[i]))break}}if(l!=="en"){d.lang=l;d.setAttribute("data-locale-pending",l);setTimeout(function(){d.removeAttribute("data-locale-pending")},2000)}}catch(e){}`;
+export const preferencesScript = `try{var d=document.documentElement;if(localStorage.getItem("theme")==="dark")d.classList.add("dark");var l=localStorage.getItem("locale");if(l!=="en"&&l!=="pt-BR"){l="en";var a=navigator.languages||[];for(var i=0;i<a.length;i++){if(/^pt/i.test(a[i])){l="pt-BR";break}if(/^en/i.test(a[i]))break}}if(l!==d.lang){d.lang=l;d.setAttribute("data-locale-pending",l)}}catch(e){}`;
 
 /**
  * Locale + theme for the whole app. Renders `defaultLocale` first (matches
@@ -68,6 +69,7 @@ export function Preferences({
 }) {
   const [locale, setLocale] = useState<Locale>(defaultLocale);
   const [theme, setTheme] = useState<Theme>("light");
+  const [ready, setReady] = useState(false);
   useEffect(() => {
     const stored = read("locale");
     // eslint-disable-next-line react-hooks/set-state-in-effect -- sync from browser-only storage after hydration
@@ -77,14 +79,16 @@ export function Preferences({
         : matchLocale(navigator.languages),
     );
     setTheme(read("theme") === "dark" ? "dark" : "light");
+    setReady(true);
   }, []);
   useEffect(() => {
+    if (!ready) return;
     const root = document.documentElement;
     root.lang = locale;
     // The pre-paint script hides the page until the saved locale is rendered.
     if (root.dataset.localePending === locale)
       delete root.dataset.localePending;
-  }, [locale]);
+  }, [locale, ready]);
   useEffect(() => {
     document.documentElement.classList.toggle("dark", theme === "dark");
   }, [theme]);
@@ -103,10 +107,12 @@ export function Preferences({
         },
       }}
     >
-      <LocaleProvider locale={locale}>
-        {children}
-        <Toaster theme={theme} />
-      </LocaleProvider>
+      <PreferencesReadyContext.Provider value={ready}>
+        <LocaleProvider locale={locale}>
+          {children}
+          <Toaster theme={theme} />
+        </LocaleProvider>
+      </PreferencesReadyContext.Provider>
     </PreferencesContext.Provider>
   );
 }
@@ -116,9 +122,11 @@ export function Preferences({
  * of Next.js metadata, or Next will overwrite it after hydration.
  */
 export function useDocumentTitle(title: string) {
+  const ready = useContext(PreferencesReadyContext);
   useEffect(() => {
+    if (!ready) return;
     document.title = title;
-  }, [title]);
+  }, [title, ready]);
 }
 
 export function usePreferences() {
