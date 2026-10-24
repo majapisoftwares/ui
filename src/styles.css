@@ -223,6 +223,13 @@
     grid-template-columns: 224px minmax(0, 1fr);
   }
   .wb-sidebar {
+    --sidebar-foreground: var(--background);
+    --sidebar-accent: color-mix(
+      in oklch,
+      var(--background) 12%,
+      var(--foreground)
+    );
+    --sidebar-accent-foreground: var(--background);
     display: flex;
     flex-direction: column;
     gap: 2rem;

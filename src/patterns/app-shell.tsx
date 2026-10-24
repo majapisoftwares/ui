@@ -39,7 +39,7 @@ export function AppShell({
           {navigation.map((item) => (
             <Button
               key={item.id}
-              variant="ghost"
+              variant="navigation"
               data-active={activeId === item.id}
               aria-current={activeId === item.id ? "page" : undefined}
               onClick={() => onNavigate(item.id)}

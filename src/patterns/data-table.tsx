@@ -82,6 +82,7 @@ export function DataTable<T>({
     <section aria-label="Tabela de dados" aria-busy={loading}>
       <div className="wb-table-toolbar">
         <Input
+          className="basis-full md:basis-0"
           aria-label={searchLabel}
           placeholder={searchLabel}
           value={query}
