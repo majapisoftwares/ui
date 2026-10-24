@@ -796,7 +796,9 @@ const sidebarMenuButtonVariants = cva(
       size: {
         default: "h-9 text-sm",
         sm: "h-8 text-xs",
-        lg: "h-14 px-3 text-sm group-data-[collapsible=icon]:p-0!",
+        // Compact identity marks fill the button and cover its hover background.
+        // Paint feedback above the mark so images and opaque avatars respond too.
+        lg: "h-14 px-3 text-sm group-data-[collapsible=icon]:p-0! group-data-[collapsible=icon]:relative group-data-[collapsible=icon]:after:pointer-events-none group-data-[collapsible=icon]:after:absolute group-data-[collapsible=icon]:after:inset-0 group-data-[collapsible=icon]:after:rounded-[inherit] group-data-[collapsible=icon]:after:bg-sidebar-foreground/10 group-data-[collapsible=icon]:after:opacity-0 group-data-[collapsible=icon]:after:transition-opacity group-data-[collapsible=icon]:hover:after:opacity-100 group-data-[collapsible=icon]:data-popup-open:after:opacity-100",
       },
     },
     defaultVariants: {

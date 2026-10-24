@@ -108,7 +108,8 @@ export function AppShell({
       <SidebarProvider defaultMode={defaultMode} defaultWidth={defaultWidth}>
         <Sidebar>
           {/* Top row: fixed h-14 to match the page header with identical vertical alignment in all apps */}
-          <div className="flex h-14 shrink-0 items-center gap-2 px-2 overflow-hidden group-data-[collapsible=icon]:justify-center">
+          {/* Keep the mark anchored to the left while the sidebar width animates. */}
+          <div className="flex h-14 shrink-0 items-center gap-2 px-2 overflow-hidden">
             <div className="flex size-8 shrink-0 items-center justify-center [&>*]:shrink-0">
               {logo}
             </div>

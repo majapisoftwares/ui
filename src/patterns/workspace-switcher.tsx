@@ -117,7 +117,10 @@ export function WorkspaceSwitcher({
               />
             }
           >
-            <WorkspaceMark workspace={active} />
+            <WorkspaceMark
+              workspace={active}
+              className="transition-opacity group-data-[collapsible=icon]:group-hover/menu-button:opacity-70 group-data-[collapsible=icon]:group-data-popup-open/menu-button:opacity-70"
+            />
             <div className="grid flex-1 text-left text-sm leading-tight">
               <span className="truncate font-medium">{active.name}</span>
               {active.description ? (
