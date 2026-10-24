@@ -108,24 +108,22 @@ export function AppShell({
     <TooltipProvider delay={600}>
       <SidebarProvider defaultMode={defaultMode} defaultWidth={defaultWidth}>
         <Sidebar>
-          {/* Same height as the page header so their controls line up. */}
-          <SidebarHeader className="min-h-14 justify-center">
-            {/* The logo keeps its position across modes; only the name fades,
-                and it is clipped (never squeezed) by the sidebar width. */}
-            <div className="flex h-8 items-center gap-2 overflow-hidden">
-              <div className="flex size-8 shrink-0 items-center justify-center [&>*]:shrink-0">
-                {logo}
-              </div>
-              <span className="flex-1 truncate font-semibold whitespace-nowrap transition-opacity duration-200 ease-linear group-data-[collapsible=icon]:opacity-0">
-                {name}
-              </span>
-              <SidebarCollapse className="group-data-[collapsible=icon]:hidden" />
+          {/* Top row: fixed h-14 to match the page header with identical vertical alignment in all apps */}
+          <div className="flex h-14 shrink-0 items-center gap-2 px-2 overflow-hidden group-data-[collapsible=icon]:justify-center">
+            <div className="flex size-8 shrink-0 items-center justify-center [&>*]:shrink-0">
+              {logo}
             </div>
-            <div className="hidden group-data-[collapsible=icon]:block">
-              <SidebarCollapse />
-            </div>
-            {sidebarHeader}
-          </SidebarHeader>
+            <span className="flex-1 truncate font-semibold whitespace-nowrap transition-opacity duration-200 ease-linear group-data-[collapsible=icon]:hidden">
+              {name}
+            </span>
+            <SidebarCollapse className="group-data-[collapsible=icon]:hidden" />
+          </div>
+          <div className="hidden group-data-[collapsible=icon]:flex justify-center pb-2">
+            <SidebarCollapse />
+          </div>
+          {sidebarHeader ? (
+            <div className="p-2 pt-0">{sidebarHeader}</div>
+          ) : null}
           <SidebarContent>
             {navigation.map((group, index) => (
               <SidebarGroup key={group.label ?? index}>

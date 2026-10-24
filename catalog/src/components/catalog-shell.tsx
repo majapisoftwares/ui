@@ -63,7 +63,13 @@ export function CatalogShell({ children }: { children: ReactNode }) {
               icon: <LayoutDashboardIcon />,
             },
             { id: "components", label: t.components, icon: <BoxesIcon /> },
-            { id: "patterns", label: t.patterns, icon: <TableIcon /> },
+            {
+              id: "patterns",
+              label: t.patterns,
+              icon: <TableIcon />,
+              // Number of table states demonstrated on the page.
+              count: 8,
+            },
           ],
         },
         {

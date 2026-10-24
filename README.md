@@ -1,6 +1,6 @@
 # Majapi UI
 
-Biblioteca pública `@majapisoftwares/ui`, base obrigatória de código, interface e experiência de **todos os apps atuais e futuros do Workbench**, baseada em shadcn/ui (**Base UI / base-luma**), React e Tailwind CSS v4. Repositório: https://github.com/majapisoftwares/workbench-ui.
+Biblioteca pública `@majapisoftwares/ui`, base obrigatória de código, interface e experiência de **todos os apps atuais e futuros da Majapi**, baseada em shadcn/ui (**Base UI / base-luma**), React e Tailwind CSS v4. Repositório: https://github.com/majapisoftwares/ui.
 
 ## Regra central
 

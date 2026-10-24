@@ -1,13 +1,13 @@
 {
   "name": "@majapisoftwares/ui",
-  "version": "6.1.0",
-  "description": "Shared Workbench UI and UX standards based on shadcn/ui",
+  "version": "6.1.1",
+  "description": "Shared Majapi UI and UX standards based on shadcn/ui",
   "publishConfig": {
     "access": "public"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/majapisoftwares/workbench-ui.git"
+    "url": "git+https://github.com/majapisoftwares/ui.git"
   },
   "homepage": "https://ui.majapi.com",
   "type": "module",

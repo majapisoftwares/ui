@@ -1,4 +1,4 @@
-# Padrão obrigatório do Workbench
+# Padrão obrigatório da Majapi
 
 - Apps e catálogo usam a versão estável mais recente do Next.js (confira com `npm view next version` antes de mudar dependências). O catálogo (`catalog/`) é um app Next.js como qualquer outro, com a mesma estrutura do starter; não use Vite nem outro framework.
 - Toda mudança na biblioteca que afete apps entra no mesmo commit no starter (`starters/next-app`) e no catálogo. O starter sempre depende da versão atual da biblioteca (o teste `npm run test:starter` falha se divergir) e deve compilar e passar lint/typecheck/build com ela.
@@ -14,7 +14,7 @@
 
 - A base de primitivas é shadcn sobre Base UI (base-luma), não Radix. Use render para composição e nativeButton=false quando Button renderizar Link/a. Preserve as fronteiras use client da biblioteca em consumidores Next.js.
 
-- Esta biblioteca pública é a base obrigatória de todos os apps atuais e futuros do Workbench, incluindo administrativos, dashboards, login e cadastro. Leia README.md e docs/STANDARDS.md antes de alterar interfaces.
+- Esta biblioteca pública é a base obrigatória de todos os apps atuais e futuros da Majapi, incluindo administrativos, dashboards, login e cadastro. Leia README.md e docs/STANDARDS.md antes de alterar interfaces.
 - Antes de criar UI em um app, procure o componente, variante ou padrão existente aqui. Reutilize-o diretamente como dependência.
 - Se faltar uma capacidade reutilizável, contribua primeiro para esta biblioteca: adicione uma API genérica, documente o comportamento e mostre o uso no catálogo. Depois atualize o app para o commit publicado.
 - Não copie componentes shadcn para apps, não faça forks locais e não use CSS, classes ou wrappers locais para corrigir cores, tipografia, tamanho, estados ou comportamento de um componente compartilhado.
