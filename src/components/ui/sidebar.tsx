@@ -84,8 +84,13 @@ const clampWidth = (width: number) =>
  * Applies the saved sidebar state to the server-rendered markup before the
  * browser paints (static pages can't read the cookie on the server).
  */
+const subscribeNoop = () => () => {};
+
 function SidebarRestoreScript() {
+  // Only SSR and hydration emit the script; React warns about client-created scripts, which never run.
+  const hydrating = React.useSyncExternalStore(subscribeNoop, () => false, () => true);
   const script = `(function(){try{var m=document.cookie.match(/(?:^|; )${SIDEBAR_COOKIE_NAME}=([^;]*)/);if(!m)return;var p=m[1].split(":"),mode=p[0],w=Number(p[1]),wrap=document.currentScript.parentElement;if(w)wrap.setAttribute("style",(wrap.getAttribute("style")||"").replace(/--sidebar-width:[^;]*/,"--sidebar-width:"+Math.round(Math.min(${SIDEBAR_WIDTH_MAX},Math.max(${SIDEBAR_WIDTH_MIN},w)))+"px"));var sb=wrap.querySelector('[data-slot="sidebar"]');var r=wrap.querySelector('[data-slot="sidebar-rail"]');if(r)r.setAttribute("aria-valuenow",String(mode==="compact"?48:mode==="closed"?0:Math.round(Math.min(${SIDEBAR_WIDTH_MAX},Math.max(${SIDEBAR_WIDTH_MIN},w||${SIDEBAR_WIDTH})))));if(sb&&(mode==="compact"||mode==="closed")){sb.setAttribute("data-state","collapsed");sb.setAttribute("data-collapsible",mode==="closed"?"offcanvas":"icon")}}catch(e){}})()`;
+  if (!hydrating) return null;
   return (
     <script
       suppressHydrationWarning
