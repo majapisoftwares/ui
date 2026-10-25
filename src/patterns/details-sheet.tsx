@@ -23,7 +23,7 @@ export function DetailsSheet({
 }) {
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="overflow-y-auto">
+      <SheetContent className="overflow-x-hidden overflow-y-auto data-[side=left]:sm:max-w-xl data-[side=right]:sm:max-w-xl">
         <SheetHeader>
           <SheetTitle>{title}</SheetTitle>
           {description ? (
@@ -31,7 +31,7 @@ export function DetailsSheet({
           ) : null}
         </SheetHeader>
         {/* Same inset as SheetHeader (p-6). */}
-        <div className="px-6 pb-8">{children}</div>
+        <div className="min-w-0 px-6 pb-8">{children}</div>
       </SheetContent>
     </Sheet>
   );
@@ -42,11 +42,11 @@ export function DetailList({
   items: { label: string; value: ReactNode }[];
 }) {
   return (
-    <dl className="grid gap-4 text-sm">
+    <dl className="grid min-w-0 gap-4 text-sm">
       {items.map((item) => (
-        <div key={item.label} className="grid gap-1">
+        <div key={item.label} className="grid min-w-0 gap-1">
           <dt className="text-muted-foreground">{item.label}</dt>
-          <dd className="font-medium break-words">{item.value}</dd>
+          <dd className="min-w-0 font-medium break-words">{item.value}</dd>
         </div>
       ))}
     </dl>
