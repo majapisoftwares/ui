@@ -54,7 +54,7 @@ export function CopyInput({
           title={copied ? copiedLabel : copyLabel}
         >
           {copied ? (
-            <CheckIcon className="size-3.5 text-success" aria-hidden="true" />
+            <CheckIcon className="size-3.5 text-success-foreground" aria-hidden="true" />
           ) : (
             <CopyIcon className="size-3.5" aria-hidden="true" />
           )}
