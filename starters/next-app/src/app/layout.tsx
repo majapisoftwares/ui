@@ -7,7 +7,7 @@ import {
 import "./globals.css";
 
 export const metadata: Metadata = {
-  icons: { icon: "/icon.svg" },
+  icons: { icon: "/favicon.svg" },
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
