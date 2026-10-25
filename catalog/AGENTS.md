@@ -1,3 +1,5 @@
+O catálogo demonstra a DataTable compartilhada: resets de paginação ocorrem após commit, preservando montagem concorrente e paginação manual. A regressão é verificada por `npm run test:data-table` na raiz.
+
 <!-- BEGIN:nextjs-agent-rules -->
 
 ## This is NOT the Next.js you know

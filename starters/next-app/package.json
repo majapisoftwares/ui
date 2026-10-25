@@ -11,7 +11,7 @@
     "check:ui": "node node_modules/@majapisoftwares/ui/scripts/check-standards.mjs src"
   },
   "dependencies": {
-    "@majapisoftwares/ui": "6.2.2",
+    "@majapisoftwares/ui": "https://codeload.github.com/majapisoftwares/ui/tar.gz/49c51e9dac7888be3a3ae5172a99be74fa31174b",
     "@tanstack/react-table": "8.21.3",
     "lucide-react": "1.61.0",
     "next": "16.4.3",

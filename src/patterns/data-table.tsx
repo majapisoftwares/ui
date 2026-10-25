@@ -1287,7 +1287,9 @@ export function DataTable<TData extends RowData>(props: DataTableProps<TData>) {
   ]);
 
   const table = useDataTableInstance<TData>({
-    autoResetPageIndex: !manualPagination,
+    // TanStack schedules auto resets while evaluating row models during render.
+    // Concurrent/Suspense renders may not have committed yet, so reset in an effect.
+    autoResetPageIndex: false,
     columnResizeMode: "onChange",
     columns,
     data,
@@ -1332,6 +1334,10 @@ export function DataTable<TData extends RowData>(props: DataTableProps<TData>) {
       sorting,
     },
   });
+
+  React.useEffect(() => {
+    if (!manualPagination) resetPaginationPage();
+  }, [data, manualPagination, resetPaginationPage]);
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
