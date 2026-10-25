@@ -19,7 +19,7 @@ test("a concurrently mounted table preserves paging and resets after committed d
   const root = createRoot(dom.window.document.getElementById("root")!);
   const columns = [{ accessorKey: "name", header: "Name" }];
   const records = Array.from({ length: 25 }, (_, i) => ({ name: `Record ${i}` }));
-  const render = (data: typeof records) => createElement(StrictMode, null, createElement(Suspense, { fallback: null }, createElement(DataTable, { columns, data, initialPageSize: 10 })));
+  const render = (data: typeof records, manualPagination = false) => createElement(StrictMode, null, createElement(Suspense, { fallback: null }, createElement(DataTable, { columns, data, initialPageSize: 10, manualPagination, rowCount: manualPagination ? 25 : undefined })));
   try {
     await act(async () => { root.render(render(records)); });
     const next = [...dom.window.document.querySelectorAll("button")].find(b => b.textContent?.includes("Next page"));
@@ -28,6 +28,11 @@ test("a concurrently mounted table preserves paging and resets after committed d
     assert.ok(dom.window.document.body.textContent?.includes("Page 2 of 3"));
     await act(async () => { root.render(render(records.slice(0, 5))); });
     assert.ok(dom.window.document.body.textContent?.includes("Page 1 of 1"));
+    await act(async () => { root.render(render(records, true)); });
+    const manualNext = [...dom.window.document.querySelectorAll("button")].find(b => b.textContent?.includes("Next page"))!;
+    await act(async () => { manualNext.click(); });
+    await act(async () => { root.render(render(records.slice(0, 5), true)); });
+    assert.ok(dom.window.document.body.textContent?.includes("Page 2 of 3"), "server-controlled pagination must not reset on a new page of data");
     assert.equal(errors.filter(e => /hasn't mounted|not.*mounted|state update.*render/i.test(e)).length, 0, errors.join("\n"));
   } finally {
     await act(async () => root.unmount()); dom.window.close();
