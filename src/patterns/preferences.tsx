@@ -90,8 +90,29 @@ export function Preferences({
       delete root.dataset.localePending;
   }, [locale, ready]);
   useEffect(() => {
+    if (!ready) return;
     document.documentElement.classList.toggle("dark", theme === "dark");
-  }, [theme]);
+  }, [theme, ready]);
+  useEffect(() => {
+    if (
+      typeof location === "undefined" ||
+      !location.hostname.endsWith(".localhost")
+    )
+      return;
+    const link = document.querySelector<HTMLLinkElement>('link[rel*="icon"]');
+    const href = link?.getAttribute("href");
+    if (!link || !href || href.startsWith("data:")) return;
+    void fetch(href)
+      .then((res) => (res.ok ? res.text() : ""))
+      .then((svg) => {
+        if (!svg) return;
+        const embeddedPng = svg.match(/data:image\/png;base64,[^"']+/);
+        link.href = embeddedPng
+          ? embeddedPng[0]
+          : `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+      })
+      .catch(() => {});
+  }, []);
   return (
     <PreferencesContext.Provider
       value={{
