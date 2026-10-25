@@ -41,7 +41,8 @@
     "format:check": "prettier --check src examples scripts *.json *.ts *.md docs/*.md",
     "check:standards": "node scripts/check-standards.mjs",
     "normalize:ui": "node scripts/normalize-ui.mjs && prettier --write src/components/ui src/hooks",
-    "test:preferences": "tsx --test scripts/preferences.test.tsx"
+    "test:preferences": "tsx --test scripts/preferences.test.tsx",
+    "test:data-table": "tsx --test scripts/data-table.test.tsx"
   },
   "peerDependencies": {
     "react": "19.3.1",

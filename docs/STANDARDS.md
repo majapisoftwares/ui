@@ -16,6 +16,8 @@ Primitivos shadcn ficam em src/components/ui (Button, Badge, Card, Input, Table,
 
 ## Comportamentos de UX
 
+DataTable mantém os resets de paginação fora da avaliação de row models durante render. Mudanças de dados aplicam o reset após commit; filtros e ordenação preservam os handlers oficiais, e paginação manual permanece controlada pelo consumidor. Não adicione resets assíncronos durante render para contornar Suspense/StrictMode. `npm run test:data-table` verifica montagem concorrente, avanço de página e substituição dos dados.
+
 - Ação primária destaca o objetivo; secundária usa outline/secondary; destrutiva usa variante própria e depende das autorizações do app.
 - Busca, filtros, ordenação por coluna e paginação seguem DataTable (TanStack Table; origem: tabela da Numa). Filtros por coluna usam `meta.filter`; preferências do usuário persistem por `storageKey`. Telas centradas em uma tabela usam `AppShell fillHeight` + `DataTable fillHeight`: a tabela ocupa a altura restante e rola internamente, com cabeçalho, busca e paginação sempre visíveis.
 - Áreas com rolagem interna usam `scroll-fade` do shadcn (só `scroll-fade-b` quando há cabeçalho fixo dentro do contêiner) e as barras de rolagem finas globais, que aparecem com o ponteiro sobre a área e seguem o tema (`color-scheme`).

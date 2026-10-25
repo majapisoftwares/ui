@@ -14,6 +14,7 @@ jobs:
       - run: npm ci
       - run: npm run typecheck
       - run: npm run test:preferences
+      - run: npm run test:data-table
       - run: npm run lint
       - run: npm run check:standards
       - run: npm run build
