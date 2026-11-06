@@ -11,10 +11,10 @@
     "check:ui": "node node_modules/@majapisoftwares/ui/scripts/check-standards.mjs src"
   },
   "dependencies": {
-    "@majapisoftwares/ui": "https://codeload.github.com/majapisoftwares/ui/tar.gz/49c51e9dac7888be3a3ae5172a99be74fa31174b",
+    "@majapisoftwares/ui": "https://codeload.github.com/majapisoftwares/ui/tar.gz/5f057d189bd75df688afac008ad966a2a5bcb6cc",
     "@tanstack/react-table": "8.21.3",
     "lucide-react": "1.61.0",
-    "next": "16.4.3",
+    "next": "16.4.5",
     "react": "19.3.1",
     "react-dom": "19.3.1"
   },
@@ -24,7 +24,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "9.39.5",
-    "eslint-config-next": "16.4.3",
+    "eslint-config-next": "16.4.5",
     "tailwindcss": "^4",
     "typescript": "6.0.3"
   }

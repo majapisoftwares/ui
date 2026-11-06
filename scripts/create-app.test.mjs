@@ -23,7 +23,7 @@ test("starter creates an independent project and refuses to overwrite it", async
   assert.equal(pkg.name, "sample-app");
   assert.equal(lock.name, pkg.name);
   assert.equal(lock.packages[""].name, pkg.name);
-  assert.equal(pkg.dependencies.next, "16.4.3");
+  assert.equal(pkg.dependencies.next, "16.4.5");
   const library = JSON.parse(
     await readFile(new URL("../package.json", import.meta.url), "utf8"),
   );

@@ -2,13 +2,7 @@
 
 import type { ReactNode } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import {
-  BoxesIcon,
-  LayoutDashboardIcon,
-  LogInIcon,
-  TableIcon,
-  UserPlusIcon,
-} from "lucide-react";
+import { BoxesIcon, LayoutDashboardIcon, TableIcon } from "lucide-react";
 import { AppShell } from "@majapisoftwares/ui/patterns/app-shell";
 import { MajapiLogo } from "@majapisoftwares/ui/patterns/majapi-logo";
 import {
@@ -69,14 +63,11 @@ export function CatalogShell({ children }: { children: ReactNode }) {
               icon: <TableIcon />,
               // Number of table states demonstrated on the page.
               count: 8,
+              children: [
+                { id: "login", label: t.login, href: routes.login },
+                { id: "signup", label: t.signup, href: routes.signup },
+              ],
             },
-          ],
-        },
-        {
-          label: t.templates,
-          items: [
-            { id: "login", label: t.login, icon: <LogInIcon /> },
-            { id: "signup", label: t.signup, icon: <UserPlusIcon /> },
           ],
         },
       ]}
