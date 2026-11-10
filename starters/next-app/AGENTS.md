@@ -1,5 +1,7 @@
 # Padrão obrigatório do app Workbench
 
+- DataTable gerencia resets de paginação após o commit; não reproduza resets agendados durante render em consumidores Suspense/StrictMode. Preserve paginação, busca e ordenação compartilhadas.
+
 - O app é bilíngue (en e pt-BR). Todo texto de UI fica em `src/messages.ts` via `defineMessages`; nada de texto fixo em componentes. Mantenha o texto mínimo.
 - Teste localmente com portless: `npm run dev` publica o app em https://<nome-do-diretório>.localhost. Não use portas fixas.
 - Use a versão estável mais recente do Next.js e a versão atual de @majapisoftwares/ui.
