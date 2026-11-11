@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode } from "react";
+import type { MouseEvent, ReactNode } from "react";
 import { cn } from "cn";
 import {
   Sidebar,
@@ -14,6 +14,10 @@ import {
   SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubItem,
+  SidebarMenuSubButton,
+  useSidebar,
   SidebarProvider,
   SidebarRail,
   SidebarTrigger,
@@ -27,6 +31,10 @@ export interface NavigationItem {
   label: string;
   icon?: ReactNode;
   count?: number;
+  /** Native destination; preserves open-in-new-tab and modified clicks. */
+  href?: string;
+  /** Related views shown under the active tool. One level of contextual navigation. */
+  children?: (Omit<NavigationItem, "children"> & { href: string })[];
 }
 export interface NavigationGroup {
   label?: string;
@@ -88,6 +96,78 @@ function HeaderTrigger() {
   );
 }
 
+function ShellNavigation({
+  navigation,
+  activeId,
+  onNavigate,
+}: Pick<AppShellProps, "navigation" | "activeId" | "onNavigate">) {
+  const { isMobile, setOpenMobile } = useSidebar();
+  const navigate = (id: string, event: MouseEvent<HTMLElement>) => {
+    if (
+      event.button !== 0 ||
+      event.metaKey ||
+      event.ctrlKey ||
+      event.shiftKey ||
+      event.altKey
+    )
+      return;
+    event.preventDefault();
+    onNavigate(id);
+    if (isMobile) setOpenMobile(false);
+  };
+  return navigation.map((group, index) => (
+    <SidebarGroup key={group.label ?? index}>
+      {group.label ? (
+        <SidebarGroupLabel>{group.label}</SidebarGroupLabel>
+      ) : null}
+      <SidebarMenu>
+        {group.items.map((item) => {
+          const active =
+            item.id === activeId ||
+            Boolean(item.children?.some((child) => child.id === activeId));
+          return (
+            <SidebarMenuItem key={item.id}>
+              <div className="relative">
+                <SidebarMenuButton
+                  isActive={active}
+                  tooltip={item.label}
+                  aria-current={item.id === activeId ? "page" : undefined}
+                  render={item.href ? <a href={item.href} /> : undefined}
+                  onClick={(event) => navigate(item.id, event)}
+                >
+                  <ItemIcon item={item} />
+                  <span>{item.label}</span>
+                </SidebarMenuButton>
+                {item.count !== undefined ? (
+                  <SidebarMenuBadge>{item.count}</SidebarMenuBadge>
+                ) : null}
+              </div>
+              {active && item.children?.length ? (
+                <SidebarMenuSub aria-label={item.label}>
+                  {item.children.map((child) => (
+                    <SidebarMenuSubItem key={child.id}>
+                      <SidebarMenuSubButton
+                        href={child.href}
+                        isActive={child.id === activeId}
+                        aria-current={
+                          child.id === activeId ? "page" : undefined
+                        }
+                        onClick={(event) => navigate(child.id, event)}
+                      >
+                        <span>{child.label}</span>
+                      </SidebarMenuSubButton>
+                    </SidebarMenuSubItem>
+                  ))}
+                </SidebarMenuSub>
+              ) : null}
+            </SidebarMenuItem>
+          );
+        })}
+      </SidebarMenu>
+    </SidebarGroup>
+  ));
+}
+
 export function AppShell({
   logo,
   name,
@@ -125,31 +205,11 @@ export function AppShell({
             <div className="p-2 pt-0">{sidebarHeader}</div>
           ) : null}
           <SidebarContent>
-            {navigation.map((group, index) => (
-              <SidebarGroup key={group.label ?? index}>
-                {group.label ? (
-                  <SidebarGroupLabel>{group.label}</SidebarGroupLabel>
-                ) : null}
-                <SidebarMenu>
-                  {group.items.map((item) => (
-                    <SidebarMenuItem key={item.id}>
-                      <SidebarMenuButton
-                        isActive={item.id === activeId}
-                        tooltip={item.label}
-                        aria-current={item.id === activeId ? "page" : undefined}
-                        onClick={() => onNavigate(item.id)}
-                      >
-                        <ItemIcon item={item} />
-                        <span>{item.label}</span>
-                      </SidebarMenuButton>
-                      {item.count !== undefined ? (
-                        <SidebarMenuBadge>{item.count}</SidebarMenuBadge>
-                      ) : null}
-                    </SidebarMenuItem>
-                  ))}
-                </SidebarMenu>
-              </SidebarGroup>
-            ))}
+            <ShellNavigation
+              navigation={navigation}
+              activeId={activeId}
+              onNavigate={onNavigate}
+            />
           </SidebarContent>
           {footer ? <SidebarFooter>{footer}</SidebarFooter> : null}
           <SidebarRail />

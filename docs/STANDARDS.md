@@ -45,3 +45,7 @@ AGENTS.md nos apps exige contribuição upstream antes de uso. O verificador est
 - Field usa imports relativos. Button assume type=button para evitar submissões acidentais; formulários declaram type=submit. Badge inclui variantes success e warning reutilizadas por StatusBadge.
 - Tokens de identidade, estados semânticos e padrões compostos são mantidos aqui.
 - Mudanças posteriores no upstream devem ser avaliadas com o diff do CLI, preservando estas decisões e o contrato público.
+
+## Contextual tool navigation
+
+AppShell navigation items accept optional `children` for one level of related tool views. Only the active tool expands. The current destination alone receives aria-current. Navigation closes the mobile sidebar after selection. Sidebar subitems have 44px touch targets on mobile. Use route navigation here; reserve FilterTabs for filters or views of the current dataset. Use `fillHeight` for contained table/chat pages and ordinary page flow for long forms and card collections.

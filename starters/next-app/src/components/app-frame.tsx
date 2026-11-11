@@ -2,7 +2,7 @@
 
 import type { ReactNode } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboardIcon, LogInIcon, UserPlusIcon } from "lucide-react";
+import { LayoutDashboardIcon } from "lucide-react";
 import { AppShell } from "@majapisoftwares/ui/patterns/app-shell";
 import { MajapiLogo } from "@majapisoftwares/ui/patterns/majapi-logo";
 import {
@@ -50,14 +50,11 @@ export function AppFrame({ children }: { children: ReactNode }) {
               id: "dashboard",
               label: t.dashboard,
               icon: <LayoutDashboardIcon />,
+              children: [
+                { id: "login", label: t.login, href: routes.login },
+                { id: "signup", label: t.signup, href: routes.signup },
+              ],
             },
-          ],
-        },
-        {
-          label: t.account,
-          items: [
-            { id: "login", label: t.login, icon: <LogInIcon /> },
-            { id: "signup", label: t.signup, icon: <UserPlusIcon /> },
           ],
         },
       ]}
