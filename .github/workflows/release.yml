@@ -1,0 +1,91 @@
+# Publishes @majapisoftwares/ui with npm Trusted Publishing (GitHub OIDC):
+# no npm token, password or OTP. Run from main:
+#   gh workflow run release.yml -f bump=minor
+# Choose the bump with docs/VERSIONING.md; a major needs the owner's approval.
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: SemVer bump (docs/VERSIONING.md)
+        type: choice
+        options: [patch, minor, major]
+        required: true
+
+permissions:
+  contents: write # release commit, tag and GitHub release
+  id-token: write # npm trusted publishing and provenance
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          cache: npm
+      # Trusted publishing needs npm 11.5.1 or later.
+      - run: npm install -g npm@11
+      - run: npm ci
+
+      - name: Bump version
+        id: version
+        run: |
+          npm version "${{ inputs.bump }}" --no-git-tag-version
+          echo "value=$(node -p 'require("./package.json").version')" >> "$GITHUB_OUTPUT"
+
+      - name: Validate library
+        run: |
+          npm run typecheck
+          npm run test:preferences
+          npm run test:data-table
+          npm run lint
+          npm run check:standards
+          npm run build
+
+      # The starter must work with the exact package that gets published.
+      - name: Validate starter against the packed package
+        run: |
+          npm pack --pack-destination "$RUNNER_TEMP"
+          cp -r starters/next-app "$RUNNER_TEMP/starter"
+          cd "$RUNNER_TEMP/starter"
+          npm install --save-exact "$RUNNER_TEMP/majapisoftwares-ui-${{ steps.version.outputs.value }}.tgz"
+          npm run lint
+          npm run typecheck
+          npm run check:ui
+          npm run build
+
+      - name: Publish to npm
+        run: npm publish
+
+      - name: Pin the starter to the published version
+        working-directory: starters/next-app
+        run: |
+          version="${{ steps.version.outputs.value }}"
+          for attempt in 1 2 3 4 5 6 7 8 9 10; do
+            npm view "@majapisoftwares/ui@$version" version >/dev/null 2>&1 && break
+            sleep 6
+          done
+          npm install --save-exact "@majapisoftwares/ui@$version"
+
+      - run: npm run test:starter
+
+      - name: Commit, tag and create the GitHub release
+        run: |
+          version="v${{ steps.version.outputs.value }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add package.json package-lock.json starters/next-app/package.json starters/next-app/package-lock.json
+          git commit -m "release: $version"
+          git tag "$version"
+          git push origin HEAD:main "$version"
+          gh release create "$version" --verify-tag --generate-notes
