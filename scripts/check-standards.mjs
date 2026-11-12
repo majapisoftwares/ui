@@ -29,8 +29,8 @@ async function visit(path) {
       )
     )
       violations.push(`${name}: use semantic tokens instead of local colors`);
-    if (consumer && /from\s+["'](?:sonner|@majapisoftwares\/ui\/components\/sonner)["']/.test(text))
-      violations.push(`${name}: notify with snackbar from @majapisoftwares/ui/components/snackbar`);
+    if (consumer && /from\s+["'](?:sonner|@majapisoftwares\/ui\/components\/(?:sonner|snackbar))["']/.test(text))
+      violations.push(`${name}: notify with toast from @majapisoftwares/ui/components/toast`);
     if (!consumer && /from ["']@\//.test(text))
       violations.push(`${name}: library internals must use portable imports`);
   }
