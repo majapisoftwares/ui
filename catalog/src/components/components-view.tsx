@@ -109,7 +109,7 @@ import {
   RING_VARIANTS,
 } from "@majapisoftwares/ui/components/orb";
 import { Skeleton } from "@majapisoftwares/ui/components/skeleton";
-import { snackbar } from "@majapisoftwares/ui/components/snackbar";
+import { toast, toastError } from "@majapisoftwares/ui/components/toast";
 import {
   Avatar,
   AvatarFallback,
@@ -180,12 +180,12 @@ const messages = defineMessages({
     menu: "Menu",
     tooltip: "Tooltip",
     tooltipBody: "Helpful hint",
-    showToast: "Show snackbar",
+    showToast: "Show toast",
     undo: "Undo",
     undone: "Undone",
     toastSaved: "Changes saved",
     toastError: "Couldn't save",
-    errorToast: "Error snackbar",
+    errorToast: "Error toast",
     upload: "Uploading",
     alertTitle: "Heads up",
     alertBody: "New version available.",
@@ -247,12 +247,12 @@ const messages = defineMessages({
     menu: "Menu",
     tooltip: "Tooltip",
     tooltipBody: "Dica útil",
-    showToast: "Mostrar snackbar",
+    showToast: "Mostrar toast",
     undo: "Desfazer",
     undone: "Desfeito",
     toastSaved: "Alterações salvas",
     toastError: "Não foi possível salvar",
-    errorToast: "Snackbar de erro",
+    errorToast: "Toast de erro",
     upload: "Enviando",
     alertTitle: "Atenção",
     alertBody: "Nova versão disponível.",
@@ -511,10 +511,10 @@ export function ComponentsView() {
 
       <Section title={t.feedback} className="flex flex-col gap-4">
         <div className="flex flex-wrap gap-2">
-          <Button variant="outline" onClick={() => snackbar(t.toastSaved, { action: { label: t.undo, onClick: () => snackbar(t.undone) } })}>
+          <Button variant="outline" onClick={() => { const id = toast.add({ type: "success", description: t.toastSaved, actionProps: { children: t.undo, onClick: () => { toast.close(id); toast.add({ description: t.undone }); } } }); }}>
             {t.showToast}
           </Button>
-          <Button variant="outline" onClick={() => snackbar.error(new Error(t.toastError))}>
+          <Button variant="outline" onClick={() => toastError(new Error(t.toastError))}>
             {t.errorToast}
           </Button>
         </div>
