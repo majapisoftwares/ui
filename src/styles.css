@@ -3,7 +3,12 @@
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/geist";
 @import "./components/ui/orb.css";
+@import "streamdown/styles.css";
 @source "./";
+/* Streamdown's own classes (ChatMarkdown): nested install, or hoisted next to
+   this package in the consumer's node_modules. */
+@source "../node_modules/streamdown/dist";
+@source "../../../streamdown/dist";
 
 @custom-variant dark (&:is(.dark *));
 

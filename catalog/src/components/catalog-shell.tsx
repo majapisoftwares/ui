@@ -2,14 +2,21 @@
 
 import type { ReactNode } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { BoxesIcon, LayoutDashboardIcon, TableIcon } from "lucide-react";
+import {
+  BotIcon,
+  BoxesIcon,
+  LayoutDashboardIcon,
+  TableIcon,
+} from "lucide-react";
 import { AppShell } from "@majapisoftwares/ui/patterns/app-shell";
 import { MajapiLogo } from "@majapisoftwares/ui/patterns/majapi-logo";
 import {
   Breadcrumb,
   BreadcrumbItem,
+  BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbPage,
+  BreadcrumbSeparator,
 } from "@majapisoftwares/ui/components/breadcrumb";
 import { useMessages } from "@majapisoftwares/ui/lib/i18n";
 import {
@@ -26,10 +33,13 @@ const routes = {
   dashboard: "/",
   components: "/components",
   patterns: "/patterns",
+  chat: "/chat",
+  newChat: "/chat/new",
   login: "/login",
   signup: "/signup",
 } as const;
 type RouteId = keyof typeof routes;
+type ShellRouteId = "dashboard" | "components" | "patterns" | "chat" | "newChat";
 
 export function CatalogShell({ children }: { children: ReactNode }) {
   const t = useMessages(messages);
@@ -37,7 +47,7 @@ export function CatalogShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const activeId = ((Object.keys(routes) as RouteId[]).find(
     (id) => routes[id] === pathname,
-  ) ?? "dashboard") as "dashboard" | "components" | "patterns";
+  ) ?? "dashboard") as ShellRouteId;
   useDocumentTitle(
     activeId === "dashboard" ? "Majapi UI" : `${t[activeId]} · Majapi UI`,
   );
@@ -68,12 +78,28 @@ export function CatalogShell({ children }: { children: ReactNode }) {
                 { id: "signup", label: t.signup, href: routes.signup },
               ],
             },
+            {
+              id: "chat",
+              label: t.chat,
+              icon: <BotIcon />,
+              children: [
+                { id: "newChat", label: t.newChat, href: routes.newChat },
+              ],
+            },
           ],
         },
       ]}
       header={
         <Breadcrumb>
           <BreadcrumbList>
+            {activeId === "newChat" ? (
+              <>
+                <BreadcrumbItem>
+                  <BreadcrumbLink href={routes.chat}>{t.chat}</BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+              </>
+            ) : null}
             <BreadcrumbItem>
               <BreadcrumbPage>{t[activeId]}</BreadcrumbPage>
             </BreadcrumbItem>
@@ -83,8 +109,10 @@ export function CatalogShell({ children }: { children: ReactNode }) {
       actions={<PreferenceControls />}
       sidebarHeader={<ExampleWorkspaceSwitcher />}
       footer={<ExampleUserMenu />}
-      // The dashboard demonstrates a table that fills the screen.
-      fillHeight={activeId === "dashboard"}
+      // The dashboard (table) and the chat fill the screen and scroll inside.
+      fillHeight={
+        activeId === "dashboard" || activeId === "chat" || activeId === "newChat"
+      }
     >
       {children}
     </AppShell>

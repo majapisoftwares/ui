@@ -46,6 +46,20 @@ AGENTS.md nos apps exige contribuição upstream antes de uso. O verificador est
 - Tokens de identidade, estados semânticos e padrões compostos são mantidos aqui.
 - Mudanças posteriores no upstream devem ser avaliadas com o diff do CLI, preservando estas decisões e o contrato público.
 
+## Chat com agentes
+
+Base do shadcn AI Elements (Base UI) instalada pelo CLI: `message-scroller` (`@shadcn/react`), `message`, `bubble`, `attachment`, `trace` e `item`. Padrões compostos, unindo o upstream ao chat da Numa:
+
+- `patterns/chat`: `Chat` (layout em `AppShell fillHeight`), `ChatMessages` (Message Scroller com `autoScroll` e `defaultScrollPosition="last-anchor"`; cada linha em `MessageScrollerItem`, turnos da pessoa com `scrollAnchor`), `ChatComposer` (alinhado à transcrição mesmo com a calha da barra de rolagem, como na Numa), `ChatMessage` (pessoa em Bubble `muted` no fim; agente sem caixa), `MessageActions`/`MessageAction`/`CopyMessageAction` (ícones com tooltip; feedback com `aria-pressed`), `TypingIndicator` (Orb com texto) e `Suggestions`.
+- `patterns/prompt-input`: InputGroup com Enter envia e Shift+Enter quebra linha (respeitando IME), anexar/colar/soltar arquivos com Attachment, foco preservado ao enviar, botão Parar durante `submitted`/`streaming` e rascunho restaurado quando o envio rejeita (Numa).
+- `patterns/chat-trace`: `ChatTrace`, `Reasoning` (abre enquanto pensa, fecha ao terminar salvo se a pessoa alternou; vários passos são várias linhas), `Tool` (estados pending/running/done/error/denied, saída sob demanda) e `Confirmation` (Aprovar/Negar; depois de respondida vira `Tool`).
+- `patterns/chat-markdown`: `ChatMarkdown` com Streamdown (sanitiza a saída do modelo, completa markdown incompleto durante o streaming e traduz os controles). Substitui o react-markdown da Numa.
+- `hooks/use-streamed-text`: revela progressivamente uma resposta que chega inteira (Numa), respeitando movimento reduzido.
+
+Erros de resposta aparecem na própria mensagem (Bubble `destructive`) com Tentar novamente; erros de ações fora da conversa seguem no toast. O catálogo demonstra em `/chat` (conversa com raciocínio, ferramentas, aprovação, erro e retry) e `/chat/new` (vazio com sugestões).
+
+Adaptações: `message-scroller` traduz o nome da região e do botão, troca utilitários de barra de rolagem que não existem aqui por `[scrollbar-gutter:stable]` e exporta `useMessageScrollerGutterWidth`; `attachment` usa `no-scrollbar`. `styles.css` importa `streamdown/styles.css` e adiciona o `@source` do Streamdown. `hast-util-raw` 9.2 exige `parse5` 8.1+; mantenha o lockfile sem `parse5` 8.0.
+
 ## Contextual tool navigation
 
 AppShell navigation items accept optional `children` for one level of related tool views. Only the active tool expands. The current destination alone receives aria-current. Navigation closes the mobile sidebar after selection. Sidebar subitems have 44px touch targets on mobile. Use route navigation here; reserve FilterTabs for filters or views of the current dataset. Use `fillHeight` for contained table/chat pages and ordinary page flow for long forms and card collections.
