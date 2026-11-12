@@ -16,7 +16,7 @@ import {
   type Locale,
 } from "../lib/i18n";
 import { Button } from "../components/ui/button";
-import { Toaster } from "../components/ui/sonner";
+import { Snackbar } from "../components/ui/snackbar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -131,7 +131,7 @@ export function Preferences({
       <PreferencesReadyContext.Provider value={ready}>
         <LocaleProvider locale={locale}>
           {children}
-          <Toaster theme={theme} />
+          <Snackbar theme={theme} />
         </LocaleProvider>
       </PreferencesReadyContext.Provider>
     </PreferencesContext.Provider>

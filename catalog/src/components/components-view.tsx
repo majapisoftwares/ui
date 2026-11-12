@@ -109,7 +109,7 @@ import {
   RING_VARIANTS,
 } from "@majapisoftwares/ui/components/orb";
 import { Skeleton } from "@majapisoftwares/ui/components/skeleton";
-import { toast } from "@majapisoftwares/ui/components/sonner";
+import { snackbar } from "@majapisoftwares/ui/components/snackbar";
 import {
   Avatar,
   AvatarFallback,
@@ -180,10 +180,12 @@ const messages = defineMessages({
     menu: "Menu",
     tooltip: "Tooltip",
     tooltipBody: "Helpful hint",
-    showToast: "Show toast",
+    showToast: "Show snackbar",
+    undo: "Undo",
+    undone: "Undone",
     toastSaved: "Changes saved",
     toastError: "Couldn't save",
-    errorToast: "Error toast",
+    errorToast: "Error snackbar",
     upload: "Uploading",
     alertTitle: "Heads up",
     alertBody: "New version available.",
@@ -245,10 +247,12 @@ const messages = defineMessages({
     menu: "Menu",
     tooltip: "Tooltip",
     tooltipBody: "Dica útil",
-    showToast: "Mostrar toast",
+    showToast: "Mostrar snackbar",
+    undo: "Desfazer",
+    undone: "Desfeito",
     toastSaved: "Alterações salvas",
     toastError: "Não foi possível salvar",
-    errorToast: "Toast de erro",
+    errorToast: "Snackbar de erro",
     upload: "Enviando",
     alertTitle: "Atenção",
     alertBody: "Nova versão disponível.",
@@ -507,10 +511,10 @@ export function ComponentsView() {
 
       <Section title={t.feedback} className="flex flex-col gap-4">
         <div className="flex flex-wrap gap-2">
-          <Button variant="outline" onClick={() => toast.success(t.toastSaved)}>
+          <Button variant="outline" onClick={() => snackbar(t.toastSaved, { action: { label: t.undo, onClick: () => snackbar(t.undone) } })}>
             {t.showToast}
           </Button>
-          <Button variant="outline" onClick={() => toast.error(t.toastError)}>
+          <Button variant="outline" onClick={() => snackbar.error(new Error(t.toastError))}>
             {t.errorToast}
           </Button>
         </div>
