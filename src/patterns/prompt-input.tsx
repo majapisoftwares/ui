@@ -52,6 +52,11 @@ export interface PromptInputProps {
   /** While submitted/streaming, Enter does not send and the button stops. */
   status?: ChatStatus;
   onStop?: () => void;
+  /**
+   * Lets the person send while a reply is in progress, e.g. to steer a
+   * running agent. With text the button sends; with an empty field it stops.
+   */
+  sendWhileBusy?: boolean;
   placeholder?: string;
   disabled?: boolean;
   autoFocus?: boolean;
@@ -112,8 +117,9 @@ function clipboardFiles(data: DataTransfer) {
 /**
  * Chat composer on InputGroup (shadcn AI Elements Prompt Input) with Numa's
  * behaviour: Enter sends and Shift+Enter breaks the line, files can be
- * attached, pasted or dropped, focus stays in the field after sending and a
- * failed send restores the draft.
+ * attached, pasted or dropped, focus stays in the field after sending, a
+ * failed send restores the draft and, with `sendWhileBusy`, messages can be
+ * sent while the agent works.
  */
 export function PromptInput({
   onSubmit,
@@ -122,6 +128,7 @@ export function PromptInput({
   onValueChange,
   status = "ready",
   onStop,
+  sendWhileBusy = false,
   placeholder,
   disabled = false,
   autoFocus = false,
@@ -141,8 +148,8 @@ export function PromptInput({
   const filesRef = useRef(files);
   const text = value ?? innerValue;
   const busy = status === "submitted" || status === "streaming";
-  const canSend =
-    !disabled && !busy && (text.trim().length > 0 || files.length > 0);
+  const hasContent = text.trim().length > 0 || files.length > 0;
+  const canSend = !disabled && (!busy || sendWhileBusy) && hasContent;
 
   useEffect(() => {
     filesRef.current = files;
@@ -226,7 +233,10 @@ export function PromptInput({
   const hasFiles = (event: DragEvent) =>
     attachments && !disabled && event.dataTransfer.types.includes("Files");
 
-  const stopping = busy && onStop !== undefined;
+  // With sendWhileBusy, a draft turns the stop button back into send.
+  const stopping =
+    busy && onStop !== undefined && !(sendWhileBusy && hasContent);
+  const waiting = busy && !stopping && !canSend;
   const sendLabel = stopping ? messages.stop : messages.send;
   // Keeps focus (and the mobile keyboard) in the field while pressing buttons.
   const keepFocus = (event: { preventDefault: () => void }) =>
@@ -350,7 +360,7 @@ export function PromptInput({
             >
               {stopping ? (
                 <SquareIcon className="fill-current" />
-              ) : busy ? (
+              ) : waiting ? (
                 <Spinner />
               ) : (
                 <ArrowUpIcon />
