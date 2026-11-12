@@ -60,7 +60,9 @@ function MessageScrollerContent({
   return (
     <MessageScrollerPrimitive.Content
       data-slot="message-scroller-content"
-      className={cn("flex h-max min-h-full flex-col gap-8", className)}
+      // Majapi UI: p-2 makes room for the items' paint margin (below), so it
+      // never overflows the viewport sideways.
+      className={cn("flex h-max min-h-full flex-col gap-8 p-2", className)}
       {...props}
     />
   );
@@ -75,8 +77,11 @@ function MessageScrollerItem({
     <MessageScrollerPrimitive.Item
       data-slot="message-scroller-item"
       scrollAnchor={scrollAnchor}
+      // Majapi UI: content-visibility:auto always applies paint containment,
+      // which clips shadows and focus rings at the row's edges. -m-2 p-2
+      // gives every row an 8px paint margin without moving its content.
       className={cn(
-        "min-w-0 shrink-0 [contain-intrinsic-size:auto_10rem] [content-visibility:auto]",
+        "-m-2 min-w-0 shrink-0 p-2 [contain-intrinsic-size:auto_10rem] [content-visibility:auto]",
         className,
       )}
       {...props}

@@ -98,7 +98,7 @@ export function ChatMessages({
         <MessageScrollerViewport ref={viewportRef}>
           <MessageScrollerContent
             aria-busy={busy}
-            className="mx-auto w-full max-w-3xl px-1 pb-6"
+            className="mx-auto w-full max-w-3xl pb-6"
           >
             {children}
           </MessageScrollerContent>
@@ -127,7 +127,7 @@ export function ChatComposer({
       style={{ paddingInlineEnd: gutter, ...style }}
       {...props}
     >
-      <div className="mx-auto flex w-full max-w-3xl flex-col gap-3 px-1">
+      <div className="mx-auto flex w-full max-w-3xl flex-col gap-3 px-2">
         {children}
       </div>
     </div>

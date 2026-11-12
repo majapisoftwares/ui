@@ -58,7 +58,7 @@ Base do shadcn AI Elements (Base UI) instalada pelo CLI: `message-scroller` (`@s
 
 Erros de resposta aparecem na própria mensagem (Bubble `destructive`) com Tentar novamente; erros de ações fora da conversa seguem no toast. O catálogo demonstra em `/chat` (conversa com raciocínio, ferramentas, aprovação, erro e retry) e `/chat/new` (vazio com sugestões).
 
-Adaptações: `message-scroller` traduz o nome da região e do botão, troca utilitários de barra de rolagem que não existem aqui por `[scrollbar-gutter:stable]` e exporta `useMessageScrollerGutterWidth`; `attachment` usa `no-scrollbar`. `styles.css` importa `streamdown/styles.css` e adiciona o `@source` do Streamdown. `hast-util-raw` 9.2 exige `parse5` 8.1+; mantenha o lockfile sem `parse5` 8.0.
+Adaptações: `MessageScrollerItem` usa `-m-2 p-2` (e `MessageScrollerContent`, `p-2`) porque `content-visibility: auto` sempre aplica contenção de pintura e cortava sombras e anéis de foco na borda de cada linha; não remova essa margem nem coloque itens em contêineres sem o padding correspondente. `message-scroller` também traduz o nome da região e do botão, troca utilitários de barra de rolagem que não existem aqui por `[scrollbar-gutter:stable]` e exporta `useMessageScrollerGutterWidth`; `attachment` usa `no-scrollbar`. `styles.css` importa `streamdown/styles.css` e adiciona o `@source` do Streamdown. `hast-util-raw` 9.2 exige `parse5` 8.1+; mantenha o lockfile sem `parse5` 8.0.
 
 ## Contextual tool navigation
 
