@@ -386,6 +386,8 @@ export function ChatView({ empty = false }: { empty?: boolean }) {
     });
 
   const send = ({ text, files }: PromptInputMessage) => {
+    // Sending while the agent works (sendWhileBusy) interrupts the reply.
+    if (busy) stop();
     const id = crypto.randomUUID();
     const userMessage: DemoMessage = {
       id: `u-${id}`,
@@ -602,6 +604,7 @@ export function ChatView({ empty = false }: { empty?: boolean }) {
           placeholder={t.placeholder}
           status={status}
           onStop={stop}
+          sendWhileBusy
           onSubmit={send}
           attachments
           autoFocus
