@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 
 // Theme comes from the caller (Preferences passes the active theme).
+/** @deprecated Notifications are snackbars: mount `Snackbar` from `components/snackbar` (Preferences already does). */
 const Toaster = ({ theme = "system", ...props }: ToasterProps) => {
   return (
     <Sonner
@@ -41,4 +42,5 @@ const Toaster = ({ theme = "system", ...props }: ToasterProps) => {
 };
 
 export { Toaster };
+/** @deprecated Use `snackbar(message)` and `snackbar.error(error)` from `components/snackbar`; existing calls already show as snackbars. */
 export { toast } from "sonner";

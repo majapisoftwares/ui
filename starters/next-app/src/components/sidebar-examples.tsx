@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { BuildingIcon, PlusIcon, SettingsIcon, UserIcon } from "lucide-react";
 import { DropdownMenuItem } from "@majapisoftwares/ui/components/dropdown-menu";
-import { toast } from "@majapisoftwares/ui/components/sonner";
 import { defineMessages, useMessages } from "@majapisoftwares/ui/lib/i18n";
 import { UserMenu } from "@majapisoftwares/ui/patterns/user-menu";
 import {
@@ -65,10 +64,8 @@ export function ExampleWorkspaceSwitcher() {
     <WorkspaceSwitcher
       workspaces={workspaces}
       activeId={activeId}
-      onSelect={(workspace) => {
-        setActiveId(workspace.id);
-        toast.success(t.switched(workspace.name));
-      }}
+      // The starter shows a snackbar here once it pins a library release that has it.
+      onSelect={(workspace) => setActiveId(workspace.id)}
       actions={
         <DropdownMenuItem>
           <PlusIcon />
@@ -91,7 +88,7 @@ export function ExampleUserMenu() {
           {t.settings}
         </DropdownMenuItem>
       }
-      onSignOut={() => toast(t.signedOut)}
+      onSignOut={() => undefined}
     />
   );
 }
