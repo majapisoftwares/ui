@@ -64,18 +64,26 @@ jobs:
           npm run check:ui
           npm run build
 
+      # Skipped when this version is already on npm, so rerunning a release
+      # that failed after publishing finishes it instead of failing.
       - name: Publish to npm
-        run: npm publish
+        run: |
+          if npm view "@majapisoftwares/ui@${{ steps.version.outputs.value }}" version >/dev/null 2>&1; then
+            echo "Already published; continuing with the starter and the tag."
+          else
+            npm publish
+          fi
 
+      # The registry's install metadata can lag a few minutes behind publish.
       - name: Pin the starter to the published version
         working-directory: starters/next-app
         run: |
           version="${{ steps.version.outputs.value }}"
-          for attempt in 1 2 3 4 5 6 7 8 9 10; do
-            npm view "@majapisoftwares/ui@$version" version >/dev/null 2>&1 && break
-            sleep 6
+          for attempt in $(seq 1 30); do
+            npm install --save-exact --prefer-online "@majapisoftwares/ui@$version" && exit 0
+            sleep 10
           done
-          npm install --save-exact "@majapisoftwares/ui@$version"
+          exit 1
 
       - run: npm run test:starter
 
