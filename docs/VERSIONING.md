@@ -21,8 +21,12 @@ Na dúvida, a pergunta é: **um app que compilava com a versão anterior continu
 
 ## Publicar
 
+Publicação automática pelo workflow `Release` (npm Trusted Publishing via OIDC do GitHub, com proveniência; sem token, senha ou OTP). PRs não mudam `version`.
+
 1. Escolha o número pela tabela acima e justifique no commit (`feat:` → minor, `fix:` → patch, `feat!:`/`BREAKING CHANGE:` → major).
-2. Atualize `version` no `package.json`; o starter acompanha a mesma versão no mesmo commit (`npm run test:starter` verifica).
-3. Valide (typecheck, lint, check:standards, build, test:starter, starter contra o pacote empacotado).
-4. `npm publish`, tag `v<versão>` no GitHub e registre no plano.
+2. Com as mudanças na `main`, rode `gh workflow run release.yml -f bump=<patch|minor|major>`.
+3. O workflow sobe a versão, valida a biblioteca e o starter contra o pacote empacotado, publica no npm, fixa o starter na versão publicada (`npm run test:starter`), cria o commit `release: v<versão>`, a tag e a release no GitHub.
+4. Registre a versão no plano.
 5. Apps fixam a versão exata (`--save-exact`) e atualizam por PR.
+
+O vínculo de confiança do pacote é configurado uma vez por quem tem acesso de publicação: `npm trust github @majapisoftwares/ui --repo majapisoftwares/ui --file release.yml --allow-publish`.
