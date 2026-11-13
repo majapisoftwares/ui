@@ -1,5 +1,10 @@
 name: Validate app
-on: [push, pull_request]
+# Once per change: pull requests, and main after a merge. The checks are
+# `npm run verify` (scripts/verify.mjs), the same command run before every push.
+on:
+  push:
+    branches: [main]
+  pull_request:
 permissions:
   contents: read
 jobs:
@@ -12,7 +17,4 @@ jobs:
           node-version: '24'
           cache: npm
       - run: npm ci
-      - run: npm run lint
-      - run: npm run typecheck
-      - run: npm run check:ui
-      - run: npm run build
+      - run: npm run verify

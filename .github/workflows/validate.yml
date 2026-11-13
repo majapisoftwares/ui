@@ -1,5 +1,10 @@
 name: Validate UI library
-on: [push, pull_request]
+# Once per change: pull requests, and main after a merge. The checks are
+# `npm run verify` (scripts/verify.mjs), the same command run before every push.
+on:
+  push:
+    branches: [main]
+  pull_request:
 permissions:
   contents: read
 jobs:
@@ -12,16 +17,7 @@ jobs:
           node-version: '24'
           cache: npm
       - run: npm ci
-      - run: npm run typecheck
-      - run: npm run test:preferences
-      - run: npm run test:data-table
-      - run: npm run lint
-      - run: npm run check:standards
-      - run: npm run build
-      - run: npm run test:starter
-      - run: npm run lint -w catalog
-      - run: npm run typecheck -w catalog
-      - run: npm run check:ui -w catalog
+      - run: npm run verify
   next-starter:
     runs-on: ubuntu-latest
     defaults:
@@ -35,7 +31,4 @@ jobs:
           cache: npm
           cache-dependency-path: starters/next-app/package-lock.json
       - run: npm ci
-      - run: npm run lint
-      - run: npm run typecheck
-      - run: npm run check:ui
-      - run: npm run build
+      - run: npm run verify

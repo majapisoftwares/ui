@@ -8,6 +8,10 @@ Base atual: shadcn base-luma com @base-ui/react. Os componentes interativos exp�
 
 TypeScript em modo strict, React com componentes funcionais e composição. APIs genéricas tipadas; sem any para contornar contratos, estado derivado duplicado ou dependências de domínio na UI. Imports públicos por subpath, internos relativos. Dependências e lockfile versionados. Interface, acesso a dados, autorização e operações de infraestrutura permanecem separados. Entradas externas são validadas no servidor; erros e resultados incompletos são explícitos.
 
+## Verificação antes do push
+
+Cada repositório tem `npm run verify` (`scripts/verify.mjs`): tudo o que o CI checa, na mesma ordem e com o ambiente do CI, parando na primeira falha. O CI só instala, prepara o ambiente (banco, navegador, preview) e roda `npm run verify`, uma vez por mudança: no pull request, e no push só na `main`. Rode-o antes de cada push e corrija aqui; o CI confirma, não descobre falhas. Checagem nova entra no script, nunca só no workflow, e o ambiente que ela precisa no CI também vale ao rodar localmente. Apps novos já vêm assim do starter.
+
 ## Base visual
 
 `src/styles.css` é a fonte dos tokens de cor, tipografia, raio, bordas, foco, estados e estrutura. Preset base-luma do shadcn (o mesmo da home de ui.shadcn.com: cantos bem arredondados, campos com fundo suave, sombras leves) sobre o tema neutral, fonte Geist, foco visível e espaço consistente. Cores são semânticas: background, foreground, primary, muted, destructive, success e warning. Temas claro/escuro preservam a semântica. Tokens e padrões podem evoluir nesta biblioteca, nunca por overrides locais em um produto.
