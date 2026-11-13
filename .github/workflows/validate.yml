@@ -17,7 +17,17 @@ jobs:
           node-version: '24'
           cache: npm
       - run: npm ci
+      - uses: actions/cache/restore@v4
+        with:
+          path: catalog/.next/cache
+          key: next-build-catalog-${{ hashFiles('package-lock.json') }}-${{ github.sha }}
+          restore-keys: next-build-catalog-${{ hashFiles('package-lock.json') }}-
       - run: npm run verify
+      - if: github.ref == 'refs/heads/main'
+        uses: actions/cache/save@v4
+        with:
+          path: catalog/.next/cache
+          key: next-build-catalog-${{ hashFiles('package-lock.json') }}-${{ github.sha }}
   next-starter:
     runs-on: ubuntu-latest
     defaults:
@@ -31,4 +41,14 @@ jobs:
           cache: npm
           cache-dependency-path: starters/next-app/package-lock.json
       - run: npm ci
+      - uses: actions/cache/restore@v4
+        with:
+          path: starters/next-app/.next/cache
+          key: next-build-starter-${{ hashFiles('package-lock.json') }}-${{ github.sha }}
+          restore-keys: next-build-starter-${{ hashFiles('package-lock.json') }}-
       - run: npm run verify
+      - if: github.ref == 'refs/heads/main'
+        uses: actions/cache/save@v4
+        with:
+          path: starters/next-app/.next/cache
+          key: next-build-starter-${{ hashFiles('package-lock.json') }}-${{ github.sha }}
