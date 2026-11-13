@@ -17,4 +17,15 @@ jobs:
           node-version: '24'
           cache: npm
       - run: npm ci
+      # Turbopack's build cache: pull requests start from main's, and main saves a new one.
+      - uses: actions/cache/restore@v4
+        with:
+          path: .next/cache
+          key: next-build-${{ hashFiles('package-lock.json') }}-${{ github.sha }}
+          restore-keys: next-build-${{ hashFiles('package-lock.json') }}-
       - run: npm run verify
+      - if: github.ref == 'refs/heads/main'
+        uses: actions/cache/save@v4
+        with:
+          path: .next/cache
+          key: next-build-${{ hashFiles('package-lock.json') }}-${{ github.sha }}
