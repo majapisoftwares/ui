@@ -11,7 +11,8 @@
 - A base de primitivas é Base UI (base-luma). Use render, não asChild; links via Button exigem nativeButton=false.
 - App Router: páginas/layout são Server Components por padrão. Interação e callbacks de UI ficam em Client Components; não envie funções comuns pela fronteira servidor/cliente.
 - Não coloque secrets ou dados sensíveis no bundle. Os dados e callbacks demonstrativos não são autenticação: implemente sessão, autorização e validação no servidor antes de conectar dados reais.
-- Valide npm run lint, npm run typecheck, npm run check:ui, npm run build e navegador desktop/mobile antes de publicar.
+- Antes de cada push, rode `npm run verify`: tudo o que o CI checa, na mesma ordem e com o ambiente do CI. Corrija as falhas aqui; não use o CI para descobrir falhas. O CI só roda `npm run verify` (depois de instalar e preparar o ambiente) e roda uma vez por mudança: no pull request, e no push só na main. Checagem nova (testes, e2e) entra em `scripts/verify.mjs`, nunca só no workflow.
+- Valide também o navegador desktop/mobile antes de publicar.
 - Publique código e evidências no GitHub, atualizando o plano do projeto. Publicar código não autoriza deploy de produção ou geração de custos.
 
 <!-- BEGIN:nextjs-agent-rules -->

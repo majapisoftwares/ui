@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint . --max-warnings=0",
     "typecheck": "next typegen && tsc --noEmit",
-    "check:ui": "node node_modules/@majapisoftwares/ui/scripts/check-standards.mjs src"
+    "check:ui": "node node_modules/@majapisoftwares/ui/scripts/check-standards.mjs src",
+    "verify": "node scripts/verify.mjs"
   },
   "dependencies": {
     "@majapisoftwares/ui": "6.7.0",

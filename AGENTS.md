@@ -23,5 +23,6 @@
 - className nos apps é para layout. Mudanças visuais precisam de tokens, variantes ou padrões oficiais. Evite controles HTML crus quando houver um componente da biblioteca.
 - Todos os fluxos devem incluir estados carregando, vazio, erro, parcial e indisponível quando aplicáveis. Não esconda falhas ou altere dados para o exemplo parecer funcionar.
 - Preserve acessibilidade: nome acessível, foco visível, navegação por teclado, título e descrição de overlays, labels em campos, e texto junto aos estados.
-- Antes de publicar: npm run typecheck, npm run lint, npm run check:standards, npm run build, git diff --check e revisão visual em desktop/mobile. Teste comportamentos novos de risco, sem testes que apenas espelhem markup.
+- Antes de cada push, rode `npm run verify`: tudo o que o CI checa, na mesma ordem e com o ambiente do CI. Corrija as falhas aqui; não use o CI para descobrir falhas. O CI só roda `npm run verify` (depois de instalar e preparar o ambiente) e roda uma vez por mudança: no pull request, e no push só na main. Checagem nova (testes, e2e) entra em `scripts/verify.mjs`, nunca só no workflow.
+- Antes de publicar também: git diff --check e revisão visual em desktop/mobile. Teste comportamentos novos de risco, sem testes que apenas espelhem markup.
 - Publique código e evidências no GitHub e vincule os commits ao PLAN.md central. Registre breaking changes e migração antes de atualizar consumidores.

@@ -39,9 +39,12 @@ test("starter creates an independent project and refuses to overwrite it", async
     assert.ok(
       await readFile(join(destination, "src/app", route, "page.tsx"), "utf8"),
     );
-  assert.ok(
-    await readFile(join(destination, ".github/workflows/validate.yml"), "utf8"),
-  );
+  const workflow = await readFile(join(destination, ".github/workflows/validate.yml"), "utf8");
+  assert.match(workflow, /run: npm run verify/, "CI runs the same command as a push");
+  assert.doesNotMatch(workflow, /on: \[push, pull_request\]/, "once per change, not twice");
+  assert.equal(pkg.scripts.verify, "node scripts/verify.mjs");
+  assert.ok(await readFile(join(destination, "scripts/verify.mjs"), "utf8"));
+  assert.ok((await readFile(join(destination, "AGENTS.md"), "utf8")).includes("npm run verify"));
   assert.ok(
     (await readFile(join(destination, "AGENTS.md"), "utf8")).includes(
       "contribua primeiro",
