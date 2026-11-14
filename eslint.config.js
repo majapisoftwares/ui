@@ -20,6 +20,15 @@ export default tseslint.config(
     rules: { ...hooks.configs.recommended.rules },
   },
   {
+    // shadcn's Message Scroller source (MIT), kept as upstream wrote it so it
+    // can be diffed against new releases; see THIRD_PARTY_NOTICES.md.
+    files: ["src/lib/message-scroller/**"],
+    rules: {
+      ...Object.fromEntries(Object.keys(hooks.configs.recommended.rules).filter((rule) => rule !== "react-hooks/rules-of-hooks").map((rule) => [rule, "off"])),
+      "no-useless-assignment": "off",
+    },
+  },
+  {
     files: ["scripts/*.mjs"],
     languageOptions: { globals: { console: "readonly", process: "readonly" } },
   },

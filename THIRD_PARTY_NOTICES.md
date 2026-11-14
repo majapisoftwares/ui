@@ -12,6 +12,8 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+src/lib/message-scroller is the source of @shadcn/react's Message Scroller (packages/react/src/message-scroller and use-render, shadcn-ui/ui commit 4aaea19, newer than the 0.3.1 release), under the MIT License above. Change: a scroll anchor counts as new only when its element was never in the list, so a same-count change no longer scrolls to the oldest turn.
+
 src/components/ui/orb.tsx and orb.css are adapted from AICSS Orbs (https://github.com/kvnkld/aicss, registry https://www.aicss.dev/r/orbs.json): colors mapped to theme tokens, labels translated, CSS module turned into orb-prefixed global CSS. MIT License:
 
 MIT License
