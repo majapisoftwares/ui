@@ -35,6 +35,7 @@ const steps = [
   ["test:preferences", "npm run test:preferences"],
   ["test:data-table", "npm run test:data-table"],
   ["test:chat-quote", "npm run test:chat-quote"],
+  ["test:ai-elements", "npm run test:ai-elements"],
   ["lint", "npm run lint"],
   ["check:standards", "npm run check:standards"],
   ["build", "npm run build"],
