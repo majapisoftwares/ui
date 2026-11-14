@@ -85,6 +85,8 @@ export const uiMessages = defineMessages({
     responding: "Responding",
     copy: "Copy",
     copied: "Copied",
+    reply: "Reply",
+    cancelReply: "Cancel reply",
     goodResponse: "Good response",
     badResponse: "Bad response",
     thinking: "Thinking",
@@ -93,6 +95,44 @@ export const uiMessages = defineMessages({
     approve: "Approve",
     deny: "Deny",
     suggestions: "Suggestions",
+    researching: "Researching",
+    researched: (steps: number) =>
+      `Researched in ${steps} ${steps === 1 ? "step" : "steps"}`,
+    planProgress: (done: number, total: number) => `${done} of ${total} done`,
+    toDo: (count: number) => `${count} to do`,
+    completedCount: (count: number) => `${count} completed`,
+    usedSources: (count: number) =>
+      `Used ${count} ${count === 1 ? "source" : "sources"}`,
+    opensInNewTab: "(opens in a new tab)",
+    runningCommand: (command: string) => `Running ${command}`,
+    ranCommand: (command: string) => `Ran ${command}`,
+    exitedWith: (command: string, code: number) =>
+      `${command} exited with code ${code}`,
+    testCounts: (total: number, failed: number, skipped: number) =>
+      [
+        `${total} ${total === 1 ? "test" : "tests"}`,
+        failed > 0 && `${failed} failed`,
+        skipped > 0 && `${skipped} skipped`,
+      ]
+        .filter(Boolean)
+        .join(", "),
+    ranTests: (counts: string) => `Ran ${counts}`,
+    skippedTest: (name: string) => `Skipped ${name}`,
+    failedWith: (error: string) => `Failed: ${error}`,
+    frameworkFrames: (count: number) =>
+      `${count} framework ${count === 1 ? "frame" : "frames"}`,
+    restore: "Restore",
+    restoreTo: (label: string) => `Restore to ${label}`,
+    contextPercent: (percent: number) => `${percent}% context`,
+    context: "Context",
+    contextUsed: "Context used",
+    inputTokens: "Input",
+    outputTokens: "Output",
+    reasoningTokens: "Reasoning",
+    model: "Model",
+    effort: "Effort",
+    modelIs: (name: string) => `Model: ${name}`,
+    effortIs: (name: string) => `Effort: ${name}`,
   },
   "pt-BR": {
     sidebar: "Barra lateral",
@@ -135,6 +175,8 @@ export const uiMessages = defineMessages({
     responding: "Respondendo",
     copy: "Copiar",
     copied: "Copiado",
+    reply: "Responder",
+    cancelReply: "Cancelar resposta",
     goodResponse: "Boa resposta",
     badResponse: "Resposta ruim",
     thinking: "Pensando",
@@ -143,6 +185,45 @@ export const uiMessages = defineMessages({
     approve: "Aprovar",
     deny: "Negar",
     suggestions: "Sugestões",
+    researching: "Pesquisando",
+    researched: (steps: number) =>
+      `Pesquisou em ${steps} ${steps === 1 ? "passo" : "passos"}`,
+    planProgress: (done: number, total: number) => `${done} de ${total} feitos`,
+    toDo: (count: number) => `${count} a fazer`,
+    completedCount: (count: number) =>
+      `${count} ${count === 1 ? "concluído" : "concluídos"}`,
+    usedSources: (count: number) =>
+      `Usou ${count} ${count === 1 ? "fonte" : "fontes"}`,
+    opensInNewTab: "(abre em uma nova aba)",
+    runningCommand: (command: string) => `Rodando ${command}`,
+    ranCommand: (command: string) => `Rodou ${command}`,
+    exitedWith: (command: string, code: number) =>
+      `${command} saiu com código ${code}`,
+    testCounts: (total: number, failed: number, skipped: number) =>
+      [
+        `${total} ${total === 1 ? "teste" : "testes"}`,
+        failed > 0 && `${failed} ${failed === 1 ? "falhou" : "falharam"}`,
+        skipped > 0 && `${skipped} ${skipped === 1 ? "pulado" : "pulados"}`,
+      ]
+        .filter(Boolean)
+        .join(", "),
+    ranTests: (counts: string) => `Rodou ${counts}`,
+    skippedTest: (name: string) => `Pulou ${name}`,
+    failedWith: (error: string) => `Falhou: ${error}`,
+    frameworkFrames: (count: number) =>
+      `${count} ${count === 1 ? "quadro" : "quadros"} do framework`,
+    restore: "Restaurar",
+    restoreTo: (label: string) => `Restaurar até ${label}`,
+    contextPercent: (percent: number) => `${percent}% do contexto`,
+    context: "Contexto",
+    contextUsed: "Contexto usado",
+    inputTokens: "Entrada",
+    outputTokens: "Saída",
+    reasoningTokens: "Raciocínio",
+    model: "Modelo",
+    effort: "Esforço",
+    modelIs: (name: string) => `Modelo: ${name}`,
+    effortIs: (name: string) => `Esforço: ${name}`,
   },
 });
 

@@ -45,7 +45,7 @@ function MessageScrollerViewport({
       data-slot="message-scroller-viewport"
       aria-label={messages.messages}
       className={cn(
-        "size-full min-h-0 min-w-0 scroll-fade-b overflow-y-auto overscroll-contain [scrollbar-gutter:stable] contain-content data-autoscrolling:[scrollbar-color:transparent_transparent] data-pending-scroll:invisible",
+        "size-full min-h-0 min-w-0 scroll-fade-y overflow-y-auto overscroll-contain [scrollbar-gutter:stable] contain-content data-autoscrolling:[scrollbar-color:transparent_transparent] data-pending-scroll:invisible",
         className,
       )}
       {...props}

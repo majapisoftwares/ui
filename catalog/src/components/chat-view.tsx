@@ -22,6 +22,7 @@ import {
 import { Bubble, BubbleContent } from "@majapisoftwares/ui/components/bubble";
 import { MessageScrollerItem } from "@majapisoftwares/ui/components/message-scroller";
 import { useStreamedText } from "@majapisoftwares/ui/hooks/use-streamed-text";
+import { quoteText } from "@majapisoftwares/ui/lib/utils";
 import {
   defineMessages,
   useLocale,
@@ -33,9 +34,11 @@ import {
   ChatComposer,
   ChatMessage,
   ChatMessages,
+  ChatQuote,
   CopyMessageAction,
   MessageAction,
   MessageActions,
+  ReplyMessageAction,
   Suggestions,
   TypingIndicator,
 } from "@majapisoftwares/ui/patterns/chat";
@@ -58,6 +61,8 @@ import {
 const messages = defineMessages({
   en: {
     placeholder: "Ask the agent",
+    you: "You",
+    agent: "Agent",
     failed: "Couldn't get a reply.",
     suggestions: [
       "Why did the last deploy fail?",
@@ -117,6 +122,8 @@ Want me to open a pull request?`,
   },
   "pt-BR": {
     placeholder: "Pergunte ao agente",
+    you: "Você",
+    agent: "Agente",
     failed: "Não foi possível obter uma resposta.",
     suggestions: [
       "Por que o último deploy falhou?",
@@ -206,6 +213,8 @@ interface DemoMessage {
   files?: DemoFile[];
   parts?: Part[];
   time?: string;
+  /** The message this one replies to. */
+  replyTo?: string;
 }
 
 const icons = {
@@ -300,6 +309,7 @@ export function ChatView({ empty = false }: { empty?: boolean }) {
   const [status, setStatus] = useState<ChatStatus>("ready");
   const [feedback, setFeedback] = useState<Record<string, "up" | "down">>({});
   const [activeId, setActiveId] = useState<string | null>(null);
+  const [replyTo, setReplyTo] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
   const repliesRef = useRef(0);
   const revealedRef = useRef<() => void>(() => {});
@@ -399,7 +409,9 @@ export function ChatView({ empty = false }: { empty?: boolean }) {
         size: file.size,
         url: file.type.startsWith("image/") ? URL.createObjectURL(file) : undefined,
       })),
+      replyTo: replyTo ?? undefined,
     };
+    setReplyTo(null);
     setTranscript((current) => [
       ...(current ?? seed(t)),
       userMessage,
@@ -475,6 +487,23 @@ export function ChatView({ empty = false }: { empty?: boolean }) {
 
   const busy = status === "submitted" || status === "streaming";
 
+  const textOf = (message: DemoMessage) =>
+    message.text || quoteText(message.parts?.find((part) => part.type === "text")?.text ?? "") || message.files?.map((file) => file.name).join(", ") || "";
+  const quoteOf = (id: string | undefined, props: { inComposer?: boolean } = {}) => {
+    const quoted = id ? list.find((message) => message.id === id) : undefined;
+    if (!quoted) return undefined;
+    return (
+      <ChatQuote
+        key={quoted.id}
+        author={quoted.role === "user" ? t.you : t.agent}
+        messageId={props.inComposer ? undefined : quoted.id}
+        onDismiss={props.inComposer ? () => setReplyTo(null) : undefined}
+      >
+        {textOf(quoted)}
+      </ChatQuote>
+    );
+  };
+
   return (
     <Chat>
       <ChatMessages busy={busy}>
@@ -484,7 +513,13 @@ export function ChatView({ empty = false }: { empty?: boolean }) {
               <MessageScrollerItem key={message.id} messageId={message.id} scrollAnchor>
                 <ChatMessage
                   from="user"
-                  footer={message.time}
+                  quote={quoteOf(message.replyTo)}
+                  footer={
+                    <MessageActions>
+                      <ReplyMessageAction onReply={() => setReplyTo(message.id)} />
+                      <span className="ml-1.5 tabular-nums">{message.time}</span>
+                    </MessageActions>
+                  }
                   attachments={
                     message.files?.length ? (
                       <AttachmentGroup className="justify-end">
@@ -524,6 +559,7 @@ export function ChatView({ empty = false }: { empty?: boolean }) {
                 footer={
                   done && (text || failed) ? (
                     <MessageActions>
+                      {text ? <ReplyMessageAction onReply={() => setReplyTo(message.id)} /> : null}
                       {text ? <CopyMessageAction text={text.text} /> : null}
                       {text ? (
                         <>
@@ -606,6 +642,7 @@ export function ChatView({ empty = false }: { empty?: boolean }) {
           onStop={stop}
           sendWhileBusy
           onSubmit={send}
+          quote={quoteOf(replyTo ?? undefined, { inComposer: true })}
           attachments
           autoFocus
         />

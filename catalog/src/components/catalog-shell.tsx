@@ -35,11 +35,13 @@ const routes = {
   patterns: "/patterns",
   chat: "/chat",
   newChat: "/chat/new",
+  elements: "/chat/elements",
   login: "/login",
   signup: "/signup",
 } as const;
 type RouteId = keyof typeof routes;
-type ShellRouteId = "dashboard" | "components" | "patterns" | "chat" | "newChat";
+type ShellRouteId =
+  "dashboard" | "components" | "patterns" | "chat" | "newChat" | "elements";
 
 export function CatalogShell({ children }: { children: ReactNode }) {
   const t = useMessages(messages);
@@ -84,6 +86,7 @@ export function CatalogShell({ children }: { children: ReactNode }) {
               icon: <BotIcon />,
               children: [
                 { id: "newChat", label: t.newChat, href: routes.newChat },
+                { id: "elements", label: t.elements, href: routes.elements },
               ],
             },
           ],
@@ -92,7 +95,7 @@ export function CatalogShell({ children }: { children: ReactNode }) {
       header={
         <Breadcrumb>
           <BreadcrumbList>
-            {activeId === "newChat" ? (
+            {activeId === "newChat" || activeId === "elements" ? (
               <>
                 <BreadcrumbItem>
                   <BreadcrumbLink href={routes.chat}>{t.chat}</BreadcrumbLink>
@@ -111,7 +114,9 @@ export function CatalogShell({ children }: { children: ReactNode }) {
       footer={<ExampleUserMenu />}
       // The dashboard (table) and the chat fill the screen and scroll inside.
       fillHeight={
-        activeId === "dashboard" || activeId === "chat" || activeId === "newChat"
+        activeId === "dashboard" ||
+        activeId === "chat" ||
+        activeId === "newChat"
       }
     >
       {children}

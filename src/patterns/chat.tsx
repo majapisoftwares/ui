@@ -9,7 +9,7 @@ import {
   type ComponentProps,
   type ReactNode,
 } from "react";
-import { CheckIcon, CopyIcon } from "lucide-react";
+import { CheckIcon, CopyIcon, ReplyIcon, XIcon } from "lucide-react";
 import { cn } from "../lib/utils";
 import { useUiMessages } from "../lib/i18n";
 import { Button } from "../components/ui/button";
@@ -25,6 +25,7 @@ import {
   MessageScrollerContent,
   MessageScrollerProvider,
   MessageScrollerViewport,
+  useMessageScroller,
   useMessageScrollerGutterWidth,
 } from "../components/ui/message-scroller";
 import { Orb } from "../components/ui/orb";
@@ -98,7 +99,7 @@ export function ChatMessages({
         <MessageScrollerViewport ref={viewportRef}>
           <MessageScrollerContent
             aria-busy={busy}
-            className="mx-auto w-full max-w-3xl pb-6"
+            className="mx-auto w-full max-w-3xl pt-6 pb-6"
           >
             {children}
           </MessageScrollerContent>
@@ -139,6 +140,8 @@ export interface ChatMessageProps
   from: "user" | "assistant";
   /** Files or images sent with a person's message, above the bubble. */
   attachments?: ReactNode;
+  /** The message this one replies to (a `ChatQuote`), above its text. */
+  quote?: ReactNode;
   /** Actions or the time under the message. A person's footer shows on hover. */
   footer?: ReactNode;
 }
@@ -146,10 +149,13 @@ export interface ChatMessageProps
 /**
  * One turn. A person's text sits in a muted bubble on the end side; the
  * agent's reply is unboxed so markdown, reasoning and tools read as a page.
+ * Either footer (actions, time) shows on hover or focus; on touch screens it
+ * stays visible.
  */
 export function ChatMessage({
   from,
   attachments,
+  quote,
   footer,
   children,
   ...props
@@ -159,9 +165,12 @@ export function ChatMessage({
       <Message align="end" data-from="user" {...props}>
         <MessageContent>
           {attachments}
-          {children ? (
+          {children || quote ? (
             <Bubble align="end" variant="muted">
               <BubbleContent className="whitespace-pre-wrap">
+                {quote ? (
+                  <div className={cn("whitespace-normal", children ? "mb-1.5" : undefined)}>{quote}</div>
+                ) : null}
                 {children}
               </BubbleContent>
             </Bubble>
@@ -178,8 +187,13 @@ export function ChatMessage({
   return (
     <Message data-from="assistant" {...props}>
       <MessageContent>
+        {quote ? <div className="max-w-md">{quote}</div> : null}
         {children}
-        {footer ? <MessageFooter className="px-0">{footer}</MessageFooter> : null}
+        {footer ? (
+          <MessageFooter className="px-0 transition-opacity md:opacity-0 md:group-hover/message:opacity-100 md:group-focus-within/message:opacity-100">
+            {footer}
+          </MessageFooter>
+        ) : null}
       </MessageContent>
     </Message>
   );
@@ -254,6 +268,107 @@ export function CopyMessageAction({ text }: { text: string }) {
     >
       {copied ? <CheckIcon /> : <CopyIcon />}
     </MessageAction>
+  );
+}
+
+/** Starts a reply to the message, as in messaging apps. */
+export function ReplyMessageAction({ onReply }: { onReply: () => void }) {
+  const messages = useUiMessages();
+  return (
+    <MessageAction label={messages.reply} onClick={onReply}>
+      <ReplyIcon />
+    </MessageAction>
+  );
+}
+
+export interface ChatQuoteProps extends ComponentProps<"div"> {
+  /** Who wrote the quoted message. */
+  author: ReactNode;
+  /** In the transcript: selecting the quote scrolls to this message. */
+  messageId?: string;
+  /** In the composer: shows a button that cancels the reply. */
+  onDismiss?: () => void;
+}
+
+function QuoteBody({ author, children }: { author: ReactNode; children: ReactNode }) {
+  return (
+    <>
+      <span className="block truncate font-medium text-foreground">{author}</span>
+      <span className="line-clamp-2 break-words text-muted-foreground">
+        {children}
+      </span>
+    </>
+  );
+}
+
+function QuoteJump({
+  messageId,
+  author,
+  children,
+}: {
+  messageId: string;
+  author: ReactNode;
+  children: ReactNode;
+}) {
+  const { scrollToMessage } = useMessageScroller();
+  return (
+    <Button
+      type="button"
+      variant="ghost"
+      className="h-auto min-w-0 flex-1 flex-col items-stretch gap-0 rounded-[inherit] px-2.5 py-1.5 text-left text-xs font-normal whitespace-normal hover:bg-transparent"
+      onClick={() => scrollToMessage(messageId, { align: "center", behavior: "smooth" })}
+    >
+      <QuoteBody author={author}>{children}</QuoteBody>
+    </Button>
+  );
+}
+
+/**
+ * The message a reply refers to: its author and the start of its text. Pass
+ * it as `quote` to `ChatMessage` (with `messageId`, it jumps to the original)
+ * or to `PromptInput` while the person writes the reply (with `onDismiss`).
+ */
+export function ChatQuote({
+  author,
+  messageId,
+  onDismiss,
+  className,
+  children,
+  ...props
+}: ChatQuoteProps) {
+  const messages = useUiMessages();
+  return (
+    <div
+      data-slot="chat-quote"
+      className={cn(
+        "flex min-w-0 items-start rounded-lg border-l-2 border-primary bg-foreground/5 text-xs",
+        className,
+      )}
+      {...props}
+    >
+      {messageId ? (
+        <QuoteJump messageId={messageId} author={author}>
+          {children}
+        </QuoteJump>
+      ) : (
+        <div className="min-w-0 flex-1 px-2.5 py-1.5">
+          <QuoteBody author={author}>{children}</QuoteBody>
+        </div>
+      )}
+      {onDismiss ? (
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon-xs"
+          aria-label={messages.cancelReply}
+          className="m-1 size-11 shrink-0 text-muted-foreground md:size-6"
+          onMouseDown={(event) => event.preventDefault()}
+          onClick={onDismiss}
+        >
+          <XIcon />
+        </Button>
+      ) : null}
+    </div>
   );
 }
 
