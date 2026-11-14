@@ -43,6 +43,7 @@
     "normalize:ui": "node scripts/normalize-ui.mjs && prettier --write src/components/ui src/hooks",
     "test:preferences": "tsx --test scripts/preferences.test.tsx",
     "test:data-table": "tsx --test scripts/data-table.test.tsx",
+    "test:chat-quote": "tsx --test scripts/chat-quote.test.tsx",
     "verify": "node scripts/verify.mjs"
   },
   "peerDependencies": {

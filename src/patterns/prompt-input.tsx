@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  isValidElement,
   useEffect,
   useRef,
   useState,
@@ -67,6 +68,11 @@ export interface PromptInputProps {
   maxFiles?: number;
   /** Extra controls in the bottom bar, before the send button (e.g. a model menu). */
   actions?: ReactNode;
+  /**
+   * The message being replied to (a `ChatQuote` with `onDismiss`), above the
+   * field. The field takes focus when a quote appears or its `key` changes.
+   */
+  quote?: ReactNode;
   className?: string;
   "aria-label"?: string;
 }
@@ -136,6 +142,7 @@ export function PromptInput({
   accept,
   maxFiles,
   actions,
+  quote,
   className,
   "aria-label": ariaLabel,
 }: PromptInputProps) {
@@ -154,6 +161,12 @@ export function PromptInput({
   useEffect(() => {
     filesRef.current = files;
   }, [files]);
+
+  // Starting a reply (or replying to another message) puts the cursor in the field.
+  const quoteKey = quote ? (isValidElement(quote) && quote.key !== null ? quote.key : true) : null;
+  useEffect(() => {
+    if (quoteKey !== null) textareaRef.current?.focus();
+  }, [quoteKey]);
 
   // Release previews that are still attached when the composer unmounts.
   useEffect(
@@ -267,6 +280,11 @@ export function PromptInput({
         data-dragging={dragging || undefined}
         className="data-dragging:border-ring data-dragging:ring-3 data-dragging:ring-ring/30"
       >
+        {quote ? (
+          <InputGroupAddon align="block-start" className="cursor-default pb-0">
+            <div className="w-full min-w-0">{quote}</div>
+          </InputGroupAddon>
+        ) : null}
         {files.length > 0 ? (
           <InputGroupAddon align="block-start" className="cursor-default">
             <AttachmentGroup aria-label={messages.attachments} className="w-full">

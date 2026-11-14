@@ -34,6 +34,7 @@ const steps = [
   ["typecheck", "npm run typecheck"],
   ["test:preferences", "npm run test:preferences"],
   ["test:data-table", "npm run test:data-table"],
+  ["test:chat-quote", "npm run test:chat-quote"],
   ["lint", "npm run lint"],
   ["check:standards", "npm run check:standards"],
   ["build", "npm run build"],
