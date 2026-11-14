@@ -99,7 +99,7 @@ export function ChatMessages({
         <MessageScrollerViewport ref={viewportRef}>
           <MessageScrollerContent
             aria-busy={busy}
-            className="mx-auto w-full max-w-3xl pb-6"
+            className="mx-auto w-full max-w-3xl pt-6 pb-6"
           >
             {children}
           </MessageScrollerContent>
@@ -149,6 +149,8 @@ export interface ChatMessageProps
 /**
  * One turn. A person's text sits in a muted bubble on the end side; the
  * agent's reply is unboxed so markdown, reasoning and tools read as a page.
+ * Either footer (actions, time) shows on hover or focus; on touch screens it
+ * stays visible.
  */
 export function ChatMessage({
   from,
@@ -187,7 +189,11 @@ export function ChatMessage({
       <MessageContent>
         {quote ? <div className="max-w-md">{quote}</div> : null}
         {children}
-        {footer ? <MessageFooter className="px-0">{footer}</MessageFooter> : null}
+        {footer ? (
+          <MessageFooter className="px-0 transition-opacity md:opacity-0 md:group-hover/message:opacity-100 md:group-focus-within/message:opacity-100">
+            {footer}
+          </MessageFooter>
+        ) : null}
       </MessageContent>
     </Message>
   );
