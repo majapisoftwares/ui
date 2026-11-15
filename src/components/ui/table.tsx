@@ -4,7 +4,10 @@ import * as React from "react";
 import { cn } from "cn";
 
 // Majapi UI: `containerClassName` styles the scroll container (e.g. to fill
-// the available height and scroll vertically).
+// the available height and scroll vertically). `contain-inline-size` keeps the
+// table's width out of every ancestor's sizing: however wide the rows, the
+// table scrolls inside its own container and never widens the page, in any
+// flex or grid layout. The container takes the width its parent gives it.
 function Table({
   className,
   containerClassName,
@@ -13,7 +16,7 @@ function Table({
   return (
     <div
       data-slot="table-container"
-      className={cn("relative w-full overflow-x-auto", containerClassName)}
+      className={cn("relative w-full overflow-x-auto contain-inline-size", containerClassName)}
     >
       <table
         data-slot="table"

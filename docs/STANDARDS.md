@@ -52,6 +52,7 @@ AGENTS.md nos apps exige contribuição upstream antes de uso. O verificador est
 - Imports internos relativos e `"use client"` são aplicados por `npm run normalize:ui` após o CLI do shadcn.
 - Sheet traduz o nome acessível do fechamento pelo idioma ativo.
 - Sidebar: três modos (open/compact/closed), largura redimensionável (208–448px) com troca de modo por largura, menu de clique direito, tooltip que fecha ao clicar e textos traduzidos.
+- Tabelas nunca alargam a página: `SidebarInset` tem `min-w-0` (sem ele, um conteúdo largo mantinha o inset na largura inteira e a página rolava para o lado pela largura da sidebar) e o contêiner de `Table` usa `contain-inline-size`, então a largura das linhas não entra no tamanho de nenhum ancestral (flex ou grid): a tabela rola dentro do próprio contêiner. O contêiner ocupa a largura que o pai dá; dentro de um pai que encolhe ao conteúdo (`w-fit`, inline, trilha `auto` de grid), dê largura ao pai. Não remova nenhum dos dois.
 - use-mobile usa useSyncExternalStore (compatível com SSR e com a regra de hooks).
 - Field usa imports relativos. Button assume type=button para evitar submissões acidentais; formulários declaram type=submit. Badge inclui variantes success e warning reutilizadas por StatusBadge.
 - Tokens de identidade, estados semânticos e padrões compostos são mantidos aqui.
