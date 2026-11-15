@@ -1,6 +1,6 @@
 {
   "name": "@majapisoftwares/ui",
-  "version": "6.8.1",
+  "version": "6.8.2",
   "description": "Shared Majapi UI and UX standards based on shadcn/ui",
   "publishConfig": {
     "access": "public"
