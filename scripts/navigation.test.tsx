@@ -65,6 +65,7 @@ test("the shell shows the trail, and on phones one back arrow to the nearest lin
     assert.equal(back.getAttribute("href"), "/boards/7");
     assert.equal(back.getAttribute("aria-label"), "Back to Launch");
     assert.match(back.className, /md:hidden/, "the arrow is for phones only");
+    assert.equal(back.getAttribute("role"), null, "a link (it navigates), not a button");
     // From md up the trail links up instead; on phones the parents are hidden.
     const trail = [...header().querySelectorAll('[data-slot="breadcrumb-link"]')];
     assert.deepEqual(trail.map((link) => link.getAttribute("href")), ["/boards", "/boards/7"]);

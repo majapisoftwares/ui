@@ -26,7 +26,7 @@ import {
 } from "../components/ui/sidebar";
 import { Separator } from "../components/ui/separator";
 import { TooltipProvider } from "../components/ui/tooltip";
-import { Button } from "../components/ui/button";
+import { buttonVariants } from "../components/ui/button";
 import { Skeleton } from "../components/ui/skeleton";
 import {
   Breadcrumb,
@@ -157,18 +157,20 @@ function ShellBreadcrumbs({
     item.label ?? <Skeleton className="h-4 w-24" />;
   return (
     <div className="flex min-w-0 items-center gap-1">
-      {/* Phones only: one way back, in place of the parents' links. */}
+      {/* Phones only: one way back, in place of the parents' links. A link
+          (it navigates), styled as the ghost icon button. */}
       {parent?.href ? (
-        <Button
-          variant="ghost"
-          size="icon-sm"
-          className="-ml-1.5 shrink-0 md:hidden"
+        <a
+          href={parent.href}
+          onClick={follow(parent.href)}
           aria-label={parent.label ? t.backTo(parent.label) : t.back}
-          nativeButton={false}
-          render={<a href={parent.href} onClick={follow(parent.href)} />}
+          className={cn(
+            buttonVariants({ variant: "ghost", size: "icon-sm" }),
+            "-ml-1.5 shrink-0 md:hidden",
+          )}
         >
           <ArrowLeftIcon />
-        </Button>
+        </a>
       ) : null}
       <Breadcrumb className="min-w-0">
         <BreadcrumbList className="flex-nowrap">
