@@ -1,7 +1,8 @@
 "use client";
 
-import type { MouseEvent, ReactNode } from "react";
+import { Fragment, type MouseEvent, type ReactNode } from "react";
 import { cn } from "cn";
+import { ArrowLeftIcon } from "lucide-react";
 import {
   Sidebar,
   SidebarCollapse,
@@ -25,6 +26,17 @@ import {
 } from "../components/ui/sidebar";
 import { Separator } from "../components/ui/separator";
 import { TooltipProvider } from "../components/ui/tooltip";
+import { Button } from "../components/ui/button";
+import { Skeleton } from "../components/ui/skeleton";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "../components/ui/breadcrumb";
+import { useUiMessages } from "../lib/i18n";
 
 export interface NavigationItem {
   id: string;
@@ -41,6 +53,18 @@ export interface NavigationGroup {
   items: NavigationItem[];
 }
 
+/** One step of the page's breadcrumb. */
+export interface ShellBreadcrumb {
+  /** `null` while the name loads (a skeleton shows in its place). */
+  label: string | null;
+  /**
+   * A page above this one. Only real parents get an href: on phones the
+   * nearest one becomes the header's back arrow. A group that only collects
+   * sibling pages (the sidebar opens them) has none.
+   */
+  href?: string;
+}
+
 export interface AppShellProps {
   /** Square logo; stays in place in every sidebar mode. */
   logo: ReactNode;
@@ -49,7 +73,19 @@ export interface AppShellProps {
   navigation: NavigationGroup[];
   activeId: string;
   onNavigate: (id: string) => void;
-  /** Rendered in the header next to the sidebar trigger, e.g. breadcrumbs. */
+  /**
+   * Where the page sits, the current page last. The shell owns the page's
+   * navigation: from `md` up it shows the whole trail and no back button; on
+   * phones it shows the current page, after a back arrow to the nearest
+   * linked parent. Pages never add their own back buttons.
+   */
+  breadcrumbs?: ShellBreadcrumb[];
+  /** Client-side navigation for breadcrumb links and the back arrow (e.g. `router.push`). Without it they are plain links. */
+  onBreadcrumbNavigate?: (href: string) => void;
+  /**
+   * @deprecated Pass `breadcrumbs`: the shell draws them the same way in
+   * every app. Rendered only when `breadcrumbs` is not set.
+   */
   header?: ReactNode;
   /** Rendered at the end of the header, e.g. locale or theme switchers. */
   actions?: ReactNode;
@@ -96,6 +132,83 @@ function HeaderTrigger() {
   );
 }
 
+const plainClick = (event: MouseEvent<HTMLElement>) =>
+  event.button === 0 &&
+  !event.metaKey &&
+  !event.ctrlKey &&
+  !event.shiftKey &&
+  !event.altKey;
+
+function ShellBreadcrumbs({
+  items,
+  onNavigate,
+}: {
+  items: ShellBreadcrumb[];
+  onNavigate?: (href: string) => void;
+}) {
+  const t = useUiMessages();
+  const parent = items.slice(0, -1).findLast((item) => item.href);
+  const follow = (href: string) => (event: MouseEvent<HTMLElement>) => {
+    if (!onNavigate || !plainClick(event)) return;
+    event.preventDefault();
+    onNavigate(href);
+  };
+  const name = (item: ShellBreadcrumb) =>
+    item.label ?? <Skeleton className="h-4 w-24" />;
+  return (
+    <div className="flex min-w-0 items-center gap-1">
+      {/* Phones only: one way back, in place of the parents' links. */}
+      {parent?.href ? (
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          className="-ml-1.5 shrink-0 md:hidden"
+          aria-label={parent.label ? t.backTo(parent.label) : t.back}
+          nativeButton={false}
+          render={<a href={parent.href} onClick={follow(parent.href)} />}
+        >
+          <ArrowLeftIcon />
+        </Button>
+      ) : null}
+      <Breadcrumb className="min-w-0">
+        <BreadcrumbList className="flex-nowrap">
+          {items.map((item, index) => {
+            const last = index === items.length - 1;
+            return (
+              <Fragment key={index}>
+                {last ? (
+                  <BreadcrumbItem className="min-w-0">
+                    <BreadcrumbPage className="truncate">
+                      {name(item)}
+                    </BreadcrumbPage>
+                  </BreadcrumbItem>
+                ) : (
+                  <>
+                    <BreadcrumbItem className="hidden max-w-48 min-w-0 shrink-0 md:inline-flex">
+                      {item.href ? (
+                        <BreadcrumbLink
+                          className="truncate"
+                          href={item.href}
+                          onClick={follow(item.href)}
+                        >
+                          {name(item)}
+                        </BreadcrumbLink>
+                      ) : (
+                        <span className="truncate">{name(item)}</span>
+                      )}
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator className="hidden md:block" />
+                  </>
+                )}
+              </Fragment>
+            );
+          })}
+        </BreadcrumbList>
+      </Breadcrumb>
+    </div>
+  );
+}
+
 function ShellNavigation({
   navigation,
   activeId,
@@ -103,14 +216,7 @@ function ShellNavigation({
 }: Pick<AppShellProps, "navigation" | "activeId" | "onNavigate">) {
   const { isMobile, setOpenMobile } = useSidebar();
   const navigate = (id: string, event: MouseEvent<HTMLElement>) => {
-    if (
-      event.button !== 0 ||
-      event.metaKey ||
-      event.ctrlKey ||
-      event.shiftKey ||
-      event.altKey
-    )
-      return;
+    if (!plainClick(event)) return;
     event.preventDefault();
     onNavigate(id);
     if (isMobile) setOpenMobile(false);
@@ -174,6 +280,8 @@ export function AppShell({
   navigation,
   activeId,
   onNavigate,
+  breadcrumbs,
+  onBreadcrumbNavigate,
   header,
   actions,
   footer,
@@ -217,7 +325,16 @@ export function AppShell({
         <SidebarInset className={fillHeight ? "h-svh min-h-0" : undefined}>
           <header className="sticky top-0 z-10 flex h-14 shrink-0 items-center gap-2 border-b bg-background px-4 md:px-6">
             <HeaderTrigger />
-            <div className="min-w-0 flex-1">{header}</div>
+            <div className="min-w-0 flex-1">
+              {breadcrumbs?.length ? (
+                <ShellBreadcrumbs
+                  items={breadcrumbs}
+                  onNavigate={onBreadcrumbNavigate}
+                />
+              ) : (
+                header
+              )}
+            </div>
             {actions ? (
               <div className="flex items-center gap-2">{actions}</div>
             ) : null}

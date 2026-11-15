@@ -1473,8 +1473,9 @@ export function DataTable<TData extends RowData>(props: DataTableProps<TData>) {
     >
       <div className="flex min-w-0 flex-wrap items-center gap-2">
         {toolbarStartContent}
-        <div className="flex min-w-0 flex-1 basis-80 items-center gap-2">
-          <InputGroup className="flex-1">
+        {/* On a phone the search takes its own row and the actions wrap below it. */}
+        <div className="flex min-w-0 flex-1 basis-80 flex-wrap items-center gap-2">
+          <InputGroup className="min-w-0 flex-1 basis-64">
             <InputGroupInput
               value={globalFilter}
               onChange={(event) => handleGlobalFilterChange(event.target.value)}
@@ -1483,18 +1484,23 @@ export function DataTable<TData extends RowData>(props: DataTableProps<TData>) {
             <InputGroupAddon className="pl-2">
               <SearchIcon />
             </InputGroupAddon>
-            <InputGroupAddon align="inline-end" className="pr-2">
+            <InputGroupAddon
+              align="inline-end"
+              className="pr-2 whitespace-nowrap"
+            >
               {formatResultCount(filteredRowCount)}
             </InputGroupAddon>
           </InputGroup>
-          {toolbarEndContent}
-          <ColumnSettings
-            defaultColumnOrder={defaultColumnOrder}
-            lockedEndColumnIds={lockedEndColumnIds}
-            lockedStartColumnIds={lockedStartColumnIds}
-            onResetColumns={resetColumns}
-            table={table}
-          />
+          <div className="flex max-w-full flex-wrap items-center gap-2">
+            {toolbarEndContent}
+            <ColumnSettings
+              defaultColumnOrder={defaultColumnOrder}
+              lockedEndColumnIds={lockedEndColumnIds}
+              lockedStartColumnIds={lockedStartColumnIds}
+              onResetColumns={resetColumns}
+              table={table}
+            />
+          </div>
         </div>
       </div>
 
@@ -1550,12 +1556,12 @@ export function DataTable<TData extends RowData>(props: DataTableProps<TData>) {
           )}
         >
           <Table
-            containerClassName={
+            containerClassName={cn(
+              // The empty state sizes itself to the visible width (cqw).
+              "@container",
               // Bottom-only fade: a top fade would dissolve the sticky header.
-              fillHeight
-                ? "min-h-0 flex-1 overflow-auto scroll-fade-b"
-                : undefined
-            }
+              fillHeight && "min-h-0 flex-1 overflow-auto scroll-fade-b",
+            )}
             style={{ minWidth: "100%", width: table.getTotalSize() }}
           >
             {/* Solid background: rows scroll underneath the sticky header. */}
@@ -1641,6 +1647,8 @@ export function DataTable<TData extends RowData>(props: DataTableProps<TData>) {
                     colSpan={table.getVisibleLeafColumns().length}
                     className="text-muted-foreground h-24 text-center"
                   >
+                    {/* A table wider than the screen: the message stays in view instead of centring on the full width. */}
+                    <div className="sticky left-3 w-[calc(100cqw-1.5rem)] whitespace-normal">
                     {isFiltered ? (
                       <Empty>
                         <EmptyHeader>
@@ -1670,6 +1678,7 @@ export function DataTable<TData extends RowData>(props: DataTableProps<TData>) {
                         </Empty>
                       ))
                     )}
+                    </div>
                   </TableCell>
                 </TableRow>
               )}

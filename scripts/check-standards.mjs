@@ -1,8 +1,38 @@
 import { readdir, readFile } from "node:fs/promises";
 import { resolve, relative } from "node:path";
+import { pathToFileURL } from "node:url";
 const consumer = process.argv[2];
 const root = resolve(consumer ?? "src");
 const violations = [];
+
+// A link (or a Button rendering one) that goes back: a left arrow or a
+// `back…` label. Inside the AppShell the breadcrumb is the way up, and the
+// shell adds the phone's back arrow itself.
+const backSign =
+  /\b(?:ArrowLeft|ChevronLeft|MoveLeft|CornerUpLeft|Undo2?)Icon\b|\bt\.back(?:[A-Z]\w*)?\b/;
+export function backLink(text) {
+  for (const match of text.matchAll(/<(Button|Link|a|BreadcrumbLink)\b/g)) {
+    const close = text.indexOf(`</${match[1]}>`, match.index);
+    const block = text.slice(match.index, Math.min(close === -1 ? Infinity : close, match.index + 600));
+    if (/\bhref=|render=\{\s*<(?:Link|a)\b/.test(block) && backSign.test(block)) return true;
+  }
+  return false;
+}
+
+/** What a consumer file breaks of the page-navigation rules (docs/STANDARDS.md, "Navegação da página"). */
+export function navigationViolations(text) {
+  const found = [];
+  if (/from\s+["']@majapisoftwares\/ui\/components\/breadcrumb["']/.test(text))
+    found.push("pass breadcrumbs to AppShell; the shell draws the page's navigation");
+  // Pages outside the shell (AuthLayout) have no breadcrumb; their one way back is theirs to show.
+  if (/<AuthLayout\b/.test(text)) return found;
+  if (backLink(text) || /\b(?:router|history)\.back\(/.test(text))
+    found.push("no back buttons in pages; the AppShell breadcrumb links up (with a back arrow on phones)");
+  if (/<h1\b(?![^>]*\bsr-only\b)/.test(text))
+    found.push("the breadcrumb names the page; keep its h1 for screen readers (sr-only)");
+  return found;
+}
+
 async function visit(path) {
   for (const entry of await readdir(path, { withFileTypes: true })) {
     if (["node_modules", "dist", ".git"].includes(entry.name)) continue;
@@ -31,13 +61,19 @@ async function visit(path) {
       violations.push(`${name}: use semantic tokens instead of local colors`);
     if (consumer && /from\s+["'](?:sonner|@majapisoftwares\/ui\/components\/(?:sonner|snackbar))["']/.test(text))
       violations.push(`${name}: notify with toast from @majapisoftwares/ui/components/toast`);
+    if (consumer)
+      for (const rule of navigationViolations(text)) violations.push(`${name}: ${rule}`);
     if (!consumer && /from ["']@\//.test(text))
       violations.push(`${name}: library internals must use portable imports`);
   }
 }
-await visit(root);
-if (violations.length) {
-  console.error(violations.join("\n"));
-  process.exitCode = 1;
-} else
-  console.log(`UI standards passed (${consumer ? "consumer" : "library"}).`);
+
+// Imported by its test: only a direct run checks a tree.
+if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
+  await visit(root);
+  if (violations.length) {
+    console.error(violations.join("\n"));
+    process.exitCode = 1;
+  } else
+    console.log(`UI standards passed (${consumer ? "consumer" : "library"}).`);
+}

@@ -76,3 +76,15 @@ Adaptações: `MessageScrollerItem` usa `-m-2 p-2` (e `MessageScrollerContent`, 
 ## Contextual tool navigation
 
 AppShell navigation items accept optional `children` for one level of related tool views. Only the active tool expands. The current destination alone receives aria-current. Navigation closes the mobile sidebar after selection. Sidebar subitems have 44px touch targets on mobile. Use route navigation here; reserve FilterTabs for filters or views of the current dataset. Use `fillHeight` for contained table/chat pages and ordinary page flow for long forms and card collections.
+
+## Navegação da página
+
+Uma página tem um jeito só de subir: o breadcrumb do `AppShell`. Nunca dois controles para o mesmo destino.
+
+- O app passa `breadcrumbs` (`{ label, href? }[]`, a página atual por último) e `onBreadcrumbNavigate`; o shell desenha o cabeçalho igual em todo app. Apps não montam breadcrumbs (`components/breadcrumb`) nem usam o slot `header`, que está obsoleto.
+- A partir de `md`: a trilha inteira, sem botão de voltar. Nos telefones: só a página atual, numa linha, depois de uma seta de voltar para o pai com link mais próximo.
+- Só pais de verdade ganham `href`. Um grupo que só reúne páginas irmãs (Configurações › Harness) fica sem link: a sidebar abre essas páginas, e o telefone não mostra seta.
+- A página de um item (um quadro, uma sessão) fica abaixo da lista dele: `Quadros › Workbench launch`. Quando o caminho muda o lugar (uma sessão aberta de um quadro), a trilha mostra esse lugar (`Quadros › quadro › sessão`) em vez de um botão "Voltar ao quadro" no conteúdo.
+- Páginas não têm botões nem links de voltar, nem `router.back()`. O nome da página aparece uma vez, no breadcrumb; o `h1` da página é `sr-only`. Enquanto o nome carrega, `label: null` mostra um Skeleton no lugar.
+- Páginas fora do shell (`AuthLayout`: login, links abertos de fora) não têm breadcrumb e podem oferecer uma ação de retorno.
+- `check:standards` bloqueia, no app: importar `components/breadcrumb`, link com seta para a esquerda ou rótulo `t.back…`, `router.back()`/`history.back()` e `h1` visível. Apps cobrem o resto com um teste e2e por rota: em desktop nenhum controle de voltar; no telefone no máximo um, no cabeçalho; e o nome da página não se repete no conteúdo.

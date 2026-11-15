@@ -10,14 +10,6 @@ import {
 } from "lucide-react";
 import { AppShell } from "@majapisoftwares/ui/patterns/app-shell";
 import { MajapiLogo } from "@majapisoftwares/ui/patterns/majapi-logo";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@majapisoftwares/ui/components/breadcrumb";
 import { useMessages } from "@majapisoftwares/ui/lib/i18n";
 import {
   PreferenceControls,
@@ -92,23 +84,15 @@ export function CatalogShell({ children }: { children: ReactNode }) {
           ],
         },
       ]}
-      header={
-        <Breadcrumb>
-          <BreadcrumbList>
-            {activeId === "newChat" || activeId === "elements" ? (
-              <>
-                <BreadcrumbItem>
-                  <BreadcrumbLink href={routes.chat}>{t.chat}</BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator />
-              </>
-            ) : null}
-            <BreadcrumbItem>
-              <BreadcrumbPage>{t[activeId]}</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-      }
+      // Chat's pages sit under it: desktop links up in the trail, phones get
+      // the shell's back arrow.
+      breadcrumbs={[
+        ...(activeId === "newChat" || activeId === "elements"
+          ? [{ label: t.chat, href: routes.chat }]
+          : []),
+        { label: t[activeId] },
+      ]}
+      onBreadcrumbNavigate={(href) => router.push(href)}
       actions={<PreferenceControls />}
       sidebarHeader={<ExampleWorkspaceSwitcher />}
       footer={<ExampleUserMenu />}
