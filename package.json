@@ -44,6 +44,7 @@
     "test:preferences": "tsx --test scripts/preferences.test.tsx",
     "test:data-table": "tsx --test scripts/data-table.test.tsx",
     "test:chat-quote": "tsx --test scripts/chat-quote.test.tsx",
+    "test:chat-markdown": "tsx --test scripts/chat-markdown.test.tsx",
     "test:ai-elements": "tsx --test scripts/ai-elements.test.tsx",
     "verify": "node scripts/verify.mjs"
   },

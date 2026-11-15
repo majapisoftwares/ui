@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   FileIcon,
   FileTextIcon,
@@ -42,7 +42,10 @@ import {
   Suggestions,
   TypingIndicator,
 } from "@majapisoftwares/ui/patterns/chat";
-import { ChatMarkdown } from "@majapisoftwares/ui/patterns/chat-markdown";
+import {
+  ChatMarkdown,
+  TrustedLinksProvider,
+} from "@majapisoftwares/ui/patterns/chat-markdown";
 import {
   ChatTrace,
   Confirmation,
@@ -81,7 +84,7 @@ const messages = defineMessages({
 
 **Cause:** \`app/page.tsx\` uses \`next/image\` with the default loader, which a static export can't run.
 
-**Fix:** turn off optimization for the export:
+**Fix:** turn off optimization for the export, as the [Next.js docs](https://nextjs.org/docs/app/guides/static-exports#image-optimization) suggest:
 
 \`\`\`ts
 // next.config.ts
@@ -142,7 +145,7 @@ Want me to open a pull request?`,
 
 **Causa:** \`app/page.tsx\` usa \`next/image\` com o loader padrão, que uma exportação estática não executa.
 
-**Correção:** desative a otimização na exportação:
+**Correção:** desative a otimização na exportação, como a [documentação do Next.js](https://nextjs.org/docs/app/guides/static-exports#image-optimization) sugere:
 
 \`\`\`ts
 // next.config.ts
@@ -314,6 +317,15 @@ export function ChatView({ empty = false }: { empty?: boolean }) {
   const repliesRef = useRef(0);
   const revealedRef = useRef<() => void>(() => {});
   const list = transcript ?? seed(t);
+  // The demo keeps the sites to always open for this visit only.
+  const [trustedHosts, setTrustedHosts] = useState<string[]>([]);
+  const trust = useCallback(
+    (host: string) =>
+      setTrustedHosts((hosts) =>
+        hosts.includes(host) ? hosts : [...hosts, host],
+      ),
+    [],
+  );
 
   useEffect(() => () => abortRef.current?.abort(), []);
 
@@ -505,148 +517,150 @@ export function ChatView({ empty = false }: { empty?: boolean }) {
   };
 
   return (
-    <Chat>
-      <ChatMessages busy={busy}>
-        {list.map((message) => {
-          if (message.role === "user") {
+    <TrustedLinksProvider hosts={trustedHosts} onTrust={trust}>
+      <Chat>
+        <ChatMessages busy={busy}>
+          {list.map((message) => {
+            if (message.role === "user") {
+              return (
+                <MessageScrollerItem key={message.id} messageId={message.id} scrollAnchor>
+                  <ChatMessage
+                    from="user"
+                    quote={quoteOf(message.replyTo)}
+                    footer={
+                      <MessageActions>
+                        <ReplyMessageAction onReply={() => setReplyTo(message.id)} />
+                        <span className="ml-1.5 tabular-nums">{message.time}</span>
+                      </MessageActions>
+                    }
+                    attachments={
+                      message.files?.length ? (
+                        <AttachmentGroup className="justify-end">
+                          {message.files.map((file) => (
+                            <Attachment key={file.name} size="sm">
+                              <AttachmentMedia variant={file.url ? "image" : "icon"}>
+                                {/* eslint-disable-next-line @next/next/no-img-element -- local object URL */}
+                                {file.url ? <img src={file.url} alt="" /> : <FileIcon />}
+                              </AttachmentMedia>
+                              <AttachmentContent>
+                                <AttachmentTitle>{file.name}</AttachmentTitle>
+                                <AttachmentDescription>{formatBytes(file.size)}</AttachmentDescription>
+                              </AttachmentContent>
+                            </Attachment>
+                          ))}
+                        </AttachmentGroup>
+                      ) : undefined
+                    }
+                  >
+                    {message.text}
+                  </ChatMessage>
+                </MessageScrollerItem>
+              );
+            }
+            const parts = message.parts ?? [];
+            const trace = parts.filter(
+              (part) => part.type === "reasoning" || part.type === "tool",
+            );
+            const text = parts.find((part) => part.type === "text");
+            const failed = parts.some((part) => part.type === "error");
+            const working = busy && message.id === activeId;
+            const done = !working && !parts.some((part) => part.type === "confirmation");
             return (
-              <MessageScrollerItem key={message.id} messageId={message.id} scrollAnchor>
+              <MessageScrollerItem key={message.id} messageId={message.id}>
                 <ChatMessage
-                  from="user"
-                  quote={quoteOf(message.replyTo)}
+                  from="assistant"
                   footer={
-                    <MessageActions>
-                      <ReplyMessageAction onReply={() => setReplyTo(message.id)} />
-                      <span className="ml-1.5 tabular-nums">{message.time}</span>
-                    </MessageActions>
-                  }
-                  attachments={
-                    message.files?.length ? (
-                      <AttachmentGroup className="justify-end">
-                        {message.files.map((file) => (
-                          <Attachment key={file.name} size="sm">
-                            <AttachmentMedia variant={file.url ? "image" : "icon"}>
-                              {/* eslint-disable-next-line @next/next/no-img-element -- local object URL */}
-                              {file.url ? <img src={file.url} alt="" /> : <FileIcon />}
-                            </AttachmentMedia>
-                            <AttachmentContent>
-                              <AttachmentTitle>{file.name}</AttachmentTitle>
-                              <AttachmentDescription>{formatBytes(file.size)}</AttachmentDescription>
-                            </AttachmentContent>
-                          </Attachment>
-                        ))}
-                      </AttachmentGroup>
+                    done && (text || failed) ? (
+                      <MessageActions>
+                        {text ? <ReplyMessageAction onReply={() => setReplyTo(message.id)} /> : null}
+                        {text ? <CopyMessageAction text={text.text} /> : null}
+                        {text ? (
+                          <>
+                            <MessageAction
+                              label={ui.goodResponse}
+                              aria-pressed={feedback[message.id] === "up"}
+                              onClick={() => setFeedback((f) => ({ ...f, [message.id]: "up" }))}
+                            >
+                              <ThumbsUpIcon />
+                            </MessageAction>
+                            <MessageAction
+                              label={ui.badResponse}
+                              aria-pressed={feedback[message.id] === "down"}
+                              onClick={() => setFeedback((f) => ({ ...f, [message.id]: "down" }))}
+                            >
+                              <ThumbsDownIcon />
+                            </MessageAction>
+                          </>
+                        ) : null}
+                        <MessageAction label={ui.retry} onClick={() => void retry(message.id)}>
+                          <RefreshCwIcon />
+                        </MessageAction>
+                        <span className="ml-1.5 tabular-nums">{message.time}</span>
+                      </MessageActions>
                     ) : undefined
                   }
                 >
-                  {message.text}
+                  {trace.length > 0 ? (
+                    <ChatTrace>
+                      {trace.map((part, index) =>
+                        part.type === "reasoning" ? (
+                          <Reasoning key={`r${index}`} running={part.running} duration={part.duration}>
+                            {part.text}
+                          </Reasoning>
+                        ) : part.type === "tool" ? (
+                          <Tool
+                            key={part.id}
+                            title={part.title}
+                            status={part.status}
+                            icon={part.icon ? icons[part.icon] : undefined}
+                            description={part.description}
+                          >
+                            {part.output}
+                          </Tool>
+                        ) : null,
+                      )}
+                    </ChatTrace>
+                  ) : null}
+                  {parts.some((part) => part.type === "confirmation") ? (
+                    <Confirmation
+                      icon={<RocketIcon />}
+                      title={t.seed.deployQuestion}
+                      description={t.seed.deployDescription}
+                      disabled={busy}
+                      onApprove={() => void answer(true)}
+                      onDeny={() => void answer(false)}
+                    />
+                  ) : null}
+                  {text ? (
+                    <TextPart part={text} onRevealed={() => revealedRef.current()} />
+                  ) : null}
+                  {failed ? (
+                    <Bubble variant="destructive">
+                      <BubbleContent>{t.failed}</BubbleContent>
+                    </Bubble>
+                  ) : null}
+                  {working && parts.length === 0 ? <TypingIndicator /> : null}
                 </ChatMessage>
               </MessageScrollerItem>
             );
-          }
-          const parts = message.parts ?? [];
-          const trace = parts.filter(
-            (part) => part.type === "reasoning" || part.type === "tool",
-          );
-          const text = parts.find((part) => part.type === "text");
-          const failed = parts.some((part) => part.type === "error");
-          const working = busy && message.id === activeId;
-          const done = !working && !parts.some((part) => part.type === "confirmation");
-          return (
-            <MessageScrollerItem key={message.id} messageId={message.id}>
-              <ChatMessage
-                from="assistant"
-                footer={
-                  done && (text || failed) ? (
-                    <MessageActions>
-                      {text ? <ReplyMessageAction onReply={() => setReplyTo(message.id)} /> : null}
-                      {text ? <CopyMessageAction text={text.text} /> : null}
-                      {text ? (
-                        <>
-                          <MessageAction
-                            label={ui.goodResponse}
-                            aria-pressed={feedback[message.id] === "up"}
-                            onClick={() => setFeedback((f) => ({ ...f, [message.id]: "up" }))}
-                          >
-                            <ThumbsUpIcon />
-                          </MessageAction>
-                          <MessageAction
-                            label={ui.badResponse}
-                            aria-pressed={feedback[message.id] === "down"}
-                            onClick={() => setFeedback((f) => ({ ...f, [message.id]: "down" }))}
-                          >
-                            <ThumbsDownIcon />
-                          </MessageAction>
-                        </>
-                      ) : null}
-                      <MessageAction label={ui.retry} onClick={() => void retry(message.id)}>
-                        <RefreshCwIcon />
-                      </MessageAction>
-                      <span className="ml-1.5 tabular-nums">{message.time}</span>
-                    </MessageActions>
-                  ) : undefined
-                }
-              >
-                {trace.length > 0 ? (
-                  <ChatTrace>
-                    {trace.map((part, index) =>
-                      part.type === "reasoning" ? (
-                        <Reasoning key={`r${index}`} running={part.running} duration={part.duration}>
-                          {part.text}
-                        </Reasoning>
-                      ) : part.type === "tool" ? (
-                        <Tool
-                          key={part.id}
-                          title={part.title}
-                          status={part.status}
-                          icon={part.icon ? icons[part.icon] : undefined}
-                          description={part.description}
-                        >
-                          {part.output}
-                        </Tool>
-                      ) : null,
-                    )}
-                  </ChatTrace>
-                ) : null}
-                {parts.some((part) => part.type === "confirmation") ? (
-                  <Confirmation
-                    icon={<RocketIcon />}
-                    title={t.seed.deployQuestion}
-                    description={t.seed.deployDescription}
-                    disabled={busy}
-                    onApprove={() => void answer(true)}
-                    onDeny={() => void answer(false)}
-                  />
-                ) : null}
-                {text ? (
-                  <TextPart part={text} onRevealed={() => revealedRef.current()} />
-                ) : null}
-                {failed ? (
-                  <Bubble variant="destructive">
-                    <BubbleContent>{t.failed}</BubbleContent>
-                  </Bubble>
-                ) : null}
-                {working && parts.length === 0 ? <TypingIndicator /> : null}
-              </ChatMessage>
-            </MessageScrollerItem>
-          );
-        })}
-      </ChatMessages>
-      <ChatComposer>
-        {list.length === 0 ? (
-          <Suggestions suggestions={t.suggestions} onSelect={(text) => send({ text, files: [] })} />
-        ) : null}
-        <PromptInput
-          placeholder={t.placeholder}
-          status={status}
-          onStop={stop}
-          sendWhileBusy
-          onSubmit={send}
-          quote={quoteOf(replyTo ?? undefined, { inComposer: true })}
-          attachments
-          autoFocus
-        />
-      </ChatComposer>
-    </Chat>
+          })}
+        </ChatMessages>
+        <ChatComposer>
+          {list.length === 0 ? (
+            <Suggestions suggestions={t.suggestions} onSelect={(text) => send({ text, files: [] })} />
+          ) : null}
+          <PromptInput
+            placeholder={t.placeholder}
+            status={status}
+            onStop={stop}
+            sendWhileBusy
+            onSubmit={send}
+            quote={quoteOf(replyTo ?? undefined, { inComposer: true })}
+            attachments
+            autoFocus
+          />
+        </ChatComposer>
+      </Chat>
+    </TrustedLinksProvider>
   );
 }
