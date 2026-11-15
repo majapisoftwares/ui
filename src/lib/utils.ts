@@ -15,3 +15,18 @@ export function quoteText(markdown: string) {
     .replace(/\s+/g, " ")
     .trim();
 }
+
+/**
+ * The host an "always open" choice for a link applies to (lowercase, no port),
+ * or null for anything but an absolute http(s) URL.
+ */
+export function linkHost(url: string) {
+  try {
+    const parsed = new URL(url);
+    return parsed.protocol === "https:" || parsed.protocol === "http:"
+      ? parsed.hostname.toLowerCase()
+      : null;
+  } catch {
+    return null;
+  }
+}
