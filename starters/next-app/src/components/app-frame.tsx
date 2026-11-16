@@ -9,6 +9,12 @@ import {
   PreferenceControls,
   useDocumentTitle,
 } from "@majapisoftwares/ui/patterns/preferences";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbList,
+  BreadcrumbPage,
+} from "@majapisoftwares/ui/components/breadcrumb";
 import { useMessages } from "@majapisoftwares/ui/lib/i18n";
 import { appName } from "@/lib/app";
 import { messages } from "@/messages";
@@ -52,10 +58,15 @@ export function AppFrame({ children }: { children: ReactNode }) {
           ],
         },
       ]}
-      // The shell draws the page's navigation: the trail on desktop; on
-      // phones the current page, after a back arrow to a linked parent.
-      breadcrumbs={[{ label: t[activeId] }]}
-      onBreadcrumbNavigate={(href) => router.push(href)}
+      header={
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbPage>{t[activeId]}</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+      }
       actions={<PreferenceControls />}
       sidebarHeader={<ExampleWorkspaceSwitcher />}
       footer={<ExampleUserMenu />}
