@@ -37,6 +37,7 @@ const steps = [
   ["test:chat-quote", "npm run test:chat-quote"],
   ["test:chat-markdown", "npm run test:chat-markdown"],
   ["test:ai-elements", "npm run test:ai-elements"],
+  ["test:navigation", "npm run test:navigation"],
   ["lint", "npm run lint"],
   ["check:standards", "npm run check:standards"],
   ["build", "npm run build"],

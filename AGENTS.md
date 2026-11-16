@@ -4,6 +4,8 @@
 - Toda mudança na biblioteca que afete apps entra no mesmo commit no starter (`starters/next-app`) e no catálogo. O starter sempre depende da versão atual da biblioteca (o teste `npm run test:starter` falha se divergir) e deve compilar e passar lint/typecheck/build com ela.
 - Todo app é bilíngue: inglês (`en`) e português (`pt-BR`). Textos de UI ficam em catálogos `defineMessages` com as duas línguas; nada de texto fixo em componentes. Use `Preferences`/`PreferenceControls` da biblioteca para idioma e tema.
 - Mantenha o texto mínimo: sem descrições, avisos ou rótulos que não ajudem a tarefa.
+- Navegação da página é do `AppShell`: passe `breadcrumbs` e não crie botões de voltar, breadcrumbs próprios nem títulos ou rótulos que repitam o nome da página (docs/STANDARDS.md, "Navegação da página"; o `check:standards` bloqueia).
+- Telas com dados se atualizam sozinhas com `useLiveRefresh` (`hooks/use-live-refresh`); nunca botão de atualizar (docs/STANDARDS.md, "Dados ao vivo").
 - `patterns/data-table` (TanStack Table, vindo da Numa) é a única tabela de dados: filtros por coluna, ordenação múltipla, colunas reordenáveis/ocultáveis/redimensionáveis, seleção, persistência e estados. Melhorias de tabela são feitas aqui e chegam a todos os apps por versão; apps não mantêm cópias próprias.
 - Ao trazer componentes de outros apps, remova sobrescritas visuais (arredondamento, altura, sombra, padding, cores) e deixe os primitivos da biblioteca definirem o visual; containers usam os raios já adotados aqui (ex.: rounded-2xl em tabelas e listas).
 - Seleção usa sempre o Select (Base UI) da biblioteca; não use select nativo nem NativeSelect (o check:standards bloqueia).

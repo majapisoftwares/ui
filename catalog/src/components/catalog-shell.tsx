@@ -10,14 +10,6 @@ import {
 } from "lucide-react";
 import { AppShell } from "@majapisoftwares/ui/patterns/app-shell";
 import { MajapiLogo } from "@majapisoftwares/ui/patterns/majapi-logo";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@majapisoftwares/ui/components/breadcrumb";
 import { useMessages } from "@majapisoftwares/ui/lib/i18n";
 import {
   PreferenceControls,
@@ -92,23 +84,15 @@ export function CatalogShell({ children }: { children: ReactNode }) {
           ],
         },
       ]}
-      header={
-        <Breadcrumb>
-          <BreadcrumbList>
-            {activeId === "newChat" || activeId === "elements" ? (
-              <>
-                <BreadcrumbItem>
-                  <BreadcrumbLink href={routes.chat}>{t.chat}</BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator />
-              </>
-            ) : null}
-            <BreadcrumbItem>
-              <BreadcrumbPage>{t[activeId]}</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-      }
+      // New chat and Elements open from the sidebar, under Chat: Chat names
+      // the group and isn't a link (a sidebar page's trail has no links).
+      breadcrumbs={[
+        ...(activeId === "newChat" || activeId === "elements"
+          ? [{ label: t.chat }]
+          : []),
+        { label: t[activeId] },
+      ]}
+      onBreadcrumbNavigate={(href) => router.push(href)}
       actions={<PreferenceControls />}
       sidebarHeader={<ExampleWorkspaceSwitcher />}
       footer={<ExampleUserMenu />}

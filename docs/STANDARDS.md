@@ -76,3 +76,19 @@ Adaptações: `MessageScrollerItem` usa `-m-2 p-2` (e `MessageScrollerContent`, 
 ## Contextual tool navigation
 
 AppShell navigation items accept optional `children` for one level of related tool views. Only the active tool expands. The current destination alone receives aria-current. Navigation closes the mobile sidebar after selection. Sidebar subitems have 44px touch targets on mobile. Use route navigation here; reserve FilterTabs for filters or views of the current dataset. Use `fillHeight` for contained table/chat pages and ordinary page flow for long forms and card collections.
+
+## Navegação da página
+
+Uma página tem um jeito só de subir: o breadcrumb do `AppShell`. Nunca dois controles para o mesmo destino.
+
+- O app passa `breadcrumbs` (`{ label, href? }[]`, a página atual por último) e `onBreadcrumbNavigate`; o shell desenha o cabeçalho igual em todo app. Apps não montam breadcrumbs (`components/breadcrumb`) nem usam o slot `header`, que está obsoleto.
+- A partir de `md`: a trilha inteira, sem botão de voltar. Nos telefones: só a página atual, numa linha, depois de uma seta de voltar para o pai com link mais próximo.
+- Só pais de verdade ganham `href`. Um grupo que só reúne páginas irmãs (Configurações › Padrões) fica sem link: a sidebar abre essas páginas, e o telefone não mostra seta. Uma página que a sidebar abre não tem nenhum link no breadcrumb; só a página de um item tem.
+- A página de um item (um quadro, uma sessão) fica abaixo da lista dele: `Quadros › Workbench launch`. Quando o caminho muda o lugar (uma sessão aberta de um quadro), a trilha mostra esse lugar (`Quadros › quadro › sessão`) em vez de um botão "Voltar ao quadro" no conteúdo.
+- Páginas não têm botões nem links de voltar, nem `router.back()`. O nome da página aparece uma vez, no breadcrumb; o `h1` da página é `sr-only`. Nada no conteúdo repete esse nome: nem título, nem rótulo de campo (uma página com um campo Harness não se chama Harness). Enquanto o nome carrega, `label: null` mostra um Skeleton no lugar.
+- Páginas fora do shell (`AuthLayout`: login, links abertos de fora) não têm breadcrumb e podem oferecer uma ação de retorno.
+- `check:standards` bloqueia, no app: importar `components/breadcrumb`, link com seta para a esquerda ou rótulo `t.back…`, `router.back()`/`history.back()`, `h1` visível e botão de atualizar. Apps cobrem o resto com um teste e2e por rota: em desktop nenhum controle de voltar e, numa página da sidebar, nenhum link no breadcrumb; no telefone no máximo um voltar, no cabeçalho; nenhum botão de atualizar; e o nome da página não se repete no conteúdo.
+
+## Dados ao vivo
+
+Listas e telas com dados se atualizam sozinhas: `useLiveRefresh(load, ms)` (`hooks/use-live-refresh`) chama `load` a cada `ms` (5 s por padrão) com a página visível e logo que a pessoa volta para ela. Não há botão de atualizar. Leituras caras usam um intervalo maior (um scan na nuvem a cada minutos, não segundos), nunca um botão. Tentar de novo depois de uma falha (`onRetry`) continua, porque é outra coisa.
