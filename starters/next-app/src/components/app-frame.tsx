@@ -9,12 +9,6 @@ import {
   PreferenceControls,
   useDocumentTitle,
 } from "@majapisoftwares/ui/patterns/preferences";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbList,
-  BreadcrumbPage,
-} from "@majapisoftwares/ui/components/breadcrumb";
 import { useMessages } from "@majapisoftwares/ui/lib/i18n";
 import { appName } from "@/lib/app";
 import { messages } from "@/messages";
@@ -58,15 +52,8 @@ export function AppFrame({ children }: { children: ReactNode }) {
           ],
         },
       ]}
-      header={
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbPage>{t[activeId]}</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-      }
+      // Until the starter pins the release with AppShell `breadcrumbs`.
+      header={<span className="block truncate text-sm">{t[activeId]}</span>}
       actions={<PreferenceControls />}
       sidebarHeader={<ExampleWorkspaceSwitcher />}
       footer={<ExampleUserMenu />}
