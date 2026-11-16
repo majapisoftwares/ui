@@ -91,4 +91,4 @@ Uma página tem um jeito só de subir: o breadcrumb do `AppShell`. Nunca dois co
 
 ## Dados ao vivo
 
-Listas e telas com dados se atualizam sozinhas: `useLiveRefresh(load, ms)` (`hooks/use-live-refresh`) chama `load` a cada `ms` (5 s por padrão) com a página visível e logo que a pessoa volta para ela. Não há botão de atualizar. Leituras caras usam um intervalo maior (um scan na nuvem a cada minutos, não segundos), nunca um botão. Tentar de novo depois de uma falha (`onRetry`) continua, porque é outra coisa.
+Listas e telas com dados se atualizam sozinhas: `useLiveRefresh(load, ms)` (`hooks/use-live-refresh`) chama `load` a cada `ms` (5 s por padrão) com a página visível e logo que a pessoa volta para ela. `load` devolve a promise da carga (`useLiveRefresh(load)`, não `() => void load()`): enquanto ela roda, os próximos ticks esperam, e um servidor lento não recebe a mesma requisição empilhada. `npm run test:live-refresh` verifica. Não há botão de atualizar. Leituras caras usam um intervalo maior (um scan na nuvem a cada minutos, não segundos), nunca um botão. Tentar de novo depois de uma falha (`onRetry`) continua, porque é outra coisa.

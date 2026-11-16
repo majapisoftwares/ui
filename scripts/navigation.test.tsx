@@ -37,6 +37,10 @@ test("check:standards stops refresh buttons; screens refresh on their own", () =
   assert.deepEqual(flagged(`<Button variant="outline" size="sm" onClick={onRetry}><RotateCwIcon />{ui.retry}</Button>`), []);
   assert.deepEqual(flagged(`<Button variant="outline" size="sm" onClick={sync}><RotateCwIcon />{t.syncNow}</Button>`), []);
   assert.deepEqual(flagged(`<Button disabled={busy} onClick={generate}>{busy ? <RotateCwIcon className="animate-spin" /> : null}{t.createPr}</Button>`), []);
+
+  // The load's promise goes back to the hook, so a slow load holds the next ticks.
+  assert.match(flagged(`useLiveRefresh(() => void load(), 10_000);`)[0], /return the load's promise/);
+  assert.deepEqual(flagged(`useLiveRefresh(load, 10_000);\nuseLiveRefresh(() => loadFiles());\nuseLiveRefresh(() => { refresh(); refreshCosts(); }, 60_000);`), []);
 });
 
 test("the shell shows the trail, and on phones one back arrow to the nearest linked parent", async () => {
