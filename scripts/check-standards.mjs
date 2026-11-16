@@ -32,6 +32,9 @@ export function navigationViolations(text) {
     found.push("the breadcrumb names the page; keep its h1 for screen readers (sr-only)");
   if (refreshButton(text))
     found.push("no refresh buttons; keep the screen current with useLiveRefresh (@majapisoftwares/ui/hooks/use-live-refresh)");
+  // `() => void load()` drops the promise: the hook can't hold the next ticks while it runs.
+  if (/\buseLiveRefresh\(\s*\(\)\s*=>\s*void\b/.test(text))
+    found.push("useLiveRefresh: return the load's promise (useLiveRefresh(load) or () => load()), so a slow load isn't requested again while it runs");
   return found;
 }
 

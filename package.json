@@ -47,6 +47,7 @@
     "test:chat-markdown": "tsx --test scripts/chat-markdown.test.tsx",
     "test:ai-elements": "tsx --test scripts/ai-elements.test.tsx",
     "test:navigation": "tsx --test scripts/navigation.test.tsx",
+    "test:live-refresh": "tsx --test scripts/live-refresh.test.tsx",
     "verify": "node scripts/verify.mjs"
   },
   "peerDependencies": {
