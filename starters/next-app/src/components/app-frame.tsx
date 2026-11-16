@@ -52,8 +52,10 @@ export function AppFrame({ children }: { children: ReactNode }) {
           ],
         },
       ]}
-      // Until the starter pins the release with AppShell `breadcrumbs`.
-      header={<span className="block truncate text-sm">{t[activeId]}</span>}
+      // The shell draws the page's navigation: the trail on desktop; on
+      // phones the current page, after a back arrow to a linked parent.
+      breadcrumbs={[{ label: t[activeId] }]}
+      onBreadcrumbNavigate={(href) => router.push(href)}
       actions={<PreferenceControls />}
       sidebarHeader={<ExampleWorkspaceSwitcher />}
       footer={<ExampleUserMenu />}
