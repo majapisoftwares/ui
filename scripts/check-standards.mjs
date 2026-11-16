@@ -30,7 +30,23 @@ export function navigationViolations(text) {
     found.push("no back buttons in pages; the AppShell breadcrumb links up (with a back arrow on phones)");
   if (/<h1\b(?![^>]*\bsr-only\b)/.test(text))
     found.push("the breadcrumb names the page; keep its h1 for screen readers (sr-only)");
+  if (refreshButton(text))
+    found.push("no refresh buttons; keep the screen current with useLiveRefresh (@majapisoftwares/ui/hooks/use-live-refresh)");
   return found;
+}
+
+// A Button that reloads what's on screen: a refresh label, or an icon-only
+// button with a rotate icon. A retry after a failure, and actions with their
+// own label (Sync now, Reconnect), aren't refresh buttons.
+const rotateIcon = /\b(?:Refresh|Rotate)(?:Cw|Ccw)Icon\b/;
+export function refreshButton(text) {
+  for (const match of text.matchAll(/<Button\b/g)) {
+    const close = text.indexOf("</Button>", match.index);
+    const block = text.slice(match.index, Math.min(close === -1 ? Infinity : close, match.index + 600));
+    if (/\b(?:t|ui|messages)\.retry\b/.test(block)) continue;
+    if (/\bt\.refresh\b/.test(block) || (/\bsize="icon[^"]*"/.test(block) && rotateIcon.test(block))) return true;
+  }
+  return false;
 }
 
 async function visit(path) {

@@ -84,11 +84,11 @@ export function CatalogShell({ children }: { children: ReactNode }) {
           ],
         },
       ]}
-      // Chat's pages sit under it: desktop links up in the trail, phones get
-      // the shell's back arrow.
+      // New chat and Elements open from the sidebar, under Chat: Chat names
+      // the group and isn't a link (a sidebar page's trail has no links).
       breadcrumbs={[
         ...(activeId === "newChat" || activeId === "elements"
-          ? [{ label: t.chat, href: routes.chat }]
+          ? [{ label: t.chat }]
           : []),
         { label: t[activeId] },
       ]}
