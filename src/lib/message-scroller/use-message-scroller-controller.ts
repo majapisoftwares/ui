@@ -2,12 +2,14 @@ import * as React from "react"
 
 import {
   getContentBottom,
+  getElementScrollTop,
   getElementTop,
   getElementViewportTop,
   getFirstVisibleMessageItem,
   getFlexGap,
   getLastScrollAnchor,
   getMessageScrollerItems,
+  getTailSpacerHeight,
   getMessageScrollerScrollable,
   getMessageScrollerVisibilityState,
 } from "./geometry"
@@ -53,6 +55,7 @@ function useElementRef(
 // requestAnimationFrame and torn down on cleanup for StrictMode safety.
 function useMessageScrollerController({
   autoScroll = false,
+  keepReaderPosition = false,
   defaultScrollPosition = "end",
   scrollEdgeThreshold = DEFAULT_SCROLL_EDGE_THRESHOLD,
   scrollPreviousItemPeek = DEFAULT_SCROLL_PREVIOUS_ITEM_PEEK,
@@ -60,6 +63,7 @@ function useMessageScrollerController({
 }: MessageScrollerProviderProps) {
   const refs = useMessageScrollerRefs({
     autoScroll,
+    keepReaderPosition,
     defaultScrollPosition,
     scrollEdgeThreshold,
     scrollMargin,
@@ -68,6 +72,8 @@ function useMessageScrollerController({
 
   const {
     streamingTurnRef,
+    heldTurnRef,
+    keepReaderPositionRef,
     autoScrollRef,
     autoscrollingRef,
     autoscrollingTimeoutRef,
@@ -406,6 +412,24 @@ function useMessageScrollerController({
     // the prepend anchor afterward, so each branch just returns.
     //
     // Branch order is load-bearing: first-content, prepended, appended, updated.
+    // keepReaderPosition: a reader who scrolled away from the end is not pulled
+    // to a new turn; they get there with the scroll button.
+    const skipAnchorMove = () => {
+      const viewport = viewportRef.current
+
+      return (
+        keepReaderPositionRef.current &&
+        modeRef.current === "free-scrolling" &&
+        !!viewport &&
+        getMessageScrollerScrollable({
+          content: contentRef.current,
+          scrollEdgeThreshold: scrollEdgeThresholdRef.current,
+          spacer: spacerRef.current,
+          viewport,
+        }).end
+      )
+    }
+
     const reconcileScrollPosition = () => {
       if (flushPendingScrollToMessage()) {
         return
@@ -445,6 +469,13 @@ function useMessageScrollerController({
       if (items.length > previousItemCount) {
         const anchor = newScrollAnchors[0] ?? null
 
+        if (anchor && skipAnchorMove()) {
+          handledScrollAnchorsRef.current.add(anchor)
+          commitScrollState()
+          scheduleVisibilitySync()
+          return
+        }
+
         if (anchor) {
           // While the reader is following the live end, a batch of several
           // anchored turns arriving at once should keep following the end — not
@@ -471,6 +502,13 @@ function useMessageScrollerController({
 
       if (items.length === previousItemCount) {
         const anchor = newScrollAnchors[0] ?? null
+
+        if (anchor && skipAnchorMove()) {
+          handledScrollAnchorsRef.current.add(anchor)
+          commitScrollState()
+          scheduleVisibilitySync()
+          return
+        }
 
         if (anchor) {
           scrollToElement(
@@ -531,6 +569,8 @@ function useMessageScrollerController({
   const drainReleasedSpacer = React.useCallback(() => {
     if (
       !autoScrollRef.current ||
+      // The room under the turn stays for the reader to scroll back into.
+      keepReaderPositionRef.current ||
       spacerHeightRef.current <= 0 ||
       modeRef.current === "following-bottom" ||
       modeRef.current === "anchored-to-message" ||
@@ -611,6 +651,41 @@ function useMessageScrollerController({
       }
 
       return
+    }
+
+    // keepReaderPosition: the reader scrolled away from the held turn. Keep the
+    // room under it sized for the reply without moving the viewport.
+    const heldTurn = heldTurnRef.current
+
+    if (
+      keepReaderPositionRef.current &&
+      heldTurn?.isConnected &&
+      modeRef.current === "free-scrolling" &&
+      viewportRef.current &&
+      contentRef.current
+    ) {
+      const viewport = viewportRef.current
+      const content = contentRef.current
+      const holdTop = getElementScrollTop({
+        align: "start",
+        element: heldTurn,
+        scrollMargin:
+          scrollMarginRef.current + scrollPreviousItemPeekRef.current,
+        spacer: spacerRef.current,
+        viewport,
+      })
+
+      setTailSpacerHeight(
+        Math.max(
+          0,
+          getTailSpacerHeight({
+            content,
+            scrollTop: holdTop,
+            spacer: spacerRef.current,
+            viewport,
+          })
+        )
+      )
     }
 
     // Drain a stranded spacer as the reply grows below it. Early return when

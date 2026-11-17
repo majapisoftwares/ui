@@ -29,6 +29,7 @@ function useMessageScrollerCommands({
 }) {
   const {
     streamingTurnRef,
+    heldTurnRef,
     autoScrollRef,
     autoscrollingRef,
     autoscrollingTimeoutRef,
@@ -144,6 +145,7 @@ function useMessageScrollerCommands({
 
       setTailSpacerHeight(0)
       streamingTurnRef.current = null
+      heldTurnRef.current = null
       modeRef.current = "free-scrolling"
       scrollToPosition(0, { behavior })
       scheduleVisibilitySync()
@@ -163,6 +165,7 @@ function useMessageScrollerCommands({
 
       setTailSpacerHeight(0)
       streamingTurnRef.current = null
+      heldTurnRef.current = null
       modeRef.current = autoScrollRef.current
         ? "following-bottom"
         : "free-scrolling"
@@ -229,6 +232,7 @@ function useMessageScrollerCommands({
         ? "anchored-to-message"
         : "settling-jump"
       streamingTurnRef.current = keepPreviousPeek ? element : null
+      heldTurnRef.current = keepPreviousPeek ? element : null
 
       scrollToPosition(scrollTop, { behavior })
       scheduleVisibilitySync()

@@ -83,6 +83,11 @@ type MessageScrollerProviderProps = {
   children?: React.ReactNode
   // Follow new content at the bottom while the viewport is already at the end.
   autoScroll?: boolean
+  // Keep the reader's position. The room under an anchored turn survives the
+  // reader scrolling away and back (it is only recomputed as the reply grows,
+  // or dropped by scrollToEnd), and a new anchored turn only moves the view
+  // when the reader is already at the end. Defaults to false.
+  keepReaderPosition?: boolean
   // Opening position on the first non-empty render, applied once.
   defaultScrollPosition?: MessageScrollerDefaultScrollPosition
   // Distance from an edge that still counts as at-top/at-bottom. Defaults to 8.
