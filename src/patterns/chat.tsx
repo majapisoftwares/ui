@@ -37,6 +37,7 @@ import {
 } from "../components/ui/tooltip";
 
 const GutterContext = createContext<{
+  fullWidth: boolean;
   gutter: number;
   setGutter: (width: number) => void;
 } | null>(null);
@@ -45,10 +46,18 @@ const GutterContext = createContext<{
  * Agent chat layout: a transcript that fills the space and a composer below
  * it. Place it in `AppShell fillHeight` (or any height-constrained parent).
  */
-export function Chat({ className, children, ...props }: ComponentProps<"div">) {
+export function Chat({
+  className,
+  children,
+  fullWidth = false,
+  ...props
+}: ComponentProps<"div"> & {
+  /** Let the transcript and composer use the whole width instead of a readable column. */
+  fullWidth?: boolean;
+}) {
   const [gutter, setGutter] = useState(0);
   return (
-    <GutterContext.Provider value={{ gutter, setGutter }}>
+    <GutterContext.Provider value={{ fullWidth, gutter, setGutter }}>
       <TooltipProvider>
         <div
           data-slot="chat"
@@ -89,6 +98,7 @@ export function ChatMessages({
   const viewportRef = useRef<HTMLDivElement>(null);
   const gutter = useMessageScrollerGutterWidth(viewportRef);
   const setGutter = useContext(GutterContext)?.setGutter;
+  const fullWidth = useContext(GutterContext)?.fullWidth ?? false;
 
   useEffect(() => setGutter?.(gutter), [gutter, setGutter]);
 
@@ -103,7 +113,10 @@ export function ChatMessages({
         <MessageScrollerViewport ref={viewportRef}>
           <MessageScrollerContent
             aria-busy={busy}
-            className="mx-auto w-full max-w-3xl pt-6 pb-6"
+            className={cn(
+              "mx-auto w-full pt-6 pb-6",
+              !fullWidth && "max-w-3xl",
+            )}
           >
             {children}
           </MessageScrollerContent>
@@ -125,6 +138,7 @@ export function ChatComposer({
   ...props
 }: ComponentProps<"div">) {
   const gutter = useContext(GutterContext)?.gutter ?? 0;
+  const fullWidth = useContext(GutterContext)?.fullWidth ?? false;
   return (
     <div
       data-slot="chat-composer"
@@ -132,7 +146,12 @@ export function ChatComposer({
       style={{ paddingInlineEnd: gutter, ...style }}
       {...props}
     >
-      <div className="mx-auto flex w-full max-w-3xl flex-col gap-3 px-2">
+      <div
+        className={cn(
+          "mx-auto flex w-full flex-col gap-3 px-2",
+          !fullWidth && "max-w-3xl",
+        )}
+      >
         {children}
       </div>
     </div>
