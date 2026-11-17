@@ -17,6 +17,11 @@ const DEFAULT_SCROLL_MARGIN = 0
 // absorb zoom and HiDPI rounding drift.
 const SCROLL_POSITION_EPSILON = 0.5
 
+// How long (ms) the end-of-transcript state waits before reporting more content
+// below that appeared without the reader scrolling up, so layout settling at the
+// end does not bring the scroll button back.
+const END_SETTLE_DELAY = 200
+
 // How long (ms) data-autoscrolling stays set during a programmatic smooth scroll
 // before clearing.
 const AUTOSCROLLING_CLEAR_DELAY = 180
@@ -216,6 +221,7 @@ export {
   DEFAULT_SCROLL_EDGE_THRESHOLD,
   DEFAULT_SCROLL_MARGIN,
   DEFAULT_SCROLL_PREVIOUS_ITEM_PEEK,
+  END_SETTLE_DELAY,
   EMPTY_MESSAGE_SCROLLER_SCROLLABLE,
   EMPTY_MESSAGE_SCROLLER_VISIBILITY_STATE,
   EMPTY_VISIBLE_MESSAGE_IDS,
