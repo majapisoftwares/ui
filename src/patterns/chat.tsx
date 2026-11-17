@@ -72,7 +72,9 @@ export interface ChatMessagesProps
 
 /**
  * The transcript (shadcn Message Scroller). Follows the reply while the
- * reader stays at the live edge and opens at the last turn. Wrap each row in
+ * reader stays at the live edge and opens at the last turn. The room under a
+ * new turn stays when the reader scrolls away and back, and a new turn never
+ * pulls a reader who is not at the end. Wrap each row in
  * `MessageScrollerItem` and mark the person's turns with `scrollAnchor`.
  */
 export function ChatMessages({
@@ -80,6 +82,7 @@ export function ChatMessages({
   busy,
   className,
   autoScroll = true,
+  keepReaderPosition = true,
   defaultScrollPosition = "last-anchor",
   ...props
 }: ChatMessagesProps) {
@@ -92,6 +95,7 @@ export function ChatMessages({
   return (
     <MessageScrollerProvider
       autoScroll={autoScroll}
+      keepReaderPosition={keepReaderPosition}
       defaultScrollPosition={defaultScrollPosition}
       {...props}
     >

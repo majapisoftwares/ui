@@ -88,6 +88,7 @@ function useMessageScrollerVisibility() {
 
 function MessageScrollerProvider({
   autoScroll = false,
+  keepReaderPosition = false,
   children,
   defaultScrollPosition = "end",
   scrollEdgeThreshold,
@@ -96,6 +97,7 @@ function MessageScrollerProvider({
 }: MessageScrollerProviderProps) {
   const { context, registerMessage } = useMessageScrollerController({
     autoScroll,
+    keepReaderPosition,
     defaultScrollPosition,
     scrollEdgeThreshold,
     scrollPreviousItemPeek,

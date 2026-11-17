@@ -20,6 +20,8 @@ import type {
 // threading. stateStore and visibilityStore fan out via useSyncExternalStore.
 type MessageScrollerRefs = {
   autoScrollRef: React.RefObject<boolean>
+  keepReaderPositionRef: React.RefObject<boolean>
+  heldTurnRef: React.RefObject<HTMLElement | null>
   autoscrollingRef: React.RefObject<boolean>
   autoscrollingTimeoutRef: React.RefObject<number | null>
   streamingTurnRef: React.RefObject<HTMLElement | null>
@@ -62,18 +64,23 @@ type MessageScrollerRefs = {
 // the latest prop values mirrored onto refs each render so callbacks stay stable.
 function useMessageScrollerRefs({
   autoScroll,
+  keepReaderPosition,
   defaultScrollPosition,
   scrollEdgeThreshold,
   scrollMargin,
   scrollPreviousItemPeek,
 }: {
   autoScroll: boolean
+  keepReaderPosition: boolean
   defaultScrollPosition: MessageScrollerDefaultScrollPosition
   scrollEdgeThreshold: number
   scrollMargin: number
   scrollPreviousItemPeek: number
 }): MessageScrollerRefs {
   const autoScrollRef = React.useRef(autoScroll)
+  const keepReaderPositionRef = React.useRef(keepReaderPosition)
+  // The anchored turn whose tail room is kept after the reader scrolls away.
+  const heldTurnRef = React.useRef<HTMLElement | null>(null)
   const autoscrollingRef = React.useRef(false)
   const contentRef = React.useRef<HTMLDivElement | null>(null)
   const defaultScrollPositionAppliedRef = React.useRef(false)
@@ -144,12 +151,15 @@ function useMessageScrollerRefs({
   // Track the latest prop values on every render so callbacks read fresh values
   // without being recreated (the useLatest pattern).
   autoScrollRef.current = autoScroll
+  keepReaderPositionRef.current = keepReaderPosition
   scrollEdgeThresholdRef.current = scrollEdgeThreshold
   scrollMarginRef.current = scrollMargin
   scrollPreviousItemPeekRef.current = scrollPreviousItemPeek
 
   return {
     autoScrollRef,
+    keepReaderPositionRef,
+    heldTurnRef,
     autoscrollingRef,
     autoscrollingTimeoutRef,
     streamingTurnRef,
