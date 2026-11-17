@@ -73,6 +73,7 @@ const messages = defineMessages({
     subagentTitle: "Ran the research agent",
     subagentTask: "Find out why image optimization reruns on every deploy.",
     subagentResult: "The cache is keyed on the commit SHA.",
+    subagentClosed: "Running the review agent",
     confirmation: "Confirmation",
     confirmQuestion: "Run rm -rf dist?",
     checkpoint: "Checkpoint",
@@ -122,6 +123,7 @@ const messages = defineMessages({
     subagentTask:
       "Descobrir por que a otimização de imagens roda de novo a cada deploy.",
     subagentResult: "O cache usa o SHA do commit como chave.",
+    subagentClosed: "Rodando o agente de revisão",
     confirmation: "Confirmação",
     confirmQuestion: "Rodar rm -rf dist?",
     checkpoint: "Checkpoint",
@@ -307,6 +309,12 @@ export function ElementsView() {
             <Step title="grep -rn cacheKey scripts" />
             <Step title="sed -n 13,15p scripts/optimize-images.ts" />
           </Subagent>
+          <Subagent
+            title={t.subagentClosed}
+            status="running"
+            task={t.subagentTask}
+            defaultOpen={false}
+          />
         </ChatTrace>
       </Section>
       <Section title={t.confirmation}>

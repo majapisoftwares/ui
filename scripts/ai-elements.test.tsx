@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { parseStack } from "../src/patterns/chat-trace";
+import { createElement } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
+import { parseStack, Subagent } from "../src/patterns/chat-trace";
 import { fileTree } from "../src/patterns/file-tree";
 import { formatTokens } from "../src/patterns/chat-context";
 
@@ -50,4 +52,13 @@ test("token counts read short", () => {
     ],
     ["980", "1k", "8.4k", "128k"],
   );
+});
+
+test("a running subagent opens, unless it shows open elsewhere", () => {
+  const panel = (props: { defaultOpen?: boolean }) =>
+    renderToStaticMarkup(
+      createElement(Subagent, { title: "Research", status: "running", task: "Find it", ...props }),
+    ).match(/<div[^>]*data-slot="trace-collapsible-content"[^>]*>/)![0];
+  assert.doesNotMatch(panel({}), / hidden=""/);
+  assert.match(panel({ defaultOpen: false }), / hidden=""/);
 });
