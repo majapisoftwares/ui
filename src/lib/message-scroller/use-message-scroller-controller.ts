@@ -18,6 +18,7 @@ import {
   DEFAULT_SCROLL_MARGIN,
   DEFAULT_SCROLL_PREVIOUS_ITEM_PEEK,
   EMPTY_MESSAGE_SCROLLER_VISIBILITY_STATE,
+  END_SETTLE_DELAY,
   SCROLL_POSITION_EPSILON,
 } from "./types"
 import type {
@@ -180,15 +181,54 @@ function useMessageScrollerController({
     []
   )
 
+  // The scroll-to-end button must not come back while the reader sits at the
+  // end: when "can scroll toward the end" turns on without the reader scrolling
+  // up (rows settling their size, images and markdown loading, sub-pixel
+  // rounding), wait a short while and trust the geometry only if it is still
+  // true. A reader scrolling up shows it at once.
+  const endSettleTimerRef = React.useRef<number | null>(null)
+  const endSettledRef = React.useRef(false)
+
+  React.useEffect(
+    () => () => {
+      if (endSettleTimerRef.current !== null) {
+        window.clearTimeout(endSettleTimerRef.current)
+      }
+    },
+    []
+  )
+
   const commitScrollState = React.useCallback(() => {
-    const nextState = getMessageScrollerScrollable({
+    const rawState = getMessageScrollerScrollable({
       content: contentRef.current,
       scrollEdgeThreshold: scrollEdgeThresholdRef.current,
       spacer: spacerRef.current,
       viewport: viewportRef.current,
     })
+    const scrollTop = viewportRef.current?.scrollTop ?? 0
+    const scrolledUp =
+      scrollTop < lastScrollTopRef.current - SCROLL_POSITION_EPSILON
+    let nextState = rawState
 
-    reconcileFollowMode(nextState)
+    reconcileFollowMode(rawState)
+
+    if (!rawState.end) {
+      endSettledRef.current = false
+    } else if (
+      !stateStore.getSnapshot().end &&
+      !scrolledUp &&
+      !endSettledRef.current
+    ) {
+      nextState = { ...rawState, end: false }
+
+      if (endSettleTimerRef.current === null) {
+        endSettleTimerRef.current = window.setTimeout(() => {
+          endSettleTimerRef.current = null
+          endSettledRef.current = true
+          commitScrollState()
+        }, END_SETTLE_DELAY)
+      }
+    }
 
     // While follow-output is engaged the scroller is already closing any gap a
     // streamed chunk just opened, so publishing it as scrollable toward the
