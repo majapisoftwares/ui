@@ -247,10 +247,10 @@ function StatusIcon({ status }: { status: StepStatus }) {
   return <CircleCheckIcon />;
 }
 
-/** Open while running and closed when done, unless the person toggled it (as Reasoning). */
-function useRunningOpen(running: boolean) {
+/** Open while running and closed when done (or as `defaultOpen` says), unless the person toggled it (as Reasoning). */
+function useRunningOpen(running: boolean, defaultOpen?: boolean) {
   const [open, setOpen] = useState<boolean>();
-  return { open: open ?? running, onOpenChange: setOpen };
+  return { open: open ?? defaultOpen ?? running, onOpenChange: setOpen };
 }
 
 export interface StepProps {
@@ -612,6 +612,11 @@ export interface SubagentProps {
   children?: ReactNode;
   /** What it found, once done. */
   result?: ReactNode;
+  /**
+   * Open until the person toggles it. Defaults to open while it runs; `false`
+   * keeps it closed, e.g. when a later message shows the same run open.
+   */
+  defaultOpen?: boolean;
 }
 
 /**
@@ -628,8 +633,9 @@ export function Subagent({
   tools,
   children,
   result,
+  defaultOpen,
 }: SubagentProps) {
-  const state = useRunningOpen(status === "running");
+  const state = useRunningOpen(status === "running", defaultOpen);
   return (
     <TraceCollapsible {...state}>
       <TraceCollapsibleTrigger>
