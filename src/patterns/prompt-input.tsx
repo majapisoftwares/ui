@@ -11,7 +11,13 @@ import {
   type KeyboardEvent,
   type ReactNode,
 } from "react";
-import { ArrowUpIcon, FileIcon, PlusIcon, SquareIcon, XIcon } from "lucide-react";
+import {
+  ArrowUpIcon,
+  FileIcon,
+  PlusIcon,
+  SquareIcon,
+  XIcon,
+} from "lucide-react";
 import { cn } from "../lib/utils";
 import { useUiMessages } from "../lib/i18n";
 import {
@@ -163,7 +169,11 @@ export function PromptInput({
   }, [files]);
 
   // Starting a reply (or replying to another message) puts the cursor in the field.
-  const quoteKey = quote ? (isValidElement(quote) && quote.key !== null ? quote.key : true) : null;
+  const quoteKey = quote
+    ? isValidElement(quote) && quote.key !== null
+      ? quote.key
+      : true
+    : null;
   useEffect(() => {
     if (quoteKey !== null) textareaRef.current?.focus();
   }, [quoteKey]);
@@ -187,8 +197,12 @@ export function PromptInput({
     const accepted = incoming.filter((file) => matchesAccept(file, accept));
     if (accepted.length === 0) return;
     setFiles((current) => {
-      const room = maxFiles === undefined ? accepted.length : maxFiles - current.length;
-      return [...current, ...accepted.slice(0, Math.max(0, room)).map(toPendingFile)];
+      const room =
+        maxFiles === undefined ? accepted.length : maxFiles - current.length;
+      return [
+        ...current,
+        ...accepted.slice(0, Math.max(0, room)).map(toPendingFile),
+      ];
     });
   };
 
@@ -229,7 +243,11 @@ export function PromptInput({
   };
 
   const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
-    if (event.key !== "Enter" || event.shiftKey || event.nativeEvent.isComposing)
+    if (
+      event.key !== "Enter" ||
+      event.shiftKey ||
+      event.nativeEvent.isComposing
+    )
       return;
     event.preventDefault();
     if (canSend) event.currentTarget.form?.requestSubmit();
@@ -287,7 +305,10 @@ export function PromptInput({
         ) : null}
         {files.length > 0 ? (
           <InputGroupAddon align="block-start" className="cursor-default">
-            <AttachmentGroup aria-label={messages.attachments} className="w-full">
+            <AttachmentGroup
+              aria-label={messages.attachments}
+              className="w-full"
+            >
               {files.map((item) => (
                 <Attachment key={item.id} size="sm">
                   <AttachmentMedia variant={item.previewUrl ? "image" : "icon"}>

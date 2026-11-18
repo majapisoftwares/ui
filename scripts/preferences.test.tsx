@@ -21,7 +21,7 @@ for (const stored of ["pt-BR", "en"]) {
       url: "https://example.test", runScripts: "outside-only", pretendToBeVisual: true,
     });
     const descriptors = new Map<string, PropertyDescriptor | undefined>();
-    for (const key of ["window", "document", "navigator", "HTMLElement", "MutationObserver", "IS_REACT_ACT_ENVIRONMENT"]) {
+    for (const key of ["window", "document", "navigator", "HTMLElement", "MutationObserver", "NodeFilter", "HTMLFieldSetElement", "HTMLFormElement", "HTMLInputElement", "HTMLButtonElement", "HTMLTextAreaElement", "HTMLSelectElement", "HTMLAnchorElement", "SVGElement", "Event", "KeyboardEvent", "MouseEvent", "PointerEvent", "FocusEvent", "CustomEvent", "DOMRect", "ResizeObserver", "IntersectionObserver", "CSS", "IS_REACT_ACT_ENVIRONMENT"]) {
       descriptors.set(key, Object.getOwnPropertyDescriptor(globalThis, key));
       Object.defineProperty(globalThis, key, { configurable: true, value: key === "IS_REACT_ACT_ENVIRONMENT" ? true : dom.window[key as keyof typeof dom.window] });
     }

@@ -1,35 +1,53 @@
 "use client";
 
 import * as React from "react";
-import { Dialog as SheetPrimitive } from "@base-ui/react/dialog";
+import {
+  Drawer as SheetRoot,
+  DrawerBackdrop,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@ui-sdk/react/drawer";
 import { cn } from "cn";
 
 import { Button } from "./button";
 import { XIcon } from "lucide-react";
 import { useUiMessages } from "../../lib/i18n";
 
-function Sheet({ ...props }: SheetPrimitive.Root.Props) {
-  return <SheetPrimitive.Root data-slot="sheet" {...props} />;
+/** `side` picks the edge the sheet comes from (it used to live on `SheetContent`). */
+function Sheet({
+  side = "right",
+  ...props
+}: React.ComponentProps<typeof SheetRoot>) {
+  return <SheetRoot side={side} {...props} />;
 }
 
-function SheetTrigger({ ...props }: SheetPrimitive.Trigger.Props) {
-  return <SheetPrimitive.Trigger data-slot="sheet-trigger" {...props} />;
+function SheetTrigger({
+  ...props
+}: React.ComponentProps<typeof DrawerTrigger>) {
+  return <DrawerTrigger data-slot="sheet-trigger" {...props} />;
 }
 
-function SheetClose({ ...props }: SheetPrimitive.Close.Props) {
-  return <SheetPrimitive.Close data-slot="sheet-close" {...props} />;
+function SheetClose({ ...props }: React.ComponentProps<typeof DrawerClose>) {
+  return <DrawerClose data-slot="sheet-close" {...props} />;
 }
 
-function SheetPortal({ ...props }: SheetPrimitive.Portal.Props) {
-  return <SheetPrimitive.Portal data-slot="sheet-portal" {...props} />;
+/** Kept for compatibility: ui-sdk content already renders in the top layer. */
+function SheetPortal({ children }: { children?: React.ReactNode }) {
+  return <>{children}</>;
 }
 
-function SheetOverlay({ className, ...props }: SheetPrimitive.Backdrop.Props) {
+function SheetOverlay({
+  className,
+  ...props
+}: React.ComponentProps<typeof DrawerBackdrop>) {
   return (
-    <SheetPrimitive.Backdrop
+    <DrawerBackdrop
       data-slot="sheet-overlay"
       className={cn(
-        "fixed inset-0 z-50 bg-black/30 transition-opacity duration-150 data-ending-style:opacity-0 data-starting-style:opacity-0 supports-backdrop-filter:backdrop-blur-sm",
+        "fixed inset-0 z-50 bg-black/30 supports-backdrop-filter:backdrop-blur-sm",
         className,
       )}
       {...props}
@@ -40,29 +58,27 @@ function SheetOverlay({ className, ...props }: SheetPrimitive.Backdrop.Props) {
 function SheetContent({
   className,
   children,
-  side = "right",
   showCloseButton = true,
   ...props
-}: SheetPrimitive.Popup.Props & {
-  side?: "top" | "right" | "bottom" | "left";
+}: Omit<React.ComponentProps<typeof DrawerContent>, "children"> & {
+  children?: React.ReactNode;
   showCloseButton?: boolean;
 }) {
   const messages = useUiMessages();
   return (
-    <SheetPortal>
+    <>
       <SheetOverlay />
-      <SheetPrimitive.Popup
+      <DrawerContent
         data-slot="sheet-content"
-        data-side={side}
         className={cn(
-          "fixed z-50 flex flex-col bg-popover bg-clip-padding text-sm text-popover-foreground shadow-xl transition duration-200 ease-in-out data-ending-style:opacity-0 data-starting-style:opacity-0 data-[side=bottom]:inset-x-0 data-[side=bottom]:bottom-0 data-[side=bottom]:h-auto data-[side=bottom]:border-t data-[side=bottom]:data-ending-style:translate-y-[2.5rem] data-[side=bottom]:data-starting-style:translate-y-[2.5rem] data-[side=left]:inset-y-0 data-[side=left]:left-0 data-[side=left]:h-full data-[side=left]:w-3/4 data-[side=left]:border-r data-[side=left]:data-ending-style:translate-x-[-2.5rem] data-[side=left]:data-starting-style:translate-x-[-2.5rem] data-[side=right]:inset-y-0 data-[side=right]:right-0 data-[side=right]:h-full data-[side=right]:w-3/4 data-[side=right]:border-l data-[side=right]:data-ending-style:translate-x-[2.5rem] data-[side=right]:data-starting-style:translate-x-[2.5rem] data-[side=top]:inset-x-0 data-[side=top]:top-0 data-[side=top]:h-auto data-[side=top]:border-b data-[side=top]:data-ending-style:translate-y-[-2.5rem] data-[side=top]:data-starting-style:translate-y-[-2.5rem] data-[side=left]:sm:max-w-sm data-[side=right]:sm:max-w-sm",
+          "z-50 flex flex-col bg-popover bg-clip-padding text-sm text-popover-foreground shadow-xl data-[side=bottom]:h-auto data-[side=bottom]:w-full data-[side=bottom]:border-t data-[side=left]:h-full data-[side=left]:w-3/4 data-[side=left]:border-r data-[side=left]:sm:max-w-sm data-[side=right]:h-full data-[side=right]:w-3/4 data-[side=right]:border-l data-[side=right]:sm:max-w-sm data-[side=top]:h-auto data-[side=top]:w-full data-[side=top]:border-b",
           className,
         )}
         {...props}
       >
         {children}
         {showCloseButton && (
-          <SheetPrimitive.Close
+          <DrawerClose
             data-slot="sheet-close"
             render={
               <Button
@@ -74,10 +90,10 @@ function SheetContent({
           >
             <XIcon />
             <span className="sr-only">{messages.close}</span>
-          </SheetPrimitive.Close>
+          </DrawerClose>
         )}
-      </SheetPrimitive.Popup>
-    </SheetPortal>
+      </DrawerContent>
+    </>
   );
 }
 
@@ -101,9 +117,12 @@ function SheetFooter({ className, ...props }: React.ComponentProps<"div">) {
   );
 }
 
-function SheetTitle({ className, ...props }: SheetPrimitive.Title.Props) {
+function SheetTitle({
+  className,
+  ...props
+}: React.ComponentProps<typeof DrawerTitle>) {
   return (
-    <SheetPrimitive.Title
+    <DrawerTitle
       data-slot="sheet-title"
       className={cn(
         "font-heading text-base font-medium text-foreground",
@@ -117,9 +136,9 @@ function SheetTitle({ className, ...props }: SheetPrimitive.Title.Props) {
 function SheetDescription({
   className,
   ...props
-}: SheetPrimitive.Description.Props) {
+}: React.ComponentProps<typeof DrawerDescription>) {
   return (
-    <SheetPrimitive.Description
+    <DrawerDescription
       data-slot="sheet-description"
       className={cn("text-sm text-muted-foreground", className)}
       {...props}
@@ -132,6 +151,8 @@ export {
   SheetTrigger,
   SheetClose,
   SheetContent,
+  SheetOverlay,
+  SheetPortal,
   SheetHeader,
   SheetFooter,
   SheetTitle,

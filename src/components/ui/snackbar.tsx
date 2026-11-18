@@ -23,7 +23,14 @@ export interface SnackbarOptions {
 const options = (value: SnackbarOptions | undefined) => ({
   ...(value?.duration !== undefined ? { timeout: value.duration } : {}),
   ...(value?.id !== undefined ? { id: String(value.id) } : {}),
-  ...(value?.action ? { actionProps: { children: value.action.label, onClick: value.action.onClick } } : {}),
+  ...(value?.action
+    ? {
+        actionProps: {
+          children: value.action.label,
+          onClick: value.action.onClick,
+        },
+      }
+    : {}),
 });
 
 /** @deprecated Use `toast.add({ description })` from `components/toast`. */
@@ -35,7 +42,14 @@ function show(message: ReactNode, value?: SnackbarOptions) {
 export const snackbar = Object.assign(show, {
   /** @deprecated Use `toastError(error)` from `components/toast`. */
   error(message: unknown, value?: SnackbarOptions) {
-    return value ? toast.add({ type: "error", priority: "high", description: errorMessage(message), ...options(value) }) : toastError(message);
+    return value
+      ? toast.add({
+          type: "error",
+          priority: "high",
+          description: errorMessage(message),
+          ...options(value),
+        })
+      : toastError(message);
   },
   /** @deprecated Use `toast.close(id)` from `components/toast`. */
   dismiss(id?: string | number) {

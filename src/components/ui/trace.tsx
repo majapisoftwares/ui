@@ -109,7 +109,9 @@ function TraceCollapsibleTrigger({
   className,
   children,
   ...props
-}: React.ComponentProps<typeof CollapsibleTrigger>) {
+}: Omit<React.ComponentProps<typeof CollapsibleTrigger>, "children"> & {
+  children?: React.ReactNode;
+}) {
   return (
     <CollapsibleTrigger
       data-slot="trace-collapsible-trigger"
@@ -131,7 +133,9 @@ function TraceCollapsibleContent({
   className,
   children,
   ...props
-}: React.ComponentProps<typeof CollapsibleContent>) {
+}: Omit<React.ComponentProps<typeof CollapsibleContent>, "children"> & {
+  children?: React.ReactNode;
+}) {
   return (
     <CollapsibleContent
       data-slot="trace-collapsible-content"

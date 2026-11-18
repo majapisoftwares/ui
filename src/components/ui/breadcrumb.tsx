@@ -1,8 +1,11 @@
 "use client";
 
 import * as React from "react";
-import { mergeProps } from "@base-ui/react/merge-props";
-import { useRender } from "@base-ui/react/use-render";
+import {
+  mergeProps,
+  renderElement,
+  type RenderProp,
+} from "@ui-sdk/react/primitive";
 import { cn } from "cn";
 import { useUiMessages } from "../../lib/i18n";
 import { ChevronRightIcon, MoreHorizontalIcon } from "lucide-react";
@@ -45,20 +48,18 @@ function BreadcrumbLink({
   className,
   render,
   ...props
-}: useRender.ComponentProps<"a">) {
-  return useRender({
-    defaultTagName: "a",
-    props: mergeProps<"a">(
+}: React.ComponentProps<"a"> & { render?: RenderProp }) {
+  return renderElement(
+    "a",
+    mergeProps(
       {
         className: cn("transition-colors hover:text-foreground", className),
       },
       props,
+      { "data-slot": "breadcrumb-link" },
     ),
     render,
-    state: {
-      slot: "breadcrumb-link",
-    },
-  });
+  );
 }
 
 function BreadcrumbPage({ className, ...props }: React.ComponentProps<"span">) {

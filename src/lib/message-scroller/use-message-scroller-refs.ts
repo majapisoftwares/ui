@@ -1,11 +1,11 @@
-import * as React from "react"
+import * as React from "react";
 
 import {
   areScrollStatesEqual,
   createMessageScrollerStore,
   createMessageScrollerVisibilityStore,
-} from "./stores"
-import { EMPTY_MESSAGE_SCROLLER_SCROLLABLE } from "./types"
+} from "./stores";
+import { EMPTY_MESSAGE_SCROLLER_SCROLLABLE } from "./types";
 import type {
   MessageScrollerDefaultScrollPosition,
   MessageScrollerMode,
@@ -13,52 +13,52 @@ import type {
   MessageScrollerScrollOptions,
   MessageScrollerStore,
   MessageScrollerVisibilityStore,
-} from "./types"
+} from "./types";
 
 // Shared mutable ref bag for one MessageScroller, closed over by both the
 // controller and the commands so writes are visible across them without prop
 // threading. stateStore and visibilityStore fan out via useSyncExternalStore.
 type MessageScrollerRefs = {
-  autoScrollRef: React.RefObject<boolean>
-  keepReaderPositionRef: React.RefObject<boolean>
-  heldTurnRef: React.RefObject<HTMLElement | null>
-  autoscrollingRef: React.RefObject<boolean>
-  autoscrollingTimeoutRef: React.RefObject<number | null>
-  streamingTurnRef: React.RefObject<HTMLElement | null>
-  contentRef: React.RefObject<HTMLDivElement | null>
-  defaultScrollPositionAppliedRef: React.RefObject<boolean>
-  firstItemRef: React.RefObject<HTMLElement | null>
-  itemCountRef: React.RefObject<number>
-  lastScrollTopRef: React.RefObject<number>
-  messageElementsRef: React.RefObject<Map<string, HTMLElement>>
-  modeRef: React.RefObject<MessageScrollerMode>
-  pendingScrollFrameRef: React.RefObject<number | null>
+  autoScrollRef: React.RefObject<boolean>;
+  keepReaderPositionRef: React.RefObject<boolean>;
+  heldTurnRef: React.RefObject<HTMLElement | null>;
+  autoscrollingRef: React.RefObject<boolean>;
+  autoscrollingTimeoutRef: React.RefObject<number | null>;
+  streamingTurnRef: React.RefObject<HTMLElement | null>;
+  contentRef: React.RefObject<HTMLDivElement | null>;
+  defaultScrollPositionAppliedRef: React.RefObject<boolean>;
+  firstItemRef: React.RefObject<HTMLElement | null>;
+  itemCountRef: React.RefObject<number>;
+  lastScrollTopRef: React.RefObject<number>;
+  messageElementsRef: React.RefObject<Map<string, HTMLElement>>;
+  modeRef: React.RefObject<MessageScrollerMode>;
+  pendingScrollFrameRef: React.RefObject<number | null>;
   pendingScrollToMessageRef: React.RefObject<{
-    messageId: string
-    options?: MessageScrollerScrollOptions
-  } | null>
+    messageId: string;
+    options?: MessageScrollerScrollOptions;
+  } | null>;
   prependRestoreRef: React.RefObject<{
-    element: HTMLElement
-    viewportTop: number
-  } | null>
-  preserveScrollOnPrependRef: React.RefObject<boolean>
-  pendingDefaultScrollStore: MessageScrollerStore<boolean>
-  rootRef: React.RefObject<HTMLDivElement | null>
-  scrollEdgeThresholdRef: React.RefObject<number>
-  scrollMarginRef: React.RefObject<number>
-  scrollPreviousItemPeekRef: React.RefObject<number>
-  spacerGapRef: React.RefObject<number>
-  spacerHeightRef: React.RefObject<number>
-  spacerRef: React.RefObject<HTMLDivElement | null>
-  stateFrameRef: React.RefObject<number | null>
-  stateStore: MessageScrollerStore<MessageScrollerScrollable>
-  viewportRef: React.RefObject<HTMLDivElement | null>
-  visibilityFrameRef: React.RefObject<number | null>
-  visibilityObserverRef: React.RefObject<IntersectionObserver | null>
-  visibilityStore: MessageScrollerVisibilityStore
-  visibleMessageIdsRef: React.RefObject<Set<string>>
-  handledScrollAnchorsRef: React.RefObject<WeakSet<HTMLElement>>
-}
+    element: HTMLElement;
+    viewportTop: number;
+  } | null>;
+  preserveScrollOnPrependRef: React.RefObject<boolean>;
+  pendingDefaultScrollStore: MessageScrollerStore<boolean>;
+  rootRef: React.RefObject<HTMLDivElement | null>;
+  scrollEdgeThresholdRef: React.RefObject<number>;
+  scrollMarginRef: React.RefObject<number>;
+  scrollPreviousItemPeekRef: React.RefObject<number>;
+  spacerGapRef: React.RefObject<number>;
+  spacerHeightRef: React.RefObject<number>;
+  spacerRef: React.RefObject<HTMLDivElement | null>;
+  stateFrameRef: React.RefObject<number | null>;
+  stateStore: MessageScrollerStore<MessageScrollerScrollable>;
+  viewportRef: React.RefObject<HTMLDivElement | null>;
+  visibilityFrameRef: React.RefObject<number | null>;
+  visibilityObserverRef: React.RefObject<IntersectionObserver | null>;
+  visibilityStore: MessageScrollerVisibilityStore;
+  visibleMessageIdsRef: React.RefObject<Set<string>>;
+  handledScrollAnchorsRef: React.RefObject<WeakSet<HTMLElement>>;
+};
 
 // Builds the per-instance ref bag: the two external stores constructed once, and
 // the latest prop values mirrored onto refs each render so callbacks stay stable.
@@ -70,91 +70,91 @@ function useMessageScrollerRefs({
   scrollMargin,
   scrollPreviousItemPeek,
 }: {
-  autoScroll: boolean
-  keepReaderPosition: boolean
-  defaultScrollPosition: MessageScrollerDefaultScrollPosition
-  scrollEdgeThreshold: number
-  scrollMargin: number
-  scrollPreviousItemPeek: number
+  autoScroll: boolean;
+  keepReaderPosition: boolean;
+  defaultScrollPosition: MessageScrollerDefaultScrollPosition;
+  scrollEdgeThreshold: number;
+  scrollMargin: number;
+  scrollPreviousItemPeek: number;
 }): MessageScrollerRefs {
-  const autoScrollRef = React.useRef(autoScroll)
-  const keepReaderPositionRef = React.useRef(keepReaderPosition)
+  const autoScrollRef = React.useRef(autoScroll);
+  const keepReaderPositionRef = React.useRef(keepReaderPosition);
   // The anchored turn whose tail room is kept after the reader scrolls away.
-  const heldTurnRef = React.useRef<HTMLElement | null>(null)
-  const autoscrollingRef = React.useRef(false)
-  const contentRef = React.useRef<HTMLDivElement | null>(null)
-  const defaultScrollPositionAppliedRef = React.useRef(false)
-  const scrollEdgeThresholdRef = React.useRef(scrollEdgeThreshold)
-  const itemCountRef = React.useRef(0)
-  const firstItemRef = React.useRef<HTMLElement | null>(null)
+  const heldTurnRef = React.useRef<HTMLElement | null>(null);
+  const autoscrollingRef = React.useRef(false);
+  const contentRef = React.useRef<HTMLDivElement | null>(null);
+  const defaultScrollPositionAppliedRef = React.useRef(false);
+  const scrollEdgeThresholdRef = React.useRef(scrollEdgeThreshold);
+  const itemCountRef = React.useRef(0);
+  const firstItemRef = React.useRef<HTMLElement | null>(null);
   // The scrollTop seen by the previous state commit, so follow-release can tell
   // a reader scrolling up from content growing past the live edge.
-  const lastScrollTopRef = React.useRef(0)
+  const lastScrollTopRef = React.useRef(0);
   const modeRef = React.useRef<MessageScrollerMode>(
-    autoScroll ? "following-bottom" : "free-scrolling"
-  )
-  const messageElementsRef = React.useRef(new Map<string, HTMLElement>())
+    autoScroll ? "following-bottom" : "free-scrolling",
+  );
+  const messageElementsRef = React.useRef(new Map<string, HTMLElement>());
   const pendingScrollToMessageRef = React.useRef<{
-    messageId: string
-    options?: MessageScrollerScrollOptions
-  } | null>(null)
+    messageId: string;
+    options?: MessageScrollerScrollOptions;
+  } | null>(null);
   // The row to hold steady on the next prepend: the first visible row, or a jump
   // target seeded by scrollToElement. restorePrependedAnchor reads only this.
   const prependRestoreRef = React.useRef<{
-    element: HTMLElement
-    viewportTop: number
-  } | null>(null)
+    element: HTMLElement;
+    viewportTop: number;
+  } | null>(null);
   // The turn held at the reading line so a reply streaming in below it can re-pin
   // it instead of letting scrollTop clamp it loose.
-  const streamingTurnRef = React.useRef<HTMLElement | null>(null)
-  const scrollPreviousItemPeekRef = React.useRef(scrollPreviousItemPeek)
-  const preserveScrollOnPrependRef = React.useRef(true)
-  const rootRef = React.useRef<HTMLDivElement | null>(null)
-  const scrollMarginRef = React.useRef(scrollMargin)
-  const pendingScrollFrameRef = React.useRef<number | null>(null)
-  const spacerGapRef = React.useRef(0)
-  const spacerHeightRef = React.useRef(0)
-  const spacerRef = React.useRef<HTMLDivElement | null>(null)
-  const stateFrameRef = React.useRef<number | null>(null)
+  const streamingTurnRef = React.useRef<HTMLElement | null>(null);
+  const scrollPreviousItemPeekRef = React.useRef(scrollPreviousItemPeek);
+  const preserveScrollOnPrependRef = React.useRef(true);
+  const rootRef = React.useRef<HTMLDivElement | null>(null);
+  const scrollMarginRef = React.useRef(scrollMargin);
+  const pendingScrollFrameRef = React.useRef<number | null>(null);
+  const spacerGapRef = React.useRef(0);
+  const spacerHeightRef = React.useRef(0);
+  const spacerRef = React.useRef<HTMLDivElement | null>(null);
+  const stateFrameRef = React.useRef<number | null>(null);
   const pendingDefaultScrollStoreRef =
-    React.useRef<MessageScrollerStore<boolean> | null>(null)
+    React.useRef<MessageScrollerStore<boolean> | null>(null);
   const stateStoreRef =
-    React.useRef<MessageScrollerStore<MessageScrollerScrollable> | null>(null)
-  const autoscrollingTimeoutRef = React.useRef<number | null>(null)
-  const viewportRef = React.useRef<HTMLDivElement | null>(null)
-  const visibilityFrameRef = React.useRef<number | null>(null)
-  const visibilityObserverRef = React.useRef<IntersectionObserver | null>(null)
+    React.useRef<MessageScrollerStore<MessageScrollerScrollable> | null>(null);
+  const autoscrollingTimeoutRef = React.useRef<number | null>(null);
+  const viewportRef = React.useRef<HTMLDivElement | null>(null);
+  const visibilityFrameRef = React.useRef<number | null>(null);
+  const visibilityObserverRef = React.useRef<IntersectionObserver | null>(null);
   const visibilityStoreRef =
-    React.useRef<MessageScrollerVisibilityStore | null>(null)
-  const visibleMessageIdsRef = React.useRef(new Set<string>())
-  const handledScrollAnchorsRef = React.useRef(new WeakSet<HTMLElement>())
+    React.useRef<MessageScrollerVisibilityStore | null>(null);
+  const visibleMessageIdsRef = React.useRef(new Set<string>());
+  const handledScrollAnchorsRef = React.useRef(new WeakSet<HTMLElement>());
 
   if (pendingDefaultScrollStoreRef.current === null) {
     pendingDefaultScrollStoreRef.current = createMessageScrollerStore(
       defaultScrollPosition === "end" ||
         defaultScrollPosition === "last-anchor",
-      (current, next) => current === next
-    )
+      (current, next) => current === next,
+    );
   }
 
   if (stateStoreRef.current === null) {
     stateStoreRef.current = createMessageScrollerStore(
       EMPTY_MESSAGE_SCROLLER_SCROLLABLE,
-      areScrollStatesEqual
-    )
+      areScrollStatesEqual,
+    );
   }
 
   if (visibilityStoreRef.current === null) {
-    visibilityStoreRef.current = createMessageScrollerVisibilityStore()
+    visibilityStoreRef.current = createMessageScrollerVisibilityStore();
   }
 
   // Track the latest prop values on every render so callbacks read fresh values
   // without being recreated (the useLatest pattern).
-  autoScrollRef.current = autoScroll
-  keepReaderPositionRef.current = keepReaderPosition
-  scrollEdgeThresholdRef.current = scrollEdgeThreshold
-  scrollMarginRef.current = scrollMargin
-  scrollPreviousItemPeekRef.current = scrollPreviousItemPeek
+  autoScrollRef.current = autoScroll;
+  keepReaderPositionRef.current = keepReaderPosition;
+  scrollEdgeThresholdRef.current = scrollEdgeThreshold;
+  scrollMarginRef.current = scrollMargin;
+  scrollPreviousItemPeekRef.current = scrollPreviousItemPeek;
 
   return {
     autoScrollRef,
@@ -190,21 +190,21 @@ function useMessageScrollerRefs({
     visibilityStore: visibilityStoreRef.current,
     visibleMessageIdsRef,
     handledScrollAnchorsRef,
-  }
+  };
 }
 
 function clearPendingDefaultScroll(refs: MessageScrollerRefs) {
-  refs.pendingDefaultScrollStore.setSnapshot(false)
+  refs.pendingDefaultScrollStore.setSnapshot(false);
 }
 
 function markDefaultScrollPositionApplied(refs: MessageScrollerRefs) {
-  refs.defaultScrollPositionAppliedRef.current = true
-  clearPendingDefaultScroll(refs)
+  refs.defaultScrollPositionAppliedRef.current = true;
+  clearPendingDefaultScroll(refs);
 }
 
 export {
   clearPendingDefaultScroll,
   markDefaultScrollPositionApplied,
   useMessageScrollerRefs,
-}
-export type { MessageScrollerRefs }
+};
+export type { MessageScrollerRefs };

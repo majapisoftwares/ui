@@ -1,4 +1,4 @@
-# Validação do starter Next.js e Base UI
+# Validação do starter Next.js (histórico: validado na UI 0.2 sobre Base UI)
 
 - Next.js e create-next-app 16.4.3 conferidos no registry npm e na documentação oficial; React 19.3.1; UI 0.2 com shadcn base-nova e @base-ui/react 1.9.0.
 - Biblioteca regenerada pelo CLI oficial shadcn em diretório limpo, preservando tokens e variantes compartilhadas. Imports diretos de Radix removidos; fronteiras use client explícitas nas primitivas e padrões interativos.

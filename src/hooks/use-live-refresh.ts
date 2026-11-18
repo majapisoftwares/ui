@@ -21,7 +21,10 @@ export function useLiveRefresh(refresh: () => unknown, ms = 5000) {
     const run = () => {
       if (document.hidden || running) return;
       const result = latest.current();
-      if (result && typeof (result as PromiseLike<unknown>).then === "function") {
+      if (
+        result &&
+        typeof (result as PromiseLike<unknown>).then === "function"
+      ) {
         running = true;
         Promise.resolve(result)
           .catch(() => undefined)
