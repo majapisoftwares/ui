@@ -1,17 +1,20 @@
 # Publishes @majapisoftwares/ui with npm Trusted Publishing (GitHub OIDC):
-# no npm token, password or OTP. Run from main:
+# no npm token, password or OTP. Runs on every push to main: scripts/release-plan.mjs
+# picks patch/minor from the commits since the last tag, or skips when nothing
+# publishable changed. A major is never automatic. Manual override from main:
 #   gh workflow run release.yml -f bump=minor
-# Choose the bump with docs/VERSIONING.md; a major needs the owner's approval.
 name: Release
 
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
     inputs:
       bump:
-        description: SemVer bump (docs/VERSIONING.md)
+        description: SemVer bump (docs/VERSIONING.md); auto = from commits
         type: choice
-        options: [patch, minor, major]
-        required: true
+        options: [auto, patch, minor, major]
+        default: auto
 
 permissions:
   contents: write # release commit, tag and GitHub release
@@ -28,22 +31,42 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
+      # Latest main with tags, so a queued run sees releases made meanwhile.
       - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
       - uses: actions/setup-node@v6
         with:
           node-version: '24'
           cache: npm
       # Trusted publishing needs npm 11.5.1 or later.
-      - run: npm install -g npm@11
-      - run: npm ci
+      - name: Plan the bump
+        id: plan
+        run: |
+          bump="${{ inputs.bump }}"
+          if [ -z "$bump" ] || [ "$bump" = auto ]; then bump=$(node scripts/release-plan.mjs); fi
+          echo "Bump: $bump"
+          if [ "$bump" = major ]; then
+            echo "::error::Breaking change detected. Majors need the owner's approval: run this workflow manually with bump=major."
+            exit 1
+          fi
+          echo "bump=$bump" >> "$GITHUB_OUTPUT"
+
+      - if: steps.plan.outputs.bump != 'none'
+        run: npm install -g npm@11
+      - if: steps.plan.outputs.bump != 'none'
+        run: npm ci
 
       - name: Bump version
+        if: steps.plan.outputs.bump != 'none'
         id: version
         run: |
-          npm version "${{ inputs.bump }}" --no-git-tag-version
+          npm version "${{ steps.plan.outputs.bump }}" --no-git-tag-version
           echo "value=$(node -p 'require("./package.json").version')" >> "$GITHUB_OUTPUT"
 
       - name: Validate library
+        if: steps.plan.outputs.bump != 'none'
         run: |
           npm run typecheck
           npm run test:preferences
@@ -54,6 +77,7 @@ jobs:
 
       # The starter must work with the exact package that gets published.
       - name: Validate starter against the packed package
+        if: steps.plan.outputs.bump != 'none'
         run: |
           npm pack --pack-destination "$RUNNER_TEMP"
           cp -r starters/next-app "$RUNNER_TEMP/starter"
@@ -67,6 +91,7 @@ jobs:
       # Skipped when this version is already on npm, so rerunning a release
       # that failed after publishing finishes it instead of failing.
       - name: Publish to npm
+        if: steps.plan.outputs.bump != 'none'
         run: |
           if npm view "@majapisoftwares/ui@${{ steps.version.outputs.value }}" version >/dev/null 2>&1; then
             echo "Already published; continuing with the starter and the tag."
@@ -76,6 +101,7 @@ jobs:
 
       # The registry's install metadata can lag a few minutes behind publish.
       - name: Pin the starter to the published version
+        if: steps.plan.outputs.bump != 'none'
         working-directory: starters/next-app
         run: |
           version="${{ steps.version.outputs.value }}"
@@ -85,9 +111,11 @@ jobs:
           done
           exit 1
 
-      - run: npm run test:starter
+      - if: steps.plan.outputs.bump != 'none'
+        run: npm run test:starter
 
       - name: Commit, tag and create the GitHub release
+        if: steps.plan.outputs.bump != 'none'
         run: |
           version="v${{ steps.version.outputs.value }}"
           git config user.name "github-actions[bot]"
