@@ -15,7 +15,7 @@ function TextLink({ href, children }: { href: string; children: string }) {
     <Button
       variant="link"
       className="h-auto p-0"
-     
+
       render={<Link href={href} />}
     >
       {children}
@@ -49,9 +49,7 @@ export function AuthView({
             : { onSubmit: () => undefined })}
           alternative={
             providerOnly ? (
-              <Button render={<Link href="/" />}>
-                {t.providerLogin}
-              </Button>
+              <Button render={<Link href="/" />}>{t.providerLogin}</Button>
             ) : undefined
           }
           recovery={<TextLink href="/login">{t.forgot}</TextLink>}
