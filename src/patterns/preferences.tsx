@@ -26,11 +26,16 @@ import {
 } from "../components/ui/dropdown-menu";
 
 type Theme = "light" | "dark";
+/** `"system"` follows the device (`prefers-color-scheme`) and is not saved. */
+export type ThemePreference = Theme | "system";
 const PreferencesContext = createContext<{
   locale: Locale;
   setLocale: (locale: Locale) => void;
+  /** The theme in effect (`system` already resolved). */
   theme: Theme;
-  setTheme: (theme: Theme) => void;
+  /** The user's choice; `"system"` when nothing is saved. */
+  themePreference: ThemePreference;
+  setTheme: (theme: ThemePreference) => void;
 } | null>(null);
 const PreferencesReadyContext = createContext(true);
 
@@ -40,6 +45,19 @@ function read(key: string) {
   } catch {
     return null;
   }
+}
+function clear(key: string) {
+  try {
+    localStorage.removeItem(key);
+  } catch {
+    // Storage can be unavailable (private mode).
+  }
+}
+function systemTheme(): Theme {
+  return typeof matchMedia === "function" &&
+    matchMedia("(prefers-color-scheme: dark)").matches
+    ? "dark"
+    : "light";
 }
 function write(key: string, value: string) {
   try {
@@ -54,7 +72,7 @@ function write(key: string, value: string) {
  * Inline this in `<head>` (e.g. `<script dangerouslySetInnerHTML>`) so the
  * stored theme applies before paint.
  */
-export const preferencesScript = `try{var d=document.documentElement;if(localStorage.getItem("theme")==="dark")d.classList.add("dark");var l=localStorage.getItem("locale");if(l!=="en"&&l!=="pt-BR"){l="en";var a=navigator.languages||[];for(var i=0;i<a.length;i++){if(/^pt/i.test(a[i])){l="pt-BR";break}if(/^en/i.test(a[i]))break}}if(l!==d.lang){d.lang=l;d.setAttribute("data-locale-pending",l)}}catch(e){}`;
+export const preferencesScript = `try{var d=document.documentElement;var t=localStorage.getItem("theme");if(t==="dark"||(t!=="light"&&window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches))d.classList.add("dark");var l=localStorage.getItem("locale");if(l!=="en"&&l!=="pt-BR"){l="en";var a=navigator.languages||[];for(var i=0;i<a.length;i++){if(/^pt/i.test(a[i])){l="pt-BR";break}if(/^en/i.test(a[i]))break}}if(l!==d.lang){d.lang=l;d.setAttribute("data-locale-pending",l)}}catch(e){}`;
 
 /**
  * Locale + theme for the whole app. Renders `defaultLocale` first (matches
@@ -68,7 +86,9 @@ export function Preferences({
   children: ReactNode;
 }) {
   const [locale, setLocale] = useState<Locale>(defaultLocale);
-  const [theme, setTheme] = useState<Theme>("light");
+  const [themePreference, setThemePreference] =
+    useState<ThemePreference>("system");
+  const [systemDark, setSystemDark] = useState(false);
   const [ready, setReady] = useState(false);
   useEffect(() => {
     const stored = read("locale");
@@ -78,9 +98,26 @@ export function Preferences({
         ? (stored as Locale)
         : matchLocale(navigator.languages),
     );
-    setTheme(read("theme") === "dark" ? "dark" : "light");
+    const savedTheme = read("theme");
+    setThemePreference(
+      savedTheme === "dark" || savedTheme === "light" ? savedTheme : "system",
+    );
+    setSystemDark(systemTheme() === "dark");
     setReady(true);
   }, []);
+  useEffect(() => {
+    if (typeof matchMedia !== "function") return;
+    const query = matchMedia("(prefers-color-scheme: dark)");
+    const onChange = () => setSystemDark(query.matches);
+    query.addEventListener("change", onChange);
+    return () => query.removeEventListener("change", onChange);
+  }, []);
+  const theme: Theme =
+    themePreference === "system"
+      ? systemDark
+        ? "dark"
+        : "light"
+      : themePreference;
   useEffect(() => {
     if (!ready) return;
     const root = document.documentElement;
@@ -122,9 +159,11 @@ export function Preferences({
           write("locale", next);
         },
         theme,
+        themePreference,
         setTheme: (next) => {
-          setTheme(next);
-          write("theme", next);
+          setThemePreference(next);
+          if (next === "system") clear("theme");
+          else write("theme", next);
         },
       }}
     >

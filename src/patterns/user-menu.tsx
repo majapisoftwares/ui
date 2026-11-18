@@ -6,6 +6,7 @@ import {
   LanguagesIcon,
   LogOutIcon,
   MoonIcon,
+  MonitorIcon,
   SunIcon,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
@@ -30,7 +31,7 @@ import {
   useSidebar,
 } from "../components/ui/sidebar";
 import { defineMessages, locales, useMessages, type Locale } from "../lib/i18n";
-import { usePreferences } from "./preferences";
+import { usePreferences, type ThemePreference } from "./preferences";
 
 const messages = defineMessages({
   en: {
@@ -38,6 +39,7 @@ const messages = defineMessages({
     theme: "Theme",
     light: "Light",
     dark: "Dark",
+    system: "System",
     language: "Language",
     signOut: "Sign out",
     signingOut: "Signing out…",
@@ -47,6 +49,7 @@ const messages = defineMessages({
     theme: "Tema",
     light: "Claro",
     dark: "Escuro",
+    system: "Sistema",
     language: "Idioma",
     signOut: "Sair",
     signingOut: "Saindo…",
@@ -116,7 +119,7 @@ export function UserMenu({
 }) {
   const t = useMessages(messages);
   const { isMobile } = useSidebar();
-  const { locale, setLocale, theme, setTheme } = usePreferences();
+  const { locale, setLocale, theme, themePreference, setTheme } = usePreferences();
 
   return (
     <SidebarMenu>
@@ -160,9 +163,9 @@ export function UserMenu({
                 </DropdownMenuSubTrigger>
                 <DropdownMenuSubContent>
                   <DropdownMenuRadioGroup
-                    value={theme}
+                    value={themePreference}
                     onValueChange={(value) =>
-                      setTheme(value as "light" | "dark")
+                      setTheme(value as ThemePreference)
                     }
                   >
                     <DropdownMenuRadioItem value="light">
@@ -172,6 +175,10 @@ export function UserMenu({
                     <DropdownMenuRadioItem value="dark">
                       <MoonIcon />
                       {t.dark}
+                    </DropdownMenuRadioItem>
+                    <DropdownMenuRadioItem value="system">
+                      <MonitorIcon />
+                      {t.system}
                     </DropdownMenuRadioItem>
                   </DropdownMenuRadioGroup>
                 </DropdownMenuSubContent>
