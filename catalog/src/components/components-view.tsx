@@ -1,8 +1,11 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import {
   BellIcon,
+  CreditCardIcon,
+  SettingsIcon,
+  UserIcon,
   BoldIcon,
   ItalicIcon,
   MailIcon,
@@ -28,6 +31,16 @@ import {
   FieldLabel,
 } from "@majapisoftwares/ui/components/field";
 import { Label } from "@majapisoftwares/ui/components/label";
+import {
+  Command,
+  CommandDialog,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandItemIcon,
+  CommandList,
+  CommandEmpty,
+} from "@majapisoftwares/ui/components/command";
 import {
   Select,
   SelectContent,
@@ -194,6 +207,9 @@ const messages = defineMessages({
     faq2: "Can I theme it?",
     faq2Body: "Through tokens in the shared library.",
     shortcut: "Command palette",
+    cmdProfile: "Profile",
+    cmdBilling: "Billing",
+    cmdSettings: "Settings",
     account: "Account",
     security: "Security",
     accountBody: "Name, email and avatar.",
@@ -261,6 +277,9 @@ const messages = defineMessages({
     faq2: "Dá para mudar o tema?",
     faq2Body: "Pelos tokens da biblioteca compartilhada.",
     shortcut: "Paleta de comandos",
+    cmdProfile: "Perfil",
+    cmdBilling: "Cobrança",
+    cmdSettings: "Configurações",
     account: "Conta",
     security: "Segurança",
     accountBody: "Nome, e-mail e avatar.",
@@ -297,6 +316,17 @@ function Section({
 export function ComponentsView() {
   const t = useMessages(messages);
   const [volume, setVolume] = useState(60);
+  const [paletteOpen, setPaletteOpen] = useState(false);
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "k" && (event.metaKey || event.ctrlKey)) {
+        event.preventDefault();
+        setPaletteOpen((open) => !open);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
   const orbNames = useMessages(ORB_TASK_LABELS);
   return (
     <div className="grid items-start gap-4 lg:grid-cols-2">
@@ -511,10 +541,28 @@ export function ComponentsView() {
 
       <Section title={t.feedback} className="flex flex-col gap-4">
         <div className="flex flex-wrap gap-2">
-          <Button variant="outline" onClick={() => { const id = toast.add({ type: "success", description: t.toastSaved, actionProps: { children: t.undo, onClick: () => { toast.close(id); toast.add({ description: t.undone }); } } }); }}>
+          <Button
+            variant="outline"
+            onClick={() => {
+              const id = toast.add({
+                type: "success",
+                description: t.toastSaved,
+                actionProps: {
+                  children: t.undo,
+                  onClick: () => {
+                    toast.close(id);
+                    toast.add({ description: t.undone });
+                  },
+                },
+              });
+            }}
+          >
             {t.showToast}
           </Button>
-          <Button variant="outline" onClick={() => toastError(new Error(t.toastError))}>
+          <Button
+            variant="outline"
+            onClick={() => toastError(new Error(t.toastError))}
+          >
             {t.errorToast}
           </Button>
         </div>
@@ -581,13 +629,45 @@ export function ComponentsView() {
               </Avatar>
             ))}
           </AvatarGroup>
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <Button variant="outline" onClick={() => setPaletteOpen(true)}>
             {t.shortcut}
             <KbdGroup>
               <Kbd>⌘</Kbd>
               <Kbd>K</Kbd>
             </KbdGroup>
-          </div>
+          </Button>
+          <CommandDialog
+            title={t.shortcut}
+            open={paletteOpen}
+            onOpenChange={setPaletteOpen}
+          >
+            <Command onAction={() => setPaletteOpen(false)}>
+              <CommandInput />
+              <CommandEmpty />
+              <CommandList>
+                <CommandGroup>
+                  <CommandItem value="profile">
+                    <CommandItemIcon>
+                      <UserIcon />
+                    </CommandItemIcon>
+                    {t.cmdProfile}
+                  </CommandItem>
+                  <CommandItem value="billing">
+                    <CommandItemIcon>
+                      <CreditCardIcon />
+                    </CommandItemIcon>
+                    {t.cmdBilling}
+                  </CommandItem>
+                  <CommandItem value="settings">
+                    <CommandItemIcon>
+                      <SettingsIcon />
+                    </CommandItemIcon>
+                    {t.cmdSettings}
+                  </CommandItem>
+                </CommandGroup>
+              </CommandList>
+            </Command>
+          </CommandDialog>
         </div>
         <Tabs defaultValue="account">
           <TabsList>

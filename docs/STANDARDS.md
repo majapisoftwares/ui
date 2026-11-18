@@ -92,3 +92,9 @@ Uma página tem um jeito só de subir: o breadcrumb do `AppShell`. Nunca dois co
 ## Dados ao vivo
 
 Listas e telas com dados se atualizam sozinhas: `useLiveRefresh(load, ms)` (`hooks/use-live-refresh`) chama `load` a cada `ms` (5 s por padrão) com a página visível e logo que a pessoa volta para ela. `load` devolve a promise da carga (`useLiveRefresh(load)`, não `() => void load()`): enquanto ela roda, os próximos ticks esperam, e um servidor lento não recebe a mesma requisição empilhada. `npm run test:live-refresh` verifica. Não há botão de atualizar. Leituras caras usam um intervalo maior (um scan na nuvem a cada minutos, não segundos), nunca um botão. Tentar de novo depois de uma falha (`onRetry`) continua, porque é outra coisa.
+
+## Fundação ui-sdk (Vercel)
+
+`@ui-sdk/react` e `@ui-sdk/core` (ui-sdk.dev, Apache-2.0, versão beta fixada exata) são dependências da biblioteca. Os componentes existentes continuam sobre Base UI: nenhum export mudou. Capacidades que o Base UI não cobre (Command, e depois Calendar, Combobox, Tree etc.) entram como componentes estilizados com os tokens da biblioteca sobre os comportamentos do ui-sdk, importando cada parte de `@ui-sdk/react/<componente>`. Antes de criar um comportamento novo, procure-o em `node_modules/@ui-sdk/react/docs/llms.txt`. Trocar um componente existente de Base UI para ui-sdk só em major, com `docs/MIGRATION-<versão>.md`.
+
+- `components/command` (`Command`, `CommandInput`, `CommandList`, `CommandItem`, `CommandDialog` etc.): paleta de comandos; `CommandDialog` usa o `Dialog` da biblioteca. Atalho ⌘K fica no app.
