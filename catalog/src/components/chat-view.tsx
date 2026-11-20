@@ -657,6 +657,7 @@ export function ChatView({ empty = false }: { empty?: boolean }) {
             onSubmit={send}
             quote={quoteOf(replyTo ?? undefined, { inComposer: true })}
             attachments
+            inline
             autoFocus
           />
         </ChatComposer>

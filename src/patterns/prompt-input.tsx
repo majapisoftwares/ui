@@ -84,6 +84,12 @@ export interface PromptInputProps {
    * field. The field takes focus when a quote appears or its `key` changes.
    */
   quote?: ReactNode;
+  /**
+   * From the md breakpoint, the field, attach button and send button share
+   * one row (the field grows with its text); on a phone the stacked layout
+   * stays. Quote and attachments still sit above.
+   */
+  inline?: boolean;
   className?: string;
   "aria-label"?: string;
 }
@@ -155,6 +161,7 @@ export function PromptInput({
   actions,
   hideSubmit = false,
   quote,
+  inline = false,
   className,
   "aria-label": ariaLabel,
 }: PromptInputProps) {
@@ -303,15 +310,25 @@ export function PromptInput({
       <InputGroup
         data-disabled={disabled || undefined}
         data-dragging={dragging || undefined}
-        className="data-dragging:border-ring data-dragging:ring-3 data-dragging:ring-ring/30"
+        className={cn(
+          "data-dragging:border-ring data-dragging:ring-3 data-dragging:ring-ring/30",
+          inline &&
+            "md:flex-wrap md:items-end md:has-[>[data-align=block-end]]:flex-row md:has-[>[data-align=block-start]]:flex-row",
+        )}
       >
         {quote ? (
-          <InputGroupAddon align="block-start" className="cursor-default pb-0">
+          <InputGroupAddon
+            align="block-start"
+            className={cn("cursor-default pb-0", inline && "md:basis-full")}
+          >
             <div className="w-full min-w-0">{quote}</div>
           </InputGroupAddon>
         ) : null}
         {files.length > 0 ? (
-          <InputGroupAddon align="block-start" className="cursor-default">
+          <InputGroupAddon
+            align="block-start"
+            className={cn("cursor-default", inline && "md:basis-full")}
+          >
             <AttachmentGroup
               aria-label={messages.attachments}
               className="w-full"
@@ -355,11 +372,14 @@ export function PromptInput({
           disabled={disabled}
           autoFocus={autoFocus}
           rows={1}
-          className="max-h-48 min-h-12 px-4 pt-3.5"
+          className={cn(
+            "max-h-48 min-h-12 px-4 pt-3.5",
+            inline && "md:min-h-11 md:min-w-0 md:flex-1 md:basis-0 md:pt-3",
+          )}
         />
         <InputGroupAddon
           align="block-end"
-          className="cursor-text"
+          className={cn("cursor-text", inline && "md:w-auto md:pb-1.5")}
           onClick={(event) => {
             if (!(event.target as HTMLElement).closest("button"))
               textareaRef.current?.focus();
