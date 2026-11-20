@@ -51,29 +51,53 @@ interface LegacyOptions {
   action?: { label: React.ReactNode; onClick: () => void };
 }
 
-const legacy = (type: string | undefined, message: Message, options?: LegacyOptions) =>
+const legacy = (
+  type: string | undefined,
+  message: Message,
+  options?: LegacyOptions,
+) =>
   manager.add({
     ...(type ? { type } : {}),
     ...(type === "error" ? { priority: "high" as const } : {}),
     // A message with a description reads as a title over it, as in sonner.
-    ...(options?.description ? { title: message, description: options.description } : { description: message }),
+    ...(options?.description
+      ? { title: message, description: options.description }
+      : { description: message }),
     ...(options?.duration !== undefined ? { timeout: options.duration } : {}),
     ...(options?.id !== undefined ? { id: String(options.id) } : {}),
-    ...(options?.action ? { actionProps: { children: options.action.label, onClick: options.action.onClick } } : {}),
+    ...(options?.action
+      ? {
+          actionProps: {
+            children: options.action.label,
+            onClick: options.action.onClick,
+          },
+        }
+      : {}),
   });
 
 /**
  * @deprecated Use `toast.add(...)` and `toastError(error)` from `components/toast`
  * (the shadcn toast). These calls already show as that toast.
  */
-const toast = Object.assign((message: Message, options?: LegacyOptions) => legacy(undefined, message, options), {
-  message: (message: Message, options?: LegacyOptions) => legacy(undefined, message, options),
-  success: (message: Message, options?: LegacyOptions) => legacy("success", message, options),
-  info: (message: Message, options?: LegacyOptions) => legacy("info", message, options),
-  warning: (message: Message, options?: LegacyOptions) => legacy("warning", message, options),
-  error: (message: Message, options?: LegacyOptions) => legacy("error", message, options),
-  loading: (message: Message, options?: LegacyOptions) => legacy("loading", message, options),
-  dismiss: (id?: string | number) => manager.close(id === undefined ? undefined : String(id)),
-});
+const toast = Object.assign(
+  (message: Message, options?: LegacyOptions) =>
+    legacy(undefined, message, options),
+  {
+    message: (message: Message, options?: LegacyOptions) =>
+      legacy(undefined, message, options),
+    success: (message: Message, options?: LegacyOptions) =>
+      legacy("success", message, options),
+    info: (message: Message, options?: LegacyOptions) =>
+      legacy("info", message, options),
+    warning: (message: Message, options?: LegacyOptions) =>
+      legacy("warning", message, options),
+    error: (message: Message, options?: LegacyOptions) =>
+      legacy("error", message, options),
+    loading: (message: Message, options?: LegacyOptions) =>
+      legacy("loading", message, options),
+    dismiss: (id?: string | number) =>
+      manager.close(id === undefined ? undefined : String(id)),
+  },
+);
 
 export { toast };

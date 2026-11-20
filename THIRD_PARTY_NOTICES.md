@@ -1,6 +1,6 @@
 # Third-party notices
 
-The primitives in src/components/ui were generated with shadcn/ui 4.22.1, base-luma preset (Base UI), from https://github.com/shadcn-ui/ui and https://ui.shadcn.com. They are distributed under the MIT License:
+The primitives in src/components/ui were generated with shadcn/ui 4.22.1, base-luma preset (originally Base UI; behavior now from ui-sdk, Apache-2.0, https://github.com/vercel-labs/ui), from https://github.com/shadcn-ui/ui and https://ui.shadcn.com. They are distributed under the MIT License:
 
 MIT License
 

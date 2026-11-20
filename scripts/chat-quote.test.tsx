@@ -13,7 +13,7 @@ test("a markdown reply quotes as one line of plain text", () => {
 
 test("the field takes focus when a reply starts and when it moves to another message", async () => {
   const dom = new JSDOM('<html><body><button id="elsewhere"></button><div id="root"></div></body></html>', { url: "https://example.test", pretendToBeVisual: true });
-  const keys = ["window", "document", "navigator", "HTMLElement", "Element", "Node", "MutationObserver", "getComputedStyle", "IS_REACT_ACT_ENVIRONMENT"];
+  const keys = ["window", "document", "navigator", "HTMLElement", "Element", "Node", "MutationObserver", "NodeFilter", "HTMLFieldSetElement", "HTMLFormElement", "HTMLInputElement", "HTMLButtonElement", "HTMLTextAreaElement", "HTMLSelectElement", "HTMLAnchorElement", "SVGElement", "Event", "KeyboardEvent", "MouseEvent", "PointerEvent", "FocusEvent", "CustomEvent", "DOMRect", "ResizeObserver", "IntersectionObserver", "CSS", "getComputedStyle", "IS_REACT_ACT_ENVIRONMENT"];
   const saved = new Map(keys.map((key) => [key, Object.getOwnPropertyDescriptor(globalThis, key)]));
   for (const key of keys) {
     let value = key === "IS_REACT_ACT_ENVIRONMENT" ? true : dom.window[key as keyof typeof dom.window];

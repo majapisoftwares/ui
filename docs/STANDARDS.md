@@ -2,7 +2,7 @@
 
 `LoginForm` aceita `mode="providers"` com `alternative` obrigatório para autenticação exclusiva por OAuth/SSO, sem campos de senha nem callback de credenciais. O modo padrão continua `credentials`. Catálogo e starter demonstram em `/login/provider`. A identidade autenticada usa `UserMenu` no slot `footer` do `AppShell`; tema, idioma e saída permanecem no padrão compartilhado.
 
-Base atual: shadcn base-luma com @base-ui/react. Os componentes interativos expõem fronteiras use client para uso no Next.js App Router. A migração da API Radix está documentada em MIGRATION-0.2.md.
+Base atual: shadcn base-luma com comportamento do ui-sdk (`@ui-sdk/react`); desde a 7.0 não há Base UI (docs/MIGRATION-7.0.md). Os componentes interativos expõem fronteiras use client para uso no Next.js App Router. A migração da API Radix está documentada em MIGRATION-0.2.md.
 
 ## Arquitetura e código
 
@@ -35,7 +35,7 @@ DataTable mantém os resets de paginação fora da avaliação de row models dur
 - Não repetir o que já está na tela: o breadcrumb nomeia a página, então ela não ganha um título `PageHeader` com o mesmo nome. Na sidebar, o grupo abre a página principal da ferramenta, que não aparece de novo como subitem. O mesmo vale para títulos de diálogo, rótulos e descrições que repetem um texto visível.
 - Rótulos curtos, em uma linha: botões, itens de menu, abas e badges não quebram linha. Menus se ajustam à largura do conteúdo (não à do botão que os abre); se o texto não couber, encurte-o.
 - Estados com texto e cor: sucesso, aviso, erro e desconhecido. Nunca traduzir ausência de informação em zero ou sucesso.
-- Notificações usam o toast do shadcn (`components/toast`, sobre o Toast do Base UI), para informação e para erro: `toast.add({ description })` (ou `title` e `description`, `type` success/info/warning/loading) e `toastError(erro)` para falhas (tipo error, prioridade alta), com no máximo uma ação curta em `actionProps` (Desfazer, Tentar de novo). Preferences monta o `Toaster`. Falhas de ações (salvar, enviar, criar) vão para `toastError`, não para texto dentro do formulário ou do diálogo; o diálogo continua aberto para a pessoa corrigir e tentar de novo. Só a validação de um campo fica junto do campo (FieldError). `toast`/`Toaster` de `components/sonner` e `snackbar` de `components/snackbar` estão obsoletos e já aparecem como esse toast.
+- Notificações usam o toast do shadcn (`components/toast`, sobre o toast do ui-sdk), para informação e para erro: `toast.add({ description })` (ou `title` e `description`, `type` success/info/warning/loading) e `toastError(erro)` para falhas (tipo error, prioridade alta), com no máximo uma ação curta em `actionProps` (Desfazer, Tentar de novo). Preferences monta o `Toaster`. Falhas de ações (salvar, enviar, criar) vão para `toastError`, não para texto dentro do formulário ou do diálogo; o diálogo continua aberto para a pessoa corrigir e tentar de novo. Só a validação de um campo fica junto do campo (FieldError). `toast`/`Toaster` de `components/sonner` e `snackbar` de `components/snackbar` estão obsoletos e já aparecem como esse toast.
 - Carregamento usa Skeleton, vazio usa Empty, falhas usam Alert e detalhes usam DetailsSheet com título, descrição, foco preso ao overlay, Escape e devolução do foco ao fechar.
 - Em telas pequenas, controles têm texto de pelo menos 16px e alvo de 44px, navegação se reorganiza e tabelas têm rolagem interna, sem rolagem horizontal da página.
 - Preferência por movimento reduzido é respeitada. A ordem de leitura deve acompanhar a ordem visual. Ícones sozinhos exigem nome acessível.
@@ -92,3 +92,7 @@ Uma página tem um jeito só de subir: o breadcrumb do `AppShell`. Nunca dois co
 ## Dados ao vivo
 
 Listas e telas com dados se atualizam sozinhas: `useLiveRefresh(load, ms)` (`hooks/use-live-refresh`) chama `load` a cada `ms` (5 s por padrão) com a página visível e logo que a pessoa volta para ela. `load` devolve a promise da carga (`useLiveRefresh(load)`, não `() => void load()`): enquanto ela roda, os próximos ticks esperam, e um servidor lento não recebe a mesma requisição empilhada. `npm run test:live-refresh` verifica. Não há botão de atualizar. Leituras caras usam um intervalo maior (um scan na nuvem a cada minutos, não segundos), nunca um botão. Tentar de novo depois de uma falha (`onRetry`) continua, porque é outra coisa.
+
+## Fundação ui-sdk (Vercel)
+
+`@ui-sdk/react` e `@ui-sdk/core` (ui-sdk.dev, Apache-2.0, beta fixada na versão exata) são a base de comportamento de todos os componentes: nenhum usa Base UI. Cada parte vem de `@ui-sdk/react/<componente>`, ganha os tokens da biblioteca por classes e mantém `data-slot`. Seletores de estado seguem o ui-sdk (`data-open`, `data-closed`, `data-highlighted`, `data-selected`, `data-pressed`, `data-starting-style`/`data-ending-style` para animações). `styles.css` declara `@layer ui-sdk;`. Antes de criar um comportamento novo, procure-o em `node_modules/@ui-sdk/react/docs/llms.txt`. Atualizar o ui-sdk (ainda beta) exige rodar `npm run verify` e revisar o changelog dele.

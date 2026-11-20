@@ -30,7 +30,8 @@ export function useStreamedText(
   }));
   const complete = useEffectEvent(() => onComplete?.());
   // A new text restarts the reveal.
-  const visible = state.text === text ? state.visible : enabled ? 0 : characters.length;
+  const visible =
+    state.text === text ? state.visible : enabled ? 0 : characters.length;
 
   useEffect(() => {
     if (!enabled) return;
@@ -46,7 +47,10 @@ export function useStreamedText(
       MAX_DURATION_MS,
       Math.max(MIN_DURATION_MS, total * MS_PER_CHARACTER),
     );
-    const step = Math.max(1, Math.ceil(total / Math.ceil(duration / INTERVAL_MS)));
+    const step = Math.max(
+      1,
+      Math.ceil(total / Math.ceil(duration / INTERVAL_MS)),
+    );
     let next = Math.min(1, total);
     const interval = setInterval(() => {
       next = Math.min(total, next + step);

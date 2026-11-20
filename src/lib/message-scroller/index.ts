@@ -5,7 +5,7 @@ import {
   MessageScrollerProvider as Provider,
   MessageScroller as Root,
   MessageScrollerViewport as Viewport,
-} from "./components"
+} from "./components";
 
 export const MessageScroller = {
   Provider,
@@ -14,13 +14,13 @@ export const MessageScroller = {
   Content,
   Item,
   Button,
-}
+};
 
 export {
   useMessageScroller,
   useMessageScrollerScrollable,
   useMessageScrollerVisibility,
-} from "./components"
+} from "./components";
 
 export type {
   MessageScrollerDefaultScrollPosition,
@@ -28,4 +28,4 @@ export type {
   MessageScrollerScrollOptions,
   MessageScrollerScrollable,
   MessageScrollerVisibilityState,
-} from "./types"
+} from "./types";

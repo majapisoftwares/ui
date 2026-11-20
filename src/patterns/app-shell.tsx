@@ -147,7 +147,10 @@ function ShellBreadcrumbs({
   onNavigate?: (href: string) => void;
 }) {
   const t = useUiMessages();
-  const parent = items.slice(0, -1).reverse().find((item) => item.href);
+  const parent = items
+    .slice(0, -1)
+    .reverse()
+    .find((item) => item.href);
   const follow = (href: string) => (event: MouseEvent<HTMLElement>) => {
     if (!onNavigate || !plainClick(event)) return;
     event.preventDefault();

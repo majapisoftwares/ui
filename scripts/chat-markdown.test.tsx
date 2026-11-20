@@ -5,7 +5,10 @@ import { act, createElement, type ReactNode } from "react";
 import { linkHost } from "../src/lib/utils";
 
 test("only http(s) links have a host to always open", () => {
-  assert.equal(linkHost("https://GitHub.com/majapisoftwares/ui/pull/1"), "github.com");
+  assert.equal(
+    linkHost("https://GitHub.com/majapisoftwares/ui/pull/1"),
+    "github.com",
+  );
   assert.equal(linkHost("http://localhost:3000/x"), "localhost");
   assert.equal(linkHost("mailto:someone@example.test"), null);
   assert.equal(linkHost("javascript:alert(1)"), null);
@@ -13,7 +16,10 @@ test("only http(s) links have a host to always open", () => {
 });
 
 test("an external link asks first, and a trusted host opens without asking", async () => {
-  const dom = new JSDOM('<html><body><div id="root"></div></body></html>', { url: "https://app.test", pretendToBeVisual: true });
+  const dom = new JSDOM('<html><body><div id="root"></div></body></html>', {
+    url: "https://app.test",
+    pretendToBeVisual: true,
+  });
   // The dialog (Base UI) times its transitions with animation frames.
   const globals: Record<string, unknown> = {
     window: dom.window,
@@ -23,13 +29,38 @@ test("an external link asks first, and a trusted host opens without asking", asy
     Element: dom.window.Element,
     Node: dom.window.Node,
     MutationObserver: dom.window.MutationObserver,
+    NodeFilter: dom.window.NodeFilter,
+    HTMLSlotElement: dom.window.HTMLSlotElement,
+    HTMLIFrameElement: dom.window.HTMLIFrameElement,
+    HTMLFieldSetElement: dom.window.HTMLFieldSetElement,
+    HTMLFormElement: dom.window.HTMLFormElement,
+    HTMLInputElement: dom.window.HTMLInputElement,
+    HTMLButtonElement: dom.window.HTMLButtonElement,
+    HTMLTextAreaElement: dom.window.HTMLTextAreaElement,
+    HTMLAnchorElement: dom.window.HTMLAnchorElement,
+    SVGElement: dom.window.SVGElement,
+    Event: dom.window.Event,
+    KeyboardEvent: dom.window.KeyboardEvent,
+    MouseEvent: dom.window.MouseEvent,
+    FocusEvent: dom.window.FocusEvent,
     getComputedStyle: dom.window.getComputedStyle.bind(dom.window),
-    requestAnimationFrame: (callback: FrameRequestCallback) => setTimeout(() => callback(0), 0),
+    requestAnimationFrame: (callback: FrameRequestCallback) =>
+      setTimeout(() => callback(0), 0),
     cancelAnimationFrame: (id: number) => clearTimeout(id),
     IS_REACT_ACT_ENVIRONMENT: true,
   };
-  const saved = new Map(Object.keys(globals).map((key) => [key, Object.getOwnPropertyDescriptor(globalThis, key)]));
-  for (const [key, value] of Object.entries(globals)) Object.defineProperty(globalThis, key, { configurable: true, value });
+  // jsdom has no Web Animations; ui-sdk overlays wait on getAnimations() before unmounting.
+  (
+    dom.window.Element.prototype as unknown as { getAnimations: () => [] }
+  ).getAnimations = () => [];
+  const saved = new Map(
+    Object.keys(globals).map((key) => [
+      key,
+      Object.getOwnPropertyDescriptor(globalThis, key),
+    ]),
+  );
+  for (const [key, value] of Object.entries(globals))
+    Object.defineProperty(globalThis, key, { configurable: true, value });
   const opened: string[] = [];
   dom.window.open = ((url: string) => {
     opened.push(url);
@@ -37,14 +68,18 @@ test("an external link asks first, and a trusted host opens without asking", asy
   }) as typeof dom.window.open;
   // react-dom checks for a DOM when it loads.
   const { createRoot } = await import("react-dom/client");
-  const { ChatMarkdown, TrustedLinksProvider } = await import("../src/patterns/chat-markdown");
+  const { ChatMarkdown, TrustedLinksProvider } =
+    await import("../src/patterns/chat-markdown");
   const root = createRoot(dom.window.document.getElementById("root")!);
   const url = "https://github.com/majapisoftwares/ui/pull/1";
   const reply = createElement(ChatMarkdown, null, `See [the PR](${url}).`);
   const trusted: string[] = [];
   const render = (node: ReactNode) => act(async () => root.render(node));
   const body = () => dom.window.document.body;
-  const button = (name: string) => [...body().querySelectorAll("button")].find((element) => element.textContent?.trim() === name);
+  const button = (name: string) =>
+    [...body().querySelectorAll("button")].find(
+      (element) => element.textContent?.trim() === name,
+    );
   const click = (element: HTMLButtonElement | undefined) =>
     act(async () => {
       assert.ok(element, "button exists");
@@ -55,17 +90,36 @@ test("an external link asks first, and a trusted host opens without asking", asy
     await render(reply);
     await click(button("the PR"));
     assert.ok(button("Open this link"), "asks first");
-    assert.equal(button("Always open github.com"), undefined, "no list to add to without a provider");
+    assert.equal(
+      button("Always open github.com"),
+      undefined,
+      "no list to add to without a provider",
+    );
     await click(button("Open this link"));
     assert.deepEqual(opened, [url]);
 
-    await render(createElement(TrustedLinksProvider, { hosts: trusted, onTrust: (host: string) => trusted.push(host) }, reply));
+    await render(
+      createElement(
+        TrustedLinksProvider,
+        { hosts: trusted, onTrust: (host: string) => trusted.push(host) },
+        reply,
+      ),
+    );
     await click(button("the PR"));
     await click(button("Always open github.com"));
     assert.deepEqual(trusted, ["github.com"]);
     assert.deepEqual(opened, [url, url]);
 
-    await render(createElement(TrustedLinksProvider, { hosts: ["github.com"], onTrust: () => assert.fail("already trusted") }, reply));
+    await render(
+      createElement(
+        TrustedLinksProvider,
+        {
+          hosts: ["github.com"],
+          onTrust: () => assert.fail("already trusted"),
+        },
+        reply,
+      ),
+    );
     await click(button("the PR"));
     assert.equal(button("Open this link"), undefined, "opens without asking");
     assert.deepEqual(opened, [url, url, url]);

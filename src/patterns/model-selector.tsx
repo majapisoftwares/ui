@@ -77,11 +77,7 @@ export function ModelSelector({
               <DropdownMenuGroup>
                 <DropdownMenuLabel>{provider.name}</DropdownMenuLabel>
                 {provider.models.map((model) => (
-                  <DropdownMenuRadioItem
-                    key={model.id}
-                    value={model.id}
-                    closeOnClick
-                  >
+                  <DropdownMenuRadioItem key={model.id} value={model.id}>
                     {model.name}
                   </DropdownMenuRadioItem>
                 ))}
@@ -137,11 +133,7 @@ export function EffortSelector({
             onValueChange={(next) => onValueChange(String(next))}
           >
             {efforts.map((effort) => (
-              <DropdownMenuRadioItem
-                key={effort.id}
-                value={effort.id}
-                closeOnClick
-              >
+              <DropdownMenuRadioItem key={effort.id} value={effort.id}>
                 {effort.name}
               </DropdownMenuRadioItem>
             ))}

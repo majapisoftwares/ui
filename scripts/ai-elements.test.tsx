@@ -58,7 +58,7 @@ test("a running subagent opens, unless it shows open elsewhere", () => {
   const panel = (props: { defaultOpen?: boolean }) =>
     renderToStaticMarkup(
       createElement(Subagent, { title: "Research", status: "running", task: "Find it", ...props }),
-    ).match(/<div[^>]*data-slot="trace-collapsible-content"[^>]*>/)![0];
+    ).match(/<div[^>]*data-slot="collapsible-panel"[^>]*>/)![0];
   assert.doesNotMatch(panel({}), / hidden=""/);
   assert.match(panel({ defaultOpen: false }), / hidden=""/);
 });

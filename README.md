@@ -1,6 +1,6 @@
 # Majapi UI
 
-Biblioteca pública `@majapisoftwares/ui`, base obrigatória de código, interface e experiência de **todos os apps atuais e futuros da Majapi**, baseada em shadcn/ui (**Base UI / base-luma**), React e Tailwind CSS v4. Repositório: https://github.com/majapisoftwares/ui.
+Biblioteca pública `@majapisoftwares/ui`, base obrigatória de código, interface e experiência de **todos os apps atuais e futuros da Majapi**, baseada em shadcn/ui (**ui-sdk da Vercel / base-luma**), React e Tailwind CSS v4. Repositório: https://github.com/majapisoftwares/ui.
 
 ## Regra central
 
@@ -76,4 +76,4 @@ npm run test:starter
 git diff --check
 ```
 
-Os componentes foram instalados pelo CLI shadcn 4.22.1, preset base-luma e Base UI 1.9.0. A versão 0.2 migra a base anterior Radix; veja [docs/MIGRATION-0.2.md](docs/MIGRATION-0.2.md). Atribuição upstream: [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). O Cloud Manager é o primeiro consumidor real.
+Os componentes foram instalados pelo CLI shadcn 4.22.1, preset base-luma; desde a 7.0 o comportamento vem do ui-sdk (`@ui-sdk/react`) em vez do Base UI: veja [docs/MIGRATION-7.0.md](docs/MIGRATION-7.0.md). Atribuição upstream: [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). O Cloud Manager é o primeiro consumidor real.

@@ -71,8 +71,10 @@ export function Chat({
   );
 }
 
-export interface ChatMessagesProps
-  extends Omit<ComponentProps<typeof MessageScrollerProvider>, "children"> {
+export interface ChatMessagesProps extends Omit<
+  ComponentProps<typeof MessageScrollerProvider>,
+  "children"
+> {
   children: ReactNode;
   /** True while a reply streams; screen readers wait for the finished row. */
   busy?: boolean;
@@ -158,8 +160,10 @@ export function ChatComposer({
   );
 }
 
-export interface ChatMessageProps
-  extends Omit<ComponentProps<typeof Message>, "align"> {
+export interface ChatMessageProps extends Omit<
+  ComponentProps<typeof Message>,
+  "align"
+> {
   from: "user" | "assistant";
   /** Files or images sent with a person's message, above the bubble. */
   attachments?: ReactNode;
@@ -192,7 +196,14 @@ export function ChatMessage({
             <Bubble align="end" variant="muted">
               <BubbleContent className="whitespace-pre-wrap">
                 {quote ? (
-                  <div className={cn("whitespace-normal", children ? "mb-1.5" : undefined)}>{quote}</div>
+                  <div
+                    className={cn(
+                      "whitespace-normal",
+                      children ? "mb-1.5" : undefined,
+                    )}
+                  >
+                    {quote}
+                  </div>
                 ) : null}
                 {children}
               </BubbleContent>
@@ -223,10 +234,7 @@ export function ChatMessage({
 }
 
 /** Row of message actions (copy, feedback, retry) and metadata. */
-export function MessageActions({
-  className,
-  ...props
-}: ComponentProps<"div">) {
+export function MessageActions({ className, ...props }: ComponentProps<"div">) {
   return (
     <div
       data-slot="message-actions"
@@ -236,7 +244,11 @@ export function MessageActions({
   );
 }
 
-export interface MessageActionProps extends ComponentProps<typeof Button> {
+export interface MessageActionProps extends Omit<
+  ComponentProps<typeof Button>,
+  "children"
+> {
+  children?: ReactNode;
   /** Accessible name and tooltip. */
   label: string;
 }
@@ -313,10 +325,18 @@ export interface ChatQuoteProps extends ComponentProps<"div"> {
   onDismiss?: () => void;
 }
 
-function QuoteBody({ author, children }: { author: ReactNode; children: ReactNode }) {
+function QuoteBody({
+  author,
+  children,
+}: {
+  author: ReactNode;
+  children: ReactNode;
+}) {
   return (
     <>
-      <span className="block truncate font-medium text-foreground">{author}</span>
+      <span className="block truncate font-medium text-foreground">
+        {author}
+      </span>
       <span className="line-clamp-2 break-words text-muted-foreground">
         {children}
       </span>
@@ -339,7 +359,9 @@ function QuoteJump({
       type="button"
       variant="ghost"
       className="h-auto min-w-0 flex-1 flex-col items-stretch gap-0 rounded-[inherit] px-2.5 py-1.5 text-left text-xs font-normal whitespace-normal hover:bg-transparent"
-      onClick={() => scrollToMessage(messageId, { align: "center", behavior: "smooth" })}
+      onClick={() =>
+        scrollToMessage(messageId, { align: "center", behavior: "smooth" })
+      }
     >
       <QuoteBody author={author}>{children}</QuoteBody>
     </Button>
