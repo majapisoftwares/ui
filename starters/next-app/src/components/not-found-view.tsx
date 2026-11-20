@@ -19,7 +19,7 @@ export function NotFoundView() {
         <EmptyTitle>{t.notFound}</EmptyTitle>
       </EmptyHeader>
       <EmptyContent>
-        <Button render={<Link href="/" />} nativeButton={false}>
+        <Button render={<Link href="/" />}>
           {t.home}
         </Button>
       </EmptyContent>

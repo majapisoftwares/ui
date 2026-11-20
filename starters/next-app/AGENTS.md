@@ -8,7 +8,7 @@
 
 - A base de UI/UX é a biblioteca pública @majapisoftwares/ui, já instalada neste projeto. Leia https://github.com/majapisoftwares/workbench-ui/blob/main/docs/STANDARDS.md e o AGENTS.md da biblioteca.
 - Não copie primitivas shadcn, não crie components/ui e não use overrides locais. Se faltar capacidade reutilizável, contribua primeiro na biblioteca com documentação/exemplo, publique e atualize o commit fixo deste app.
-- A base de primitivas é Base UI (base-luma). Use render, não asChild; links via Button exigem nativeButton=false.
+- A base de comportamento é o ui-sdk (base-luma). Use render, não asChild; links via Button usam render={<Link/>} sem nativeButton.
 - App Router: páginas/layout são Server Components por padrão. Interação e callbacks de UI ficam em Client Components; não envie funções comuns pela fronteira servidor/cliente.
 - Não coloque secrets ou dados sensíveis no bundle. Os dados e callbacks demonstrativos não são autenticação: implemente sessão, autorização e validação no servidor antes de conectar dados reais.
 - Antes de cada push, rode `npm run verify`: tudo o que o CI checa, na mesma ordem e com o ambiente do CI. Corrija as falhas aqui; não use o CI para descobrir falhas. O CI só roda `npm run verify` (depois de instalar e preparar o ambiente) e roda uma vez por mudança: no pull request, e no push só na main. Checagem nova (testes, e2e) entra em `scripts/verify.mjs`, nunca só no workflow.

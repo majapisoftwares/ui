@@ -10,8 +10,10 @@ import {
   InputGroupInput,
 } from "../components/ui/input-group";
 
-export interface CopyInputProps
-  extends Omit<ComponentProps<typeof InputGroupInput>, "value" | "readOnly"> {
+export interface CopyInputProps extends Omit<
+  ComponentProps<typeof InputGroupInput>,
+  "value" | "readOnly"
+> {
   value: string;
   copyLabel?: string;
   copiedLabel?: string;
@@ -54,7 +56,10 @@ export function CopyInput({
           title={copied ? copiedLabel : copyLabel}
         >
           {copied ? (
-            <CheckIcon className="size-3.5 text-success-foreground" aria-hidden="true" />
+            <CheckIcon
+              className="size-3.5 text-success-foreground"
+              aria-hidden="true"
+            />
           ) : (
             <CopyIcon className="size-3.5" aria-hidden="true" />
           )}

@@ -46,7 +46,7 @@ test("check:standards stops refresh buttons; screens refresh on their own", () =
 test("the shell shows the trail, and on phones one back arrow to the nearest linked parent", async () => {
   const dom = new JSDOM('<html><body><div id="root"></div></body></html>', { url: "https://example.test/sessions/1", pretendToBeVisual: true });
   dom.window.matchMedia = ((query: string) => ({ matches: false, media: query, addEventListener() {}, removeEventListener() {}, addListener() {}, removeListener() {}, onchange: null, dispatchEvent: () => false })) as typeof dom.window.matchMedia;
-  const keys = ["window", "document", "navigator", "HTMLElement", "Element", "Node", "MutationObserver", "getComputedStyle", "localStorage", "matchMedia", "IS_REACT_ACT_ENVIRONMENT"];
+  const keys = ["window", "document", "navigator", "HTMLElement", "Element", "Node", "MutationObserver", "NodeFilter", "HTMLFieldSetElement", "HTMLFormElement", "HTMLInputElement", "HTMLButtonElement", "HTMLTextAreaElement", "HTMLSelectElement", "HTMLAnchorElement", "SVGElement", "Event", "KeyboardEvent", "MouseEvent", "PointerEvent", "FocusEvent", "CustomEvent", "DOMRect", "ResizeObserver", "IntersectionObserver", "CSS", "getComputedStyle", "localStorage", "matchMedia", "IS_REACT_ACT_ENVIRONMENT"];
   const saved = new Map(keys.map((key) => [key, Object.getOwnPropertyDescriptor(globalThis, key)]));
   for (const key of keys) {
     let value = key === "IS_REACT_ACT_ENVIRONMENT" ? true : dom.window[key as keyof typeof dom.window];

@@ -26,10 +26,12 @@ export function FilterTabs({
   return (
     <Tabs
       value={value}
-      onValueChange={onValueChange}
+      onValueChange={(next) => {
+        if (next !== null) onValueChange(next);
+      }}
       className={cn("min-w-0 max-w-full", className)}
     >
-      <TabsList className="max-w-full flex-wrap justify-start gap-y-1 group-data-horizontal/tabs:h-auto">
+      <TabsList className="max-w-full flex-wrap justify-start gap-y-1 group-data-[orientation=horizontal]/tabs:h-auto">
         {options.map((option) => (
           <TabsTrigger
             key={option.value}

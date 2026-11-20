@@ -44,10 +44,8 @@ export function ContextUsage({
     { label: messages.reasoningTokens, value: reasoning },
   ].filter((row) => row.value > 0);
   return (
-    <HoverCard>
+    <HoverCard delay={10} closeDelay={100}>
       <HoverCardTrigger
-        delay={10}
-        closeDelay={100}
         render={
           <Button
             variant="outline"

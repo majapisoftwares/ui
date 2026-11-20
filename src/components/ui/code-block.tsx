@@ -115,8 +115,8 @@ function CodeBlockCopyButton({
           "hover:bg-foreground/5 dark:hover:bg-foreground/10",
           className,
         )}
-        onClick={(event) => {
-          onClick?.(event);
+        onClick={(event, details) => {
+          onClick?.(event, details);
           navigator.clipboard
             .writeText(value)
             .then(() => setCopied(true))

@@ -1651,35 +1651,37 @@ export function DataTable<TData extends RowData>(props: DataTableProps<TData>) {
                   >
                     {/* A table wider than the screen: the message stays in view instead of centring on the full width. */}
                     <div className="sticky left-3 w-[calc(100cqw-1.5rem)] whitespace-normal">
-                    {isFiltered ? (
-                      <Empty>
-                        <EmptyHeader>
-                          <EmptyTitle>
-                            {emptyMessage ?? ui.noResults}
-                          </EmptyTitle>
-                        </EmptyHeader>
-                        <EmptyContent>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={resetFilters}
-                          >
-                            {t.clearFilters}
-                          </Button>
-                        </EmptyContent>
-                      </Empty>
-                    ) : (
-                      (emptyState ?? (
+                      {isFiltered ? (
                         <Empty>
                           <EmptyHeader>
-                            <EmptyMedia variant="icon">
-                              <InboxIcon />
-                            </EmptyMedia>
-                            <EmptyTitle>{emptyMessage ?? ui.noData}</EmptyTitle>
+                            <EmptyTitle>
+                              {emptyMessage ?? ui.noResults}
+                            </EmptyTitle>
                           </EmptyHeader>
+                          <EmptyContent>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={resetFilters}
+                            >
+                              {t.clearFilters}
+                            </Button>
+                          </EmptyContent>
                         </Empty>
-                      ))
-                    )}
+                      ) : (
+                        (emptyState ?? (
+                          <Empty>
+                            <EmptyHeader>
+                              <EmptyMedia variant="icon">
+                                <InboxIcon />
+                              </EmptyMedia>
+                              <EmptyTitle>
+                                {emptyMessage ?? ui.noData}
+                              </EmptyTitle>
+                            </EmptyHeader>
+                          </Empty>
+                        ))
+                      )}
                     </div>
                   </TableCell>
                 </TableRow>
@@ -2340,10 +2342,11 @@ function ColumnSettings<TData extends RowData>({
                   <DropdownMenuCheckboxItem
                     key={column.id}
                     checked={column.getIsVisible()}
+                    value={column.id}
                     onCheckedChange={(value) =>
                       column.toggleVisibility(!!value)
                     }
-                    closeOnClick={false}
+                    closeOnSelect={false}
                   >
                     {getColumnLabel(column)}
                   </DropdownMenuCheckboxItem>

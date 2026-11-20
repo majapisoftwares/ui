@@ -29,12 +29,8 @@ export function InlineCitation({
   const messages = useUiMessages();
   const host = hostnameOf(url);
   return (
-    <HoverCard>
-      <HoverCardTrigger
-        delay={10}
-        closeDelay={100}
-        render={<Button variant="secondary" size="xs" />}
-      >
+    <HoverCard delay={10} closeDelay={100}>
+      <HoverCardTrigger render={<Button variant="secondary" size="xs" />}>
         {host}
       </HoverCardTrigger>
       <HoverCardContent className="flex w-64 flex-col gap-1">

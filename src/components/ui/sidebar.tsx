@@ -1,8 +1,11 @@
 "use client";
 
 import * as React from "react";
-import { mergeProps } from "@base-ui/react/merge-props";
-import { useRender } from "@base-ui/react/use-render";
+import {
+  mergeProps,
+  renderElement,
+  type RenderProp,
+} from "@ui-sdk/react/primitive";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "cn";
 
@@ -324,7 +327,12 @@ function Sidebar({
 
   if (isMobile) {
     return (
-      <Sheet open={openMobile} onOpenChange={setOpenMobile} {...props}>
+      <Sheet
+        open={openMobile}
+        onOpenChange={setOpenMobile}
+        side={side}
+        {...props}
+      >
         <SheetContent
           dir={dir}
           data-sidebar="sidebar"
@@ -336,7 +344,6 @@ function Sidebar({
               "--sidebar-width": SIDEBAR_WIDTH_MOBILE,
             } as React.CSSProperties
           }
-          side={side}
         >
           <SheetHeader className="sr-only">
             <SheetTitle>{messages.sidebar}</SheetTitle>
@@ -422,6 +429,7 @@ function SidebarModeControl({
   return (
     <ContextMenu>
       <Tooltip
+        delay={600}
         open={tooltipOpen}
         onOpenChange={(open) => setTooltipOpen(open && !suppressed.current)}
       >
@@ -429,7 +437,6 @@ function SidebarModeControl({
           render={
             <TooltipTrigger
               render={children}
-              delay={600}
               onPointerDown={() => {
                 suppressed.current = true;
                 setTooltipOpen(false);
@@ -483,8 +490,8 @@ function SidebarTrigger({
         size="icon-sm"
         className={cn(className)}
         aria-label={messages.toggleSidebar}
-        onClick={(event) => {
-          onClick?.(event);
+        onClick={(event, details) => {
+          onClick?.(event, details);
           toggleSidebar();
         }}
         {...props}
@@ -519,8 +526,8 @@ function SidebarCollapse({
         // Stable label/icons (CSS-switched) so the pre-paint restored state
         // hydrates without mismatches.
         aria-label={messages.toggleSidebar}
-        onClick={(event) => {
-          onClick?.(event);
+        onClick={(event, details) => {
+          onClick?.(event, details);
           toggleCompact();
         }}
         {...props}
@@ -715,10 +722,10 @@ function SidebarGroupLabel({
   className,
   render,
   ...props
-}: useRender.ComponentProps<"div"> & React.ComponentProps<"div">) {
-  return useRender({
-    defaultTagName: "div",
-    props: mergeProps<"div">(
+}: React.ComponentProps<"div"> & { render?: RenderProp }) {
+  return renderElement(
+    "div",
+    mergeProps(
       {
         className: cn(
           "flex h-8 shrink-0 items-center rounded-xl px-3 text-xs font-medium text-sidebar-foreground/70 ring-sidebar-ring outline-hidden transition-[margin,opacity] duration-200 ease-linear group-data-[collapsible=icon]:-mt-8 group-data-[collapsible=icon]:opacity-0 focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0",
@@ -726,23 +733,20 @@ function SidebarGroupLabel({
         ),
       },
       props,
+      { "data-slot": "sidebar-group-label", "data-sidebar": "group-label" },
     ),
     render,
-    state: {
-      slot: "sidebar-group-label",
-      sidebar: "group-label",
-    },
-  });
+  );
 }
 
 function SidebarGroupAction({
   className,
   render,
   ...props
-}: useRender.ComponentProps<"button"> & React.ComponentProps<"button">) {
-  return useRender({
-    defaultTagName: "button",
-    props: mergeProps<"button">(
+}: React.ComponentProps<"button"> & { render?: RenderProp }) {
+  return renderElement(
+    "button",
+    mergeProps(
       {
         className: cn(
           "absolute top-3.5 right-3 flex aspect-square w-5 items-center justify-center rounded-xl p-0 text-sidebar-foreground ring-sidebar-ring outline-hidden transition-transform group-data-[collapsible=icon]:hidden after:absolute after:-inset-2 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 md:after:hidden [&>svg]:size-4 [&>svg]:shrink-0",
@@ -750,13 +754,10 @@ function SidebarGroupAction({
         ),
       },
       props,
+      { "data-slot": "sidebar-group-action", "data-sidebar": "group-action" },
     ),
     render,
-    state: {
-      slot: "sidebar-group-action",
-      sidebar: "group-action",
-    },
-  });
+  );
 }
 
 function SidebarGroupContent({
@@ -827,28 +828,27 @@ function SidebarMenuButton({
   tooltip,
   className,
   ...props
-}: useRender.ComponentProps<"button"> &
-  React.ComponentProps<"button"> & {
-    isActive?: boolean;
-    tooltip?: string | React.ComponentProps<typeof TooltipContent>;
-  } & VariantProps<typeof sidebarMenuButtonVariants>) {
+}: React.ComponentProps<"button"> & { render?: RenderProp } & {
+  isActive?: boolean;
+  tooltip?: string | React.ComponentProps<typeof TooltipContent>;
+} & VariantProps<typeof sidebarMenuButtonVariants>) {
   const { isMobile, state } = useSidebar();
-  const comp = useRender({
-    defaultTagName: "button",
-    props: mergeProps<"button">(
+  const comp = renderElement(
+    "button",
+    mergeProps(
       {
         className: cn(sidebarMenuButtonVariants({ variant, size }), className),
       },
       props,
+      {
+        "data-slot": "sidebar-menu-button",
+        "data-sidebar": "menu-button",
+        "data-size": size,
+        "data-active": isActive || undefined,
+      },
     ),
-    render: !tooltip ? render : <TooltipTrigger render={render} />,
-    state: {
-      slot: "sidebar-menu-button",
-      sidebar: "menu-button",
-      size,
-      active: isActive,
-    },
-  });
+    !tooltip ? render : <TooltipTrigger render={render} />,
+  );
 
   if (!tooltip) {
     return comp;
@@ -878,13 +878,12 @@ function SidebarMenuAction({
   render,
   showOnHover = false,
   ...props
-}: useRender.ComponentProps<"button"> &
-  React.ComponentProps<"button"> & {
-    showOnHover?: boolean;
-  }) {
-  return useRender({
-    defaultTagName: "button",
-    props: mergeProps<"button">(
+}: React.ComponentProps<"button"> & { render?: RenderProp } & {
+  showOnHover?: boolean;
+}) {
+  return renderElement(
+    "button",
+    mergeProps(
       {
         className: cn(
           "absolute top-1.5 right-1 flex aspect-square w-5 items-center justify-center rounded-xl p-0 text-sidebar-foreground ring-sidebar-ring outline-hidden transition-transform group-data-[collapsible=icon]:hidden peer-hover/menu-button:text-sidebar-accent-foreground peer-data-[size=default]/menu-button:top-2 peer-data-[size=lg]/menu-button:top-2.5 peer-data-[size=sm]/menu-button:top-1 after:absolute after:-inset-2 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 md:after:hidden [&>svg]:size-4 [&>svg]:shrink-0",
@@ -894,13 +893,10 @@ function SidebarMenuAction({
         ),
       },
       props,
+      { "data-slot": "sidebar-menu-action", "data-sidebar": "menu-action" },
     ),
     render,
-    state: {
-      slot: "sidebar-menu-action",
-      sidebar: "menu-action",
-    },
-  });
+  );
 }
 
 function SidebarMenuBadge({
@@ -994,14 +990,13 @@ function SidebarMenuSubButton({
   isActive = false,
   className,
   ...props
-}: useRender.ComponentProps<"a"> &
-  React.ComponentProps<"a"> & {
-    size?: "sm" | "md";
-    isActive?: boolean;
-  }) {
-  return useRender({
-    defaultTagName: "a",
-    props: mergeProps<"a">(
+}: React.ComponentProps<"a"> & { render?: RenderProp } & {
+  size?: "sm" | "md";
+  isActive?: boolean;
+}) {
+  return renderElement(
+    "a",
+    mergeProps(
       {
         className: cn(
           "flex h-11 md:h-7 min-w-0 -translate-x-px items-center gap-2 overflow-hidden rounded-xl px-3 text-sidebar-foreground ring-sidebar-ring outline-hidden group-data-[collapsible=icon]:hidden hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[size=md]:text-sm data-[size=sm]:text-xs data-active:bg-sidebar-accent data-active:text-sidebar-accent-foreground [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0 [&>svg]:text-sidebar-accent-foreground",
@@ -1009,15 +1004,15 @@ function SidebarMenuSubButton({
         ),
       },
       props,
+      {
+        "data-slot": "sidebar-menu-sub-button",
+        "data-sidebar": "menu-sub-button",
+        "data-size": size,
+        "data-active": isActive || undefined,
+      },
     ),
     render,
-    state: {
-      slot: "sidebar-menu-sub-button",
-      sidebar: "menu-sub-button",
-      size,
-      active: isActive,
-    },
-  });
+  );
 }
 
 export {

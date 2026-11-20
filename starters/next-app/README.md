@@ -1,6 +1,6 @@
 # Workbench Next.js starter
 
-Template independente de aplicativo com **Next.js 16.4.3**, React 19.3.1, TypeScript strict, App Router, Tailwind v4 e **@majapisoftwares/ui 0.2 / shadcn Base UI** já configurados. Gerado inicialmente por create-next-app 16.4.3 e adaptado para consumir a biblioteca compartilhada sem cópias de componentes.
+Template independente de aplicativo com **Next.js 16.4.3**, React 19.3.1, TypeScript strict, App Router, Tailwind v4 e **@majapisoftwares/ui 0.2 / ui-sdk** já configurados. Gerado inicialmente por create-next-app 16.4.3 e adaptado para consumir a biblioteca compartilhada sem cópias de componentes.
 
 ## Executar
 
@@ -29,7 +29,7 @@ Os formulários demonstram a UI e não enviam nem persistem credenciais. Dashboa
 
 Antes de customizar um componente, leia https://github.com/majapisoftwares/workbench-ui/blob/main/AGENTS.md. Se faltar uma capacidade reutilizável, contribua à biblioteca com API genérica, exemplo e documentação; publique e atualize o commit fixo em package.json/lockfile. Não copie shadcn, não crie components/ui local e não adicione CSS overrides nos apps.
 
-A base é Base UI: composição usa `render`, não `asChild`. Para links com Button: `render={<Link href="..." />}` e `nativeButton={false}`. Veja exemplos no starter.
+A base é o ui-sdk: composição usa `render`, não `asChild`. Para links com Button: `render={<Link href="..." />}` (sem nativeButton). Veja exemplos no starter.
 
 ## Verificar
 

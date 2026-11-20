@@ -13,8 +13,12 @@ const backSign =
 export function backLink(text) {
   for (const match of text.matchAll(/<(Button|Link|a|BreadcrumbLink)\b/g)) {
     const close = text.indexOf(`</${match[1]}>`, match.index);
-    const block = text.slice(match.index, Math.min(close === -1 ? Infinity : close, match.index + 600));
-    if (/\bhref=|render=\{\s*<(?:Link|a)\b/.test(block) && backSign.test(block)) return true;
+    const block = text.slice(
+      match.index,
+      Math.min(close === -1 ? Infinity : close, match.index + 600),
+    );
+    if (/\bhref=|render=\{\s*<(?:Link|a)\b/.test(block) && backSign.test(block))
+      return true;
   }
   return false;
 }
@@ -23,18 +27,28 @@ export function backLink(text) {
 export function navigationViolations(text) {
   const found = [];
   if (/from\s+["']@majapisoftwares\/ui\/components\/breadcrumb["']/.test(text))
-    found.push("pass breadcrumbs to AppShell; the shell draws the page's navigation");
+    found.push(
+      "pass breadcrumbs to AppShell; the shell draws the page's navigation",
+    );
   // Pages outside the shell (AuthLayout) have no breadcrumb; their one way back is theirs to show.
   if (/<AuthLayout\b/.test(text)) return found;
   if (backLink(text) || /\b(?:router|history)\.back\(/.test(text))
-    found.push("no back buttons in pages; the AppShell breadcrumb links up (with a back arrow on phones)");
+    found.push(
+      "no back buttons in pages; the AppShell breadcrumb links up (with a back arrow on phones)",
+    );
   if (/<h1\b(?![^>]*\bsr-only\b)/.test(text))
-    found.push("the breadcrumb names the page; keep its h1 for screen readers (sr-only)");
+    found.push(
+      "the breadcrumb names the page; keep its h1 for screen readers (sr-only)",
+    );
   if (refreshButton(text))
-    found.push("no refresh buttons; keep the screen current with useLiveRefresh (@majapisoftwares/ui/hooks/use-live-refresh)");
+    found.push(
+      "no refresh buttons; keep the screen current with useLiveRefresh (@majapisoftwares/ui/hooks/use-live-refresh)",
+    );
   // `() => void load()` drops the promise: the hook can't hold the next ticks while it runs.
   if (/\buseLiveRefresh\(\s*\(\)\s*=>\s*void\b/.test(text))
-    found.push("useLiveRefresh: return the load's promise (useLiveRefresh(load) or () => load()), so a slow load isn't requested again while it runs");
+    found.push(
+      "useLiveRefresh: return the load's promise (useLiveRefresh(load) or () => load()), so a slow load isn't requested again while it runs",
+    );
   return found;
 }
 
@@ -45,9 +59,16 @@ const rotateIcon = /\b(?:Refresh|Rotate)(?:Cw|Ccw)Icon\b/;
 export function refreshButton(text) {
   for (const match of text.matchAll(/<Button\b/g)) {
     const close = text.indexOf("</Button>", match.index);
-    const block = text.slice(match.index, Math.min(close === -1 ? Infinity : close, match.index + 600));
+    const block = text.slice(
+      match.index,
+      Math.min(close === -1 ? Infinity : close, match.index + 600),
+    );
     if (/\b(?:t|ui|messages)\.retry\b/.test(block)) continue;
-    if (/\bt\.refresh\b/.test(block) || (/\bsize="icon[^"]*"/.test(block) && rotateIcon.test(block))) return true;
+    if (
+      /\bt\.refresh\b/.test(block) ||
+      (/\bsize="icon[^"]*"/.test(block) && rotateIcon.test(block))
+    )
+      return true;
   }
   return false;
 }
@@ -64,12 +85,16 @@ async function visit(path) {
     const text = await readFile(file, "utf8"),
       name = relative(root, file).replaceAll("\\", "/");
     if (/from\s+["'](?:radix-ui|@radix-ui\/)/.test(text))
-      violations.push(`${name}: the Workbench foundation uses Base UI`);
+      violations.push(`${name}: the foundation uses ui-sdk`);
+    if (/from\s+["']@base-ui\//.test(text))
+      violations.push(
+        `${name}: Base UI is gone; use the ui-sdk based components`,
+      );
     if (!consumer && name.startsWith("components/ui/")) continue;
     if (consumer && /(?:^|\/)components\/ui\//.test(name))
       violations.push(`${name}: local UI primitive copies are forbidden`);
     if (/components\/native-select|<NativeSelect\b/.test(text))
-      violations.push(`${name}: use Select (Base UI), not a native select`);
+      violations.push(`${name}: use Select (ui-sdk), not a native select`);
     if (/<(?:button|input|select|table|dialog)(?:\s|>)/.test(text))
       violations.push(`${name}: use the shared UI primitive`);
     if (
@@ -78,17 +103,28 @@ async function visit(path) {
       )
     )
       violations.push(`${name}: use semantic tokens instead of local colors`);
-    if (consumer && /from\s+["'](?:sonner|@majapisoftwares\/ui\/components\/(?:sonner|snackbar))["']/.test(text))
-      violations.push(`${name}: notify with toast from @majapisoftwares/ui/components/toast`);
+    if (
+      consumer &&
+      /from\s+["'](?:sonner|@majapisoftwares\/ui\/components\/(?:sonner|snackbar))["']/.test(
+        text,
+      )
+    )
+      violations.push(
+        `${name}: notify with toast from @majapisoftwares/ui/components/toast`,
+      );
     if (consumer)
-      for (const rule of navigationViolations(text)) violations.push(`${name}: ${rule}`);
+      for (const rule of navigationViolations(text))
+        violations.push(`${name}: ${rule}`);
     if (!consumer && /from ["']@\//.test(text))
       violations.push(`${name}: library internals must use portable imports`);
   }
 }
 
 // Imported by its test: only a direct run checks a tree.
-if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
+if (
+  process.argv[1] &&
+  import.meta.url === pathToFileURL(resolve(process.argv[1])).href
+) {
   await visit(root);
   if (violations.length) {
     console.error(violations.join("\n"));
