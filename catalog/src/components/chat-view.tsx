@@ -657,6 +657,8 @@ export function ChatView({ empty = false }: { empty?: boolean }) {
             onSubmit={send}
             quote={quoteOf(replyTo ?? undefined, { inComposer: true })}
             attachments
+            // One row on desktop: + | field | send.
+            inline
             autoFocus
           />
         </ChatComposer>

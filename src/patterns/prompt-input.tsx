@@ -88,6 +88,13 @@ export interface PromptInputProps {
    * field. The field takes focus when a quote appears or its `key` changes.
    */
   quote?: ReactNode;
+  /**
+   * From the md breakpoint, one row: attach | field | actions | send (the
+   * field grows with its text; the buttons stay at its last line). On a phone
+   * the stacked layout stays. Quote and attachments sit above. An action
+   * marked `data-fill` (a recording wave) takes the field's place while shown.
+   */
+  inline?: boolean;
   className?: string;
   "aria-label"?: string;
 }
@@ -159,6 +166,7 @@ export function PromptInput({
   actions,
   hideSubmit = false,
   quote,
+  inline = false,
   className,
   "aria-label": ariaLabel,
 }: PromptInputProps) {
@@ -307,15 +315,20 @@ export function PromptInput({
       <InputGroup
         data-disabled={disabled || undefined}
         data-dragging={dragging || undefined}
-        className="data-dragging:border-ring data-dragging:ring-3 data-dragging:ring-ring/30"
+        className={cn(
+          "data-dragging:border-ring data-dragging:ring-3 data-dragging:ring-ring/30",
+          // One row from md: the block-end addon's children join the row; quote and files keep a line of their own on top.
+          inline &&
+            "md:flex-row md:flex-wrap md:items-end md:has-[>[data-align=block-end]]:flex-row md:has-[>[data-align=block-start]]:flex-row md:has-[[data-fill]]:[&>textarea]:hidden",
+        )}
       >
         {quote ? (
-          <InputGroupAddon align="block-start" className="cursor-default pb-0">
+          <InputGroupAddon align="block-start" className={cn("cursor-default pb-0", inline && "md:basis-full")}>
             <div className="w-full min-w-0">{quote}</div>
           </InputGroupAddon>
         ) : null}
         {files.length > 0 ? (
-          <InputGroupAddon align="block-start" className="cursor-default">
+          <InputGroupAddon align="block-start" className={cn("cursor-default", inline && "md:basis-full")}>
             <AttachmentGroup
               aria-label={messages.attachments}
               className="w-full"
@@ -359,11 +372,11 @@ export function PromptInput({
           disabled={disabled}
           autoFocus={autoFocus}
           rows={1}
-          className="max-h-48 min-h-12 px-4 pt-3.5"
+          className={cn("max-h-48 min-h-12 px-4 pt-3.5", inline && "md:order-2 md:min-h-11 md:min-w-0 md:flex-1 md:basis-0 md:px-2 md:py-3")}
         />
         <InputGroupAddon
           align="block-end"
-          className="cursor-text"
+          className={cn("cursor-text", inline && "md:contents")}
           onClick={(event) => {
             if (!(event.target as HTMLElement).closest("button"))
               textareaRef.current?.focus();
@@ -386,7 +399,7 @@ export function PromptInput({
               <InputGroupButton
                 size="icon-sm"
                 variant="outline"
-                className="size-11 rounded-full md:size-8"
+                className={cn("size-11 rounded-full md:size-8", inline && "md:order-1 md:mb-1.5 md:ml-1.5 md:shrink-0")}
                 aria-label={messages.attachFiles}
                 disabled={disabled}
                 onMouseDown={keepFocus}
@@ -396,7 +409,13 @@ export function PromptInput({
               </InputGroupButton>
             </>
           ) : null}
-          <div className="ml-auto flex min-w-0 flex-1 items-center justify-end gap-2">
+          <div
+            className={cn(
+              "ml-auto flex min-w-0 flex-1 items-center justify-end gap-2",
+              // In one row the actions take only their room, unless one fills (a recording wave, in the field's place).
+              inline && "md:order-3 md:mb-1.5 md:mr-1.5 md:ml-0 md:flex-none md:has-[[data-fill]]:flex-1",
+            )}
+          >
             {actions}
             {hideSubmit ? null : (
               <InputGroupButton
