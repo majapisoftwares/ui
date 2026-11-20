@@ -11,7 +11,13 @@ import {
   type KeyboardEvent,
   type ReactNode,
 } from "react";
-import { ArrowUpIcon, FileIcon, PlusIcon, SquareIcon, XIcon } from "lucide-react";
+import {
+  ArrowUpIcon,
+  FileIcon,
+  PlusIcon,
+  SquareIcon,
+  XIcon,
+} from "lucide-react";
 import { cn } from "../lib/utils";
 import { useUiMessages } from "../lib/i18n";
 import {
@@ -66,13 +72,29 @@ export interface PromptInputProps {
   /** File input accept list, e.g. "image/*,.pdf". */
   accept?: string;
   maxFiles?: number;
-  /** Extra controls in the bottom bar, before the send button (e.g. a model menu). */
+  /**
+   * Extra controls in the bottom bar, before the send button (e.g. a model
+   * menu). The bar spans from the attach button to the send button, so a
+   * flex-1 control (a recording wave) fills the free width; others stay at the end.
+   */
   actions?: ReactNode;
+  /**
+   * Hides the send/stop button and keeps Enter from sending, e.g. while a
+   * voice recording in `actions` is the one control to press.
+   */
+  hideSubmit?: boolean;
   /**
    * The message being replied to (a `ChatQuote` with `onDismiss`), above the
    * field. The field takes focus when a quote appears or its `key` changes.
    */
   quote?: ReactNode;
+  /**
+   * From the md breakpoint, one row: attach | field | actions | send (the
+   * field grows with its text; the buttons stay at its last line). On a phone
+   * the stacked layout stays. Quote and attachments sit above. An action
+   * marked `data-fill` (a recording wave) takes the field's place while shown.
+   */
+  inline?: boolean;
   className?: string;
   "aria-label"?: string;
 }
@@ -142,7 +164,9 @@ export function PromptInput({
   accept,
   maxFiles,
   actions,
+  hideSubmit = false,
   quote,
+  inline = false,
   className,
   "aria-label": ariaLabel,
 }: PromptInputProps) {
@@ -156,14 +180,19 @@ export function PromptInput({
   const text = value ?? innerValue;
   const busy = status === "submitted" || status === "streaming";
   const hasContent = text.trim().length > 0 || files.length > 0;
-  const canSend = !disabled && (!busy || sendWhileBusy) && hasContent;
+  const canSend =
+    !disabled && !hideSubmit && (!busy || sendWhileBusy) && hasContent;
 
   useEffect(() => {
     filesRef.current = files;
   }, [files]);
 
   // Starting a reply (or replying to another message) puts the cursor in the field.
-  const quoteKey = quote ? (isValidElement(quote) && quote.key !== null ? quote.key : true) : null;
+  const quoteKey = quote
+    ? isValidElement(quote) && quote.key !== null
+      ? quote.key
+      : true
+    : null;
   useEffect(() => {
     if (quoteKey !== null) textareaRef.current?.focus();
   }, [quoteKey]);
@@ -187,8 +216,12 @@ export function PromptInput({
     const accepted = incoming.filter((file) => matchesAccept(file, accept));
     if (accepted.length === 0) return;
     setFiles((current) => {
-      const room = maxFiles === undefined ? accepted.length : maxFiles - current.length;
-      return [...current, ...accepted.slice(0, Math.max(0, room)).map(toPendingFile)];
+      const room =
+        maxFiles === undefined ? accepted.length : maxFiles - current.length;
+      return [
+        ...current,
+        ...accepted.slice(0, Math.max(0, room)).map(toPendingFile),
+      ];
     });
   };
 
@@ -229,7 +262,11 @@ export function PromptInput({
   };
 
   const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
-    if (event.key !== "Enter" || event.shiftKey || event.nativeEvent.isComposing)
+    if (
+      event.key !== "Enter" ||
+      event.shiftKey ||
+      event.nativeEvent.isComposing
+    )
       return;
     event.preventDefault();
     if (canSend) event.currentTarget.form?.requestSubmit();
@@ -278,16 +315,24 @@ export function PromptInput({
       <InputGroup
         data-disabled={disabled || undefined}
         data-dragging={dragging || undefined}
-        className="data-dragging:border-ring data-dragging:ring-3 data-dragging:ring-ring/30"
+        className={cn(
+          "data-dragging:border-ring data-dragging:ring-3 data-dragging:ring-ring/30",
+          // One row from md: the block-end addon's children join the row; quote and files keep a line of their own on top.
+          inline &&
+            "md:flex-row md:flex-wrap md:items-end md:has-[>[data-align=block-end]]:flex-row md:has-[>[data-align=block-start]]:flex-row md:has-[[data-fill]]:[&>textarea]:hidden",
+        )}
       >
         {quote ? (
-          <InputGroupAddon align="block-start" className="cursor-default pb-0">
+          <InputGroupAddon align="block-start" className={cn("cursor-default pb-0", inline && "md:basis-full")}>
             <div className="w-full min-w-0">{quote}</div>
           </InputGroupAddon>
         ) : null}
         {files.length > 0 ? (
-          <InputGroupAddon align="block-start" className="cursor-default">
-            <AttachmentGroup aria-label={messages.attachments} className="w-full">
+          <InputGroupAddon align="block-start" className={cn("cursor-default", inline && "md:basis-full")}>
+            <AttachmentGroup
+              aria-label={messages.attachments}
+              className="w-full"
+            >
               {files.map((item) => (
                 <Attachment key={item.id} size="sm">
                   <AttachmentMedia variant={item.previewUrl ? "image" : "icon"}>
@@ -327,11 +372,11 @@ export function PromptInput({
           disabled={disabled}
           autoFocus={autoFocus}
           rows={1}
-          className="max-h-48 min-h-12 px-4 pt-3.5"
+          className={cn("max-h-48 min-h-12 px-4 pt-3.5", inline && "md:order-2 md:min-h-11 md:min-w-0 md:flex-1 md:basis-0 md:px-2 md:py-3")}
         />
         <InputGroupAddon
           align="block-end"
-          className="cursor-text"
+          className={cn("cursor-text", inline && "md:contents")}
           onClick={(event) => {
             if (!(event.target as HTMLElement).closest("button"))
               textareaRef.current?.focus();
@@ -354,7 +399,7 @@ export function PromptInput({
               <InputGroupButton
                 size="icon-sm"
                 variant="outline"
-                className="size-11 rounded-full md:size-8"
+                className={cn("size-11 rounded-full md:size-8", inline && "md:order-1 md:mb-1.5 md:ml-1.5 md:shrink-0")}
                 aria-label={messages.attachFiles}
                 disabled={disabled}
                 onMouseDown={keepFocus}
@@ -364,26 +409,34 @@ export function PromptInput({
               </InputGroupButton>
             </>
           ) : null}
-          <div className="ml-auto flex min-w-0 items-center gap-2">
+          <div
+            className={cn(
+              "ml-auto flex min-w-0 flex-1 items-center justify-end gap-2",
+              // In one row the actions take only their room, unless one fills (a recording wave, in the field's place).
+              inline && "md:order-3 md:mb-1.5 md:mr-1.5 md:ml-0 md:flex-none md:has-[[data-fill]]:flex-1",
+            )}
+          >
             {actions}
-            <InputGroupButton
-              type={stopping ? "button" : "submit"}
-              size="icon-sm"
-              variant="default"
-              className="size-11 rounded-full md:size-8"
-              aria-label={sendLabel}
-              disabled={stopping ? false : !canSend}
-              onMouseDown={keepFocus}
-              onClick={stopping ? onStop : undefined}
-            >
-              {stopping ? (
-                <SquareIcon className="fill-current" />
-              ) : waiting ? (
-                <Spinner />
-              ) : (
-                <ArrowUpIcon />
-              )}
-            </InputGroupButton>
+            {hideSubmit ? null : (
+              <InputGroupButton
+                type={stopping ? "button" : "submit"}
+                size="icon-sm"
+                variant="default"
+                className="size-11 rounded-full md:size-8"
+                aria-label={sendLabel}
+                disabled={stopping ? false : !canSend}
+                onMouseDown={keepFocus}
+                onClick={stopping ? onStop : undefined}
+              >
+                {stopping ? (
+                  <SquareIcon className="fill-current" />
+                ) : waiting ? (
+                  <Spinner />
+                ) : (
+                  <ArrowUpIcon />
+                )}
+              </InputGroupButton>
+            )}
           </div>
         </InputGroupAddon>
       </InputGroup>

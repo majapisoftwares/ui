@@ -55,3 +55,38 @@ for (const stored of ["pt-BR", "en"]) {
     }
   });
 }
+
+test("system theme follows prefers-color-scheme live and clears the saved choice", async () => {
+  const { usePreferences } = await import("../src/patterns/preferences");
+  const box = {} as { prefs: ReturnType<typeof usePreferences> };
+  function Probe({ sink }: { sink: typeof box }) { Object.assign(sink, { prefs: usePreferences() }); return null; }
+  const dom = new JSDOM(`<html><body><div id="root"></div></body></html>`, { url: "https://example.test", pretendToBeVisual: true });
+  let dark = true;
+  const listeners = new Set<() => void>();
+  const mql = { get matches() { return dark; }, addEventListener: (_: string, l: () => void) => listeners.add(l), removeEventListener: (_: string, l: () => void) => listeners.delete(l) };
+  const matchMedia = () => mql;
+  const globals: Record<string, unknown> = { window: dom.window, document: dom.window.document, navigator: dom.window.navigator, HTMLElement: dom.window.HTMLElement, MutationObserver: dom.window.MutationObserver, IS_REACT_ACT_ENVIRONMENT: true, localStorage: dom.window.localStorage, matchMedia };
+  for (const [k, v] of Object.entries(globals)) Object.defineProperty(globalThis, k, { configurable: true, value: v });
+  const { createRoot } = await import("react-dom/client");
+  const root = createRoot(dom.window.document.getElementById("root")!);
+  try {
+    const html = dom.window.document.documentElement;
+    await act(async () => root.render(createElement(Preferences, null, createElement(Probe, { sink: box }))));
+    assert.equal(box.prefs.themePreference, "system");
+    assert.ok(html.classList.contains("dark"));
+    await act(async () => box.prefs.setTheme("light"));
+    assert.equal(dom.window.localStorage.getItem("theme"), "light");
+    assert.ok(!html.classList.contains("dark"));
+    await act(async () => box.prefs.setTheme("system"));
+    assert.equal(dom.window.localStorage.getItem("theme"), null);
+    assert.ok(html.classList.contains("dark"));
+    dark = false;
+    await act(async () => listeners.forEach(l => l()));
+    assert.ok(!html.classList.contains("dark"));
+    assert.equal(box.prefs.theme, "light");
+  } finally {
+    await act(async () => root.unmount());
+    dom.window.close();
+    for (const k of Object.keys(globals)) Reflect.deleteProperty(globalThis, k);
+  }
+});
