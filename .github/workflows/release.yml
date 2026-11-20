@@ -45,9 +45,10 @@ jobs:
         id: plan
         run: |
           bump="${{ inputs.bump }}"
+          manual="$bump"
           if [ -z "$bump" ] || [ "$bump" = auto ]; then bump=$(node scripts/release-plan.mjs); fi
           echo "Bump: $bump"
-          if [ "$bump" = major ]; then
+          if [ "$bump" = major ] && [ "$manual" != major ]; then
             echo "::error::Breaking change detected. Majors need the owner's approval: run this workflow manually with bump=major."
             exit 1
           fi
