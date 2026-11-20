@@ -1,0 +1,11 @@
+{
+  "static": {
+    "buildCommand": "npm run build",
+    "buildDir": "catalog/out",
+    "bucket": "majapi-ui-catalog-bucket-e4e2yfqxgt5r",
+    "distributionId": "E37LTQOS5RFFKH",
+    "region": "us-east-1",
+    "url": "https://ui.majapi.com"
+  },
+  "ci": { "workbench": true, "checks": ["verify"] }
+}
