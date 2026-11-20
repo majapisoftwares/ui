@@ -1291,6 +1291,7 @@ export function DataTable<TData extends RowData>(props: DataTableProps<TData>) {
     // Concurrent/Suspense renders may not have committed yet, so reset in an effect.
     autoResetPageIndex: false,
     columnResizeMode: "onChange",
+    defaultColumn: { minSize: 48 },
     columns,
     data,
     enableColumnResizing: true,
@@ -1562,6 +1563,7 @@ export function DataTable<TData extends RowData>(props: DataTableProps<TData>) {
               // Bottom-only fade: a top fade would dissolve the sticky header.
               fillHeight && "min-h-0 flex-1 overflow-auto scroll-fade-b",
             )}
+            className="table-fixed"
             style={{ minWidth: "100%", width: table.getTotalSize() }}
           >
             {/* Solid background: rows scroll underneath the sticky header. */}
@@ -1627,7 +1629,7 @@ export function DataTable<TData extends RowData>(props: DataTableProps<TData>) {
                       <TableCell
                         key={cell.id}
                         className={cn(
-                          "whitespace-nowrap",
+                          "align-top break-words whitespace-normal",
                           getColumnAlignClass(cell.column),
                           getColumnMeta(cell.column)?.cellClassName,
                         )}
