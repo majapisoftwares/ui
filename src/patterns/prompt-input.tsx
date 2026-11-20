@@ -72,7 +72,11 @@ export interface PromptInputProps {
   /** File input accept list, e.g. "image/*,.pdf". */
   accept?: string;
   maxFiles?: number;
-  /** Extra controls in the bottom bar, before the send button (e.g. a model menu). */
+  /**
+   * Extra controls in the bottom bar, before the send button (e.g. a model
+   * menu). The bar spans from the attach button to the send button, so a
+   * flex-1 control (a recording wave) fills the free width; others stay at the end.
+   */
   actions?: ReactNode;
   /**
    * Hides the send/stop button and keeps Enter from sending, e.g. while a
@@ -392,7 +396,7 @@ export function PromptInput({
               </InputGroupButton>
             </>
           ) : null}
-          <div className="ml-auto flex min-w-0 items-center gap-2">
+          <div className="ml-auto flex min-w-0 flex-1 items-center justify-end gap-2">
             {actions}
             {hideSubmit ? null : (
               <InputGroupButton
