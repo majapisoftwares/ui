@@ -420,7 +420,9 @@ function SidebarModeControl({
 }) {
   const { mode, setMode, isMobile } = useSidebar();
   const messages = useUiMessages();
-  const shortcut = `${isMac() ? "⌘" : "Ctrl+"}${SIDEBAR_KEYBOARD_SHORTCUT.toUpperCase()}`;
+  // The server cannot know the device. Hydrate with its default, then use the browser platform.
+  const mac = React.useSyncExternalStore(subscribeNoop, isMac, () => false);
+  const shortcut = `${mac ? "⌘" : "Ctrl+"}${SIDEBAR_KEYBOARD_SHORTCUT.toUpperCase()}`;
   // Clicking changes the sidebar size and moves this control, so the tooltip
   // closes on press and stays closed until the pointer leaves.
   const [tooltipOpen, setTooltipOpen] = React.useState(false);
