@@ -12,6 +12,6 @@
     "checks": [
       "verify"
     ],
-    "deploy": "workbench"
+    "deploy": "workbench-ci"
   }
 }
