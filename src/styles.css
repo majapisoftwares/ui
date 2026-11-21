@@ -78,6 +78,8 @@
   /* The bottom inset still owed to content in the page flow: a container that
      already pads for it (AppShell) sets this to 0px for what it holds. */
   --safe-flow-bottom: var(--safe-bottom);
+  /* Bottom padding of the AppShell content (smaller with the keyboard open). */
+  --content-pb: 1rem;
   /* Behind the device's status bar: the page shows through, and since the
      system's text is always white there, the light theme shades it just
      enough to read (the dark theme needs nothing). Never a solid strip. */
@@ -123,6 +125,13 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+}
+
+/* On-screen keyboard open (set by Preferences): it covers the home indicator. */
+html[data-keyboard] {
+  --safe-bottom: 0px;
+  --safe-flow-bottom: 0px;
+  --content-pb: 0.5rem;
 }
 
 .dark {
