@@ -19,6 +19,7 @@ import {
   XIcon,
 } from "lucide-react";
 import { cn } from "../lib/utils";
+import { Button } from "../components/ui/button";
 import { Lightbox } from "../components/ui/lightbox";
 import { useUiMessages } from "../lib/i18n";
 import {
@@ -340,24 +341,26 @@ export function PromptInput({
               {files.map((item) =>
                 item.previewUrl ? (
                   <div key={item.id} className="relative size-20 shrink-0">
-                    <button
+                    <Button
                       type="button"
+                      variant="ghost"
                       data-slot="prompt-input-thumbnail"
                       aria-label={messages.image}
                       onClick={() => setPreview(item.id)}
-                      className="size-full overflow-hidden rounded-2xl border bg-muted outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+                      className="size-full overflow-hidden rounded-2xl border bg-muted p-0"
                     >
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={item.previewUrl} alt="" className="size-full object-cover" />
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                       type="button"
+                      variant="secondary"
+                      size="icon-xs"
                       aria-label={messages.removeAttachment(item.file.name)}
                       onClick={() => removeFile(item.id)}
-                      className="absolute -top-1.5 -right-1.5 flex size-6 items-center justify-center rounded-full border bg-background text-foreground shadow-sm"
+                      className="absolute -top-1.5 -right-1.5 rounded-full border shadow-sm"
                     >
-                      <XIcon className="size-3.5" />
-                    </button>
+                      <XIcon />
+                    </Button>
                   </div>
                 ) : (
                   <Attachment key={item.id} size="sm">
