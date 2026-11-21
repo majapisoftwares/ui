@@ -19,6 +19,7 @@ import {
   XIcon,
 } from "lucide-react";
 import { cn } from "../lib/utils";
+import { Lightbox } from "../components/ui/lightbox";
 import { useUiMessages } from "../lib/i18n";
 import {
   InputGroup,
@@ -175,6 +176,9 @@ export function PromptInput({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [innerValue, setInnerValue] = useState(defaultValue);
   const [files, setFiles] = useState<PendingFile[]>([]);
+  const [preview, setPreview] = useState<string | null>(null);
+  const pictures = files.flatMap((item) => (item.previewUrl ? [{ id: item.id, src: item.previewUrl, alt: item.file.name }] : []));
+  const previewIndex = pictures.findIndex((item) => item.id === preview);
   const [dragging, setDragging] = useState(false);
   const filesRef = useRef(files);
   const text = value ?? innerValue;
@@ -333,32 +337,57 @@ export function PromptInput({
               aria-label={messages.attachments}
               className="w-full"
             >
-              {files.map((item) => (
-                <Attachment key={item.id} size="sm">
-                  <AttachmentMedia variant={item.previewUrl ? "image" : "icon"}>
-                    {item.previewUrl ? (
-                      <img src={item.previewUrl} alt="" />
-                    ) : (
-                      <FileIcon />
-                    )}
-                  </AttachmentMedia>
-                  <AttachmentContent>
-                    <AttachmentTitle>{item.file.name}</AttachmentTitle>
-                    <AttachmentDescription>
-                      {formatBytes(item.file.size)}
-                    </AttachmentDescription>
-                  </AttachmentContent>
-                  <AttachmentActions>
-                    <AttachmentAction
+              {files.map((item) =>
+                item.previewUrl ? (
+                  <div key={item.id} className="relative size-20 shrink-0">
+                    <button
+                      type="button"
+                      data-slot="prompt-input-thumbnail"
+                      aria-label={messages.image}
+                      onClick={() => setPreview(item.id)}
+                      className="size-full overflow-hidden rounded-2xl border bg-muted outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={item.previewUrl} alt="" className="size-full object-cover" />
+                    </button>
+                    <button
+                      type="button"
                       aria-label={messages.removeAttachment(item.file.name)}
                       onClick={() => removeFile(item.id)}
+                      className="absolute -top-1.5 -right-1.5 flex size-6 items-center justify-center rounded-full border bg-background text-foreground shadow-sm"
                     >
-                      <XIcon />
-                    </AttachmentAction>
-                  </AttachmentActions>
-                </Attachment>
-              ))}
+                      <XIcon className="size-3.5" />
+                    </button>
+                  </div>
+                ) : (
+                  <Attachment key={item.id} size="sm">
+                    <AttachmentMedia variant="icon">
+                      <FileIcon />
+                    </AttachmentMedia>
+                    <AttachmentContent>
+                      <AttachmentTitle>{item.file.name}</AttachmentTitle>
+                      <AttachmentDescription>
+                        {formatBytes(item.file.size)}
+                      </AttachmentDescription>
+                    </AttachmentContent>
+                    <AttachmentActions>
+                      <AttachmentAction
+                        aria-label={messages.removeAttachment(item.file.name)}
+                        onClick={() => removeFile(item.id)}
+                      >
+                        <XIcon />
+                      </AttachmentAction>
+                    </AttachmentActions>
+                  </Attachment>
+                ),
+              )}
             </AttachmentGroup>
+            <Lightbox
+              images={pictures}
+              index={previewIndex >= 0 ? previewIndex : null}
+              onIndexChange={(i) => setPreview(pictures[i].id)}
+              onClose={() => setPreview(null)}
+            />
           </InputGroupAddon>
         ) : null}
         <InputGroupTextarea
