@@ -350,7 +350,7 @@ export function AppShell({
             className={cn(
               // The page's bottom padding covers the home indicator, so what it
               // holds (a chat composer) doesn't add that inset again.
-              "flex flex-1 flex-col gap-4 p-4 pb-[max(1rem,var(--safe-bottom))] *:[--safe-flow-bottom:0px] md:gap-6 md:p-6 md:pb-[max(1.5rem,var(--safe-bottom))]",
+              "flex flex-1 flex-col gap-4 p-4 pb-[max(var(--content-pb),var(--safe-bottom))] *:[--safe-flow-bottom:0px] md:gap-6 md:p-6 md:pb-[max(1.5rem,var(--safe-bottom))]",
               fillHeight && "min-h-0 overflow-hidden",
             )}
           >
