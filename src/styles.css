@@ -13,6 +13,14 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* shadcn's data-selected matches only data-selected="true" (Base UI); ui-sdk
+   sets the bare attribute, so tabs and other selected states never matched. */
+@custom-variant data-selected {
+  &:where([data-selected]:not([data-selected="false"])) {
+    @slot;
+  }
+}
+
 @theme inline {
   --font-heading: var(--font-sans);
   --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
