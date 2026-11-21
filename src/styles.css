@@ -78,8 +78,15 @@
   /* The bottom inset still owed to content in the page flow: a container that
      already pads for it (AppShell) sets this to 0px for what it holds. */
   --safe-flow-bottom: var(--safe-bottom);
-  /* Behind the device's status bar, whose text is always white there. */
-  --status-bar: oklch(0.145 0 0);
+  /* Behind the device's status bar: the page shows through, and since the
+     system's text is always white there, the light theme shades it just
+     enough to read (the dark theme needs nothing). Never a solid strip. */
+  --status-bar: linear-gradient(
+    to bottom,
+    oklch(0 0 0 / 0.42),
+    oklch(0 0 0 / 0.34) 55%,
+    transparent
+  );
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
@@ -119,6 +126,7 @@
 }
 
 .dark {
+  --status-bar: none;
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);
@@ -184,7 +192,7 @@
   body {
     @apply bg-background text-foreground;
   }
-  /* The status bar's own strip, over every page; it has no height unless the
+  /* The status bar's shade, over every page; it has no height unless the
      page really sits under the status bar. */
   body::before {
     content: "";
