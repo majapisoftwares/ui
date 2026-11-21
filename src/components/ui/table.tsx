@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { cn } from "cn";
+import { ScrollArea } from "./scroll-area";
 
 // Majapi UI: `containerClassName` styles the scroll container (e.g. to fill
 // the available height and scroll vertically). `contain-inline-size` keeps the
@@ -14,19 +15,17 @@ function Table({
   ...props
 }: React.ComponentProps<"table"> & { containerClassName?: string }) {
   return (
-    <div
+    <ScrollArea
       data-slot="table-container"
-      className={cn(
-        "relative w-full overflow-x-auto contain-inline-size",
-        containerClassName,
-      )}
+      fade="bottom"
+      className={cn("w-full contain-inline-size", containerClassName)}
     >
       <table
         data-slot="table"
         className={cn("w-full caption-bottom text-sm", className)}
         {...props}
       />
-    </div>
+    </ScrollArea>
   );
 }
 

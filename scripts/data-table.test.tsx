@@ -14,6 +14,8 @@ test("a concurrently mounted table preserves paging and resets after committed d
     if (typeof value === "function" && ["getComputedStyle", "requestAnimationFrame", "cancelAnimationFrame"].includes(key)) value = value.bind(dom.window);
     Object.defineProperty(globalThis, key, { configurable: true, value });
   }
+  // jsdom has no ResizeObserver; the table's ScrollArea needs one.
+  Object.defineProperty(globalThis, "ResizeObserver", { configurable: true, value: class { observe() {} unobserve() {} disconnect() {} } });
   const errors: string[] = [];
   t.mock.method(console, "error", (...args: unknown[]) => errors.push(args.map(String).join(" ")));
   const root = createRoot(dom.window.document.getElementById("root")!);

@@ -12,9 +12,15 @@ import { cn } from "cn";
 
 function ScrollArea({
   className,
+  viewportClassName,
+  fade = "both",
   children,
   ...props
-}: React.ComponentProps<typeof ScrollAreaPrimitive>) {
+}: React.ComponentProps<typeof ScrollAreaPrimitive> & {
+  viewportClassName?: string;
+  // "bottom" keeps a sticky header solid (a top fade would dissolve it).
+  fade?: "both" | "bottom";
+}) {
   return (
     <ScrollAreaPrimitive
       data-slot="scroll-area"
@@ -23,11 +29,16 @@ function ScrollArea({
     >
       <ScrollAreaViewportPrimitive
         data-slot="scroll-area-viewport"
-        className="size-full scroll-fade rounded-[inherit] transition-[color,box-shadow] outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1"
+        className={cn(
+          "size-full rounded-[inherit] transition-[color,box-shadow] outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1",
+          fade === "bottom" ? "scroll-fade-b" : "scroll-fade",
+          viewportClassName,
+        )}
       >
         {children}
       </ScrollAreaViewportPrimitive>
       <ScrollBar />
+      <ScrollBar orientation="horizontal" />
       <ScrollAreaCornerPrimitive />
     </ScrollAreaPrimitive>
   );
