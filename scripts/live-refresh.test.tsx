@@ -8,6 +8,11 @@ import { act, createElement } from "react";
 // piled up; a failed load doesn't stop the refreshes.
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+// Waits until the condition holds (a loaded CI runner delays timers).
+const until = async (condition: () => boolean, ms = 3000) => {
+  const end = performance.now() + ms;
+  while (!condition() && performance.now() < end) await wait(10);
+};
 
 test("a running load holds the next ticks; a failed one doesn't stop them", async () => {
   const dom = new JSDOM('<html><body><div id="root"></div></body></html>', { url: "https://example.test", pretendToBeVisual: true });
@@ -39,10 +44,12 @@ test("a running load holds the next ticks; a failed one doesn't stop them", asyn
     assert.equal(calls, 1);
 
     await act(async () => finish(true));
+    await act(() => until(() => calls >= 2));
     await act(() => wait(40));
     assert.equal(calls, 2, "after the failed load settles, the next tick loads again");
 
     await act(async () => finish());
+    await act(() => until(() => calls >= 3));
     await act(() => wait(40));
     assert.equal(calls, 3);
 
@@ -50,7 +57,7 @@ test("a running load holds the next ticks; a failed one doesn't stop them", asyn
     let bumps = 0;
     const other = createRoot(dom.window.document.body.appendChild(dom.window.document.createElement("div")));
     await act(async () => other.render(createElement(Screen, { refresh: () => void bumps++ })));
-    await act(() => wait(80));
+    await act(() => until(() => bumps >= 3));
     await act(async () => other.unmount());
     assert.ok(bumps >= 3, `ran ${bumps} times`);
   } finally {
