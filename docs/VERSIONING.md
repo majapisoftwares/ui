@@ -21,17 +21,17 @@ Na dúvida, a pergunta é: **um app que compilava com a versão anterior continu
 
 ## Publicar
 
-Publicação automática pelo workflow `Release` (npm Trusted Publishing via OIDC do GitHub, com proveniência; sem token, senha ou OTP). PRs não mudam `version`. **Todo push na `main` publica sozinho; ninguém precisa aprovar nem disparar.**
+Publicação automática pelo CI próprio do Workbench (`release` em `.majapi/ci.json`, `deploy/ci/release.mjs` do repositório majapisoftwares/workbench; sem GitHub Actions), com um token de automação do npm guardado nos segredos do CI (nunca em texto no repositório). PRs não mudam `version`. **Todo commit que entra na `main` e passa nos checks (`npm run verify`) é implantado no catálogo e, se mudou algo publicável, publicado sozinho; ninguém precisa aprovar nem disparar.**
 
-Como o workflow escolhe a versão (`scripts/release-plan.mjs`, olhando os commits desde a última tag `v*`):
+Como o release escolhe a versão (`scripts/release-plan.mjs`, olhando os commits desde a última tag `v*`):
 
 1. Se nada em `src/`, `scripts/check-standards.mjs` ou `components.json` mudou (só docs, CI, catálogo, starter), **não publica**.
 2. Qualquer commit `feat:`/`feat(escopo):` → **minor**.
 3. Caso contrário (`fix:`, sem prefixo, etc.) → **patch**.
-4. `feat!:` ou `BREAKING CHANGE:` → o workflow **falha** com aviso: major nunca é automático. Com a aprovação do responsável, rode `gh workflow run release.yml -f bump=major`.
+4. `feat!:` ou `BREAKING CHANGE:` → o release **não publica** e registra o aviso: major nunca é automático. Com a aprovação do responsável, um commit com a linha `Release-As: major` no corpo publica o major.
 
 Use prefixos de conventional commits nos commits do PR para forçar o minor. Os commits `release: v…` são ignorados, então a publicação não se repete. Execuções são serializadas (`concurrency: release`) e sempre partem da `main` mais recente, então um release manual feito antes não é duplicado.
 
-O workflow sobe a versão, valida a biblioteca e o starter contra o pacote empacotado, publica no npm (pulando se a versão já existe), fixa o starter na versão publicada (`npm run test:starter`), cria o commit `release: v<versão>`, a tag e a release no GitHub. Apps fixam a versão exata (`--save-exact`) e atualizam por PR. Para forçar um número: `gh workflow run release.yml -f bump=<patch|minor|major>`.
+O release sobe a versão, valida a biblioteca e o starter contra o pacote empacotado, publica no npm (pulando se a versão já existe), fixa o starter na versão publicada (`npm run test:starter`), cria o commit `release: v<versão>`, a tag e a release no GitHub. Apps fixam a versão exata (`--save-exact`) e atualizam por PR. Para forçar o tipo de versão, um commit com `Release-As: <patch|minor|major>` no corpo.
 
-O vínculo de confiança do pacote é configurado uma vez por quem tem acesso de publicação: `npm trust github @majapisoftwares/ui --repo majapisoftwares/ui --file release.yml --allow-publish`.
+O token do npm é um token granular (escopo `@majapisoftwares`, publicação) criado por um agente com o npm do Italo e guardado no AWS Secrets Manager (`workbench-deploy/npm-token`); ele expira em até 90 dias e é renovado do mesmo jeito.

@@ -1,6 +1,6 @@
 # Migração para 7.0 (Base UI → ui-sdk)
 
-A 7.0 troca a base de comportamento de todos os componentes: sai `@base-ui/react`, entra o **ui-sdk da Vercel** (`@ui-sdk/react` + `@ui-sdk/core`, Apache-2.0, ainda **beta** `0.1.0-beta.10`, versão fixada exata). Os nomes dos exports e as variantes visuais foram mantidos; mudam callbacks, alguns props e os atributos de estado. É um **major**: a publicação não é automática (veja docs/VERSIONING.md: `gh workflow run release.yml -f bump=major`).
+A 7.0 troca a base de comportamento de todos os componentes: sai `@base-ui/react`, entra o **ui-sdk da Vercel** (`@ui-sdk/react` + `@ui-sdk/core`, Apache-2.0, ainda **beta** `0.1.0-beta.10`, versão fixada exata). Os nomes dos exports e as variantes visuais foram mantidos; mudam callbacks, alguns props e os atributos de estado. É um **major**: a publicação não é automática (veja docs/VERSIONING.md: commit com `Release-As: major`).
 
 ## Em todo app
 

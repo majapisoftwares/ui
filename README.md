@@ -25,7 +25,7 @@ O app gerado é bilíngue (en/pt-BR, textos em `src/messages.ts`) e roda via [po
 
 ## Catálogo visual
 
-O catálogo em [catalog/](catalog) é um app Next.js com a mesma estrutura do starter, exportado estaticamente para S3 + CloudFront pelo workflow `deploy-catalog` a cada push na `main`.
+O catálogo em [catalog/](catalog) é um app Next.js com a mesma estrutura do starter, exportado estaticamente para S3 + CloudFront pelo CI próprio do Workbench (`static` em `.majapi/ci.json`) a cada commit na `main` com os checks verdes.
 
 ```powershell
 npm ci
