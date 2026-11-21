@@ -71,6 +71,10 @@ function SheetContent({
       <DrawerContent
         data-slot="sheet-content"
         className={cn(
+          // Safe area: a sheet that reaches the top keeps clear of the status
+          // bar (and draws its shade, being above the page's); every side
+          // keeps clear of the edge it touches.
+          "[--sheet-top:var(--safe-top)] pt-(--sheet-top) before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-(--sheet-top) before:[background:var(--status-bar)] data-[side=bottom]:[--sheet-top:0px] data-[side=bottom]:pb-(--safe-bottom) data-[side=left]:pb-(--safe-bottom) data-[side=left]:pl-(--safe-left) data-[side=right]:pr-(--safe-right) data-[side=right]:pb-(--safe-bottom)",
           "z-50 flex flex-col bg-popover bg-clip-padding text-sm text-popover-foreground shadow-xl data-[side=bottom]:h-auto data-[side=bottom]:w-full data-[side=bottom]:border-t data-[side=left]:h-full data-[side=left]:w-3/4 data-[side=left]:border-r data-[side=left]:sm:max-w-sm data-[side=right]:h-full data-[side=right]:w-3/4 data-[side=right]:border-l data-[side=right]:sm:max-w-sm data-[side=top]:h-auto data-[side=top]:w-full data-[side=top]:border-b",
           className,
         )}
@@ -83,7 +87,7 @@ function SheetContent({
             render={
               <Button
                 variant="ghost"
-                className="absolute top-4 right-4 bg-secondary"
+                className="absolute top-[calc(1rem+var(--sheet-top))] right-4 bg-secondary"
                 size="icon-sm"
               />
             }

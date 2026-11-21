@@ -53,6 +53,30 @@ function clear(key: string) {
     // Storage can be unavailable (private mode).
   }
 }
+/** The page background of each theme (`--background`), for the browser's own UI. */
+const THEME_COLORS: Record<Theme, string> = {
+  light: "#ffffff",
+  dark: "#0a0a0a",
+};
+
+/**
+ * Keeps `<meta name="theme-color">` on the theme in effect, which may not be
+ * the device's (so a `prefers-color-scheme` pair in the app's metadata would
+ * be wrong). The tag is Preferences' own: created by `preferencesScript`.
+ */
+function themeColor(theme: Theme) {
+  let meta = document.head.querySelector<HTMLMetaElement>(
+    'meta[name="theme-color"][data-preferences]',
+  );
+  if (!meta) {
+    meta = document.createElement("meta");
+    meta.name = "theme-color";
+    meta.setAttribute("data-preferences", "");
+    document.head.appendChild(meta);
+  }
+  meta.content = THEME_COLORS[theme];
+}
+
 function systemTheme(): Theme {
   return typeof matchMedia === "function" &&
     matchMedia("(prefers-color-scheme: dark)").matches
@@ -72,7 +96,7 @@ function write(key: string, value: string) {
  * Inline this in `<head>` (e.g. `<script dangerouslySetInnerHTML>`) so the
  * stored theme applies before paint.
  */
-export const preferencesScript = `try{var d=document.documentElement;var t=localStorage.getItem("theme");if(t==="dark"||(t!=="light"&&window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches))d.classList.add("dark");var l=localStorage.getItem("locale");if(l!=="en"&&l!=="pt-BR"){l="en";var a=navigator.languages||[];for(var i=0;i<a.length;i++){if(/^pt/i.test(a[i])){l="pt-BR";break}if(/^en/i.test(a[i]))break}}if(l!==d.lang){d.lang=l;d.setAttribute("data-locale-pending",l)}}catch(e){}`;
+export const preferencesScript = `try{var d=document.documentElement;var t=localStorage.getItem("theme");if(t==="dark"||(t!=="light"&&window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches))d.classList.add("dark");var m=document.createElement("meta");m.name="theme-color";m.setAttribute("data-preferences","");m.content=d.classList.contains("dark")?"#0a0a0a":"#ffffff";document.head.appendChild(m);var l=localStorage.getItem("locale");if(l!=="en"&&l!=="pt-BR"){l="en";var a=navigator.languages||[];for(var i=0;i<a.length;i++){if(/^pt/i.test(a[i])){l="pt-BR";break}if(/^en/i.test(a[i]))break}}if(l!==d.lang){d.lang=l;d.setAttribute("data-locale-pending",l)}}catch(e){}`;
 
 /**
  * Locale + theme for the whole app. Renders `defaultLocale` first (matches
@@ -129,6 +153,7 @@ export function Preferences({
   useEffect(() => {
     if (!ready) return;
     document.documentElement.classList.toggle("dark", theme === "dark");
+    themeColor(theme);
   }, [theme, ready]);
   useEffect(() => {
     if (

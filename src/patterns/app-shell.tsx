@@ -328,7 +328,9 @@ export function AppShell({
           <SidebarRail />
         </Sidebar>
         <SidebarInset className={fillHeight ? "h-svh min-h-0" : undefined}>
-          <header className="sticky top-0 z-10 flex h-14 shrink-0 items-center gap-2 border-b bg-background px-4 md:px-6">
+          {/* Behind the status bar the header is see-through (blurred), so the
+              page passes under it; its own bar stays nearly solid. */}
+          <header className="sticky top-0 z-10 box-content flex h-14 shrink-0 items-center gap-2 border-b bg-[linear-gradient(to_bottom,transparent_var(--safe-top),color-mix(in_oklch,var(--background)_92%,transparent)_var(--safe-top))] px-4 pt-(--safe-top) backdrop-blur-md md:px-6">
             <HeaderTrigger />
             <div className="min-w-0 flex-1">
               {breadcrumbs?.length ? (
@@ -346,7 +348,9 @@ export function AppShell({
           </header>
           <div
             className={cn(
-              "flex flex-1 flex-col gap-4 p-4 md:gap-6 md:p-6",
+              // The page's bottom padding covers the home indicator, so what it
+              // holds (a chat composer) doesn't add that inset again.
+              "flex flex-1 flex-col gap-4 p-4 pb-[max(1rem,var(--safe-bottom))] *:[--safe-flow-bottom:0px] md:gap-6 md:p-6 md:pb-[max(1.5rem,var(--safe-bottom))]",
               fillHeight && "min-h-0 overflow-hidden",
             )}
           >

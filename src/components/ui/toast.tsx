@@ -102,7 +102,7 @@ function ToastViewport({
     <ToastRegionPrimitive
       data-slot="toast-viewport"
       className={cn(
-        "pointer-events-none m-4 h-(--toast-front-height) w-[min(24rem,calc(100vw-2rem))] transition-[height] duration-500 data-[expanded]:h-[calc(var(--toast-stack-height)+(var(--toast-count)-1)*0.75rem)]",
+        "pointer-events-none mt-[max(1rem,var(--safe-top))] mr-[max(1rem,var(--safe-right))] mb-[max(1rem,var(--safe-bottom))] ml-[max(1rem,var(--safe-left))] h-(--toast-front-height) w-[min(24rem,calc(100vw-2rem))] transition-[height] duration-500 data-[expanded]:h-[calc(var(--toast-stack-height)+(var(--toast-count)-1)*0.75rem)]",
         className,
       )}
       {...props}

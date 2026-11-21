@@ -1,7 +1,12 @@
 "use client";
 
 import * as React from "react";
-import { ChevronLeftIcon, ChevronRightIcon, MinusIcon, PlusIcon } from "lucide-react";
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  MinusIcon,
+  PlusIcon,
+} from "lucide-react";
 import { Dialog, DialogContent, DialogTitle } from "./dialog";
 import { Button } from "./button";
 import { useUiMessages } from "../../lib/i18n";
@@ -12,7 +17,8 @@ export interface LightboxImage {
 }
 
 const MAX_ZOOM = 6;
-const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
+const clamp = (value: number, min: number, max: number) =>
+  Math.min(max, Math.max(min, value));
 const RESET = { scale: 1, x: 0, y: 0 };
 
 /**
@@ -40,7 +46,12 @@ function Lightbox({
           data-slot="lightbox"
           className="fixed inset-0 top-0 left-0 flex h-dvh w-screen max-w-none translate-x-0 translate-y-0 items-center justify-center rounded-none bg-black/90 p-0 sm:max-w-none"
         >
-          <LightboxStage key={index} images={images} index={index} onIndexChange={onIndexChange} />
+          <LightboxStage
+            key={index}
+            images={images}
+            index={index}
+            onIndexChange={onIndexChange}
+          />
         </DialogContent>
       ) : null}
     </Dialog>
@@ -82,7 +93,8 @@ function LightboxStage({
   React.useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if (event.key === "ArrowLeft" && index > 0) onIndexChange(index - 1);
-      if (event.key === "ArrowRight" && index < images.length - 1) onIndexChange(index + 1);
+      if (event.key === "ArrowRight" && index < images.length - 1)
+        onIndexChange(index + 1);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -95,21 +107,34 @@ function LightboxStage({
 
   return (
     <>
-      <DialogTitle className="sr-only">{image.alt || messages.image}</DialogTitle>
+      <DialogTitle className="sr-only">
+        {image.alt || messages.image}
+      </DialogTitle>
       <div
         ref={stage}
         data-slot="lightbox-stage"
         className="flex size-full touch-none items-center justify-center overflow-hidden select-none"
         onPointerDown={(event) => {
           event.currentTarget.setPointerCapture(event.pointerId);
-          pointers.current.set(event.pointerId, { x: event.clientX, y: event.clientY });
+          pointers.current.set(event.pointerId, {
+            x: event.clientX,
+            y: event.clientY,
+          });
           if (pointers.current.size === 1) gesture.current.moved = false;
-          if (pointers.current.size === 2) gesture.current = { distance: spread(), scale: view.scale, moved: true };
+          if (pointers.current.size === 2)
+            gesture.current = {
+              distance: spread(),
+              scale: view.scale,
+              moved: true,
+            };
         }}
         onPointerMove={(event) => {
           const last = pointers.current.get(event.pointerId);
           if (!last) return;
-          pointers.current.set(event.pointerId, { x: event.clientX, y: event.clientY });
+          pointers.current.set(event.pointerId, {
+            x: event.clientX,
+            y: event.clientY,
+          });
           if (pointers.current.size === 2) {
             const ratio = spread() / (gesture.current.distance || 1);
             setView((v) => withScale(v, gesture.current.scale * ratio));
@@ -118,7 +143,9 @@ function LightboxStage({
           const dx = event.clientX - last.x;
           const dy = event.clientY - last.y;
           if (Math.abs(dx) + Math.abs(dy) > 2) gesture.current.moved = true;
-          setView((v) => (v.scale > 1 ? { ...v, x: v.x + dx, y: v.y + dy } : v));
+          setView((v) =>
+            v.scale > 1 ? { ...v, x: v.x + dx, y: v.y + dy } : v,
+          );
         }}
         onPointerUp={(event) => {
           if (!pointers.current.delete(event.pointerId)) return;
@@ -135,7 +162,10 @@ function LightboxStage({
           data-slot="lightbox-image"
           data-scale={view.scale}
           className="max-h-full max-w-full object-contain will-change-transform"
-          style={{ transform: `translate(${view.x}px, ${view.y}px) scale(${view.scale})`, cursor: view.scale > 1 ? "grab" : "zoom-in" }}
+          style={{
+            transform: `translate(${view.x}px, ${view.y}px) scale(${view.scale})`,
+            cursor: view.scale > 1 ? "grab" : "zoom-in",
+          }}
         />
       </div>
       {index > 0 ? (
@@ -160,11 +190,21 @@ function LightboxStage({
           <ChevronRightIcon />
         </Button>
       ) : null}
-      <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-2">
-        <Button variant="secondary" size="icon-sm" aria-label={messages.zoomOut} onClick={() => setView((v) => withScale(v, v.scale / 1.5))}>
+      <div className="absolute bottom-[max(1rem,var(--safe-bottom))] left-1/2 flex -translate-x-1/2 gap-2">
+        <Button
+          variant="secondary"
+          size="icon-sm"
+          aria-label={messages.zoomOut}
+          onClick={() => setView((v) => withScale(v, v.scale / 1.5))}
+        >
           <MinusIcon />
         </Button>
-        <Button variant="secondary" size="icon-sm" aria-label={messages.zoomIn} onClick={() => setView((v) => withScale(v, v.scale * 1.5))}>
+        <Button
+          variant="secondary"
+          size="icon-sm"
+          aria-label={messages.zoomIn}
+          onClick={() => setView((v) => withScale(v, v.scale * 1.5))}
+        >
           <PlusIcon />
         </Button>
       </div>
