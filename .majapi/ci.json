@@ -13,5 +13,22 @@
       "verify"
     ],
     "deploy": "workbench-ci"
+  },
+  "release": {
+    "npmTokenSecret": "workbench-deploy/npm-token",
+    "plan": "node scripts/release-plan.mjs",
+    "validate": [
+      "set -e; tmp=$(mktemp -d); npm pack --pack-destination \"$tmp\"; cp -r starters/next-app \"$tmp/starter\"; cd \"$tmp/starter\"; npm install --save-exact \"$tmp/majapisoftwares-ui-${version}.tgz\"; npm run lint; npm run typecheck; npm run check:ui; npm run build"
+    ],
+    "afterPublish": [
+      "set -e; cd starters/next-app; i=0; until npm install --save-exact --prefer-online \"@majapisoftwares/ui@${version}\"; do i=$((i+1)); [ $i -ge 30 ] && exit 1; sleep 10; done",
+      "npm run test:starter"
+    ],
+    "files": [
+      "package.json",
+      "package-lock.json",
+      "starters/next-app/package.json",
+      "starters/next-app/package-lock.json"
+    ]
   }
 }
