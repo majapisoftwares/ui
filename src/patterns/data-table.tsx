@@ -1561,7 +1561,7 @@ export function DataTable<TData extends RowData>(props: DataTableProps<TData>) {
               // The empty state sizes itself to the visible width (cqw).
               "@container",
               // Bottom-only fade: a top fade would dissolve the sticky header.
-              fillHeight && "min-h-0 flex-1 overflow-auto scroll-fade-b",
+              fillHeight && "min-h-0 flex-1",
             )}
             className="table-fixed"
             style={{ minWidth: "100%", width: table.getTotalSize() }}
