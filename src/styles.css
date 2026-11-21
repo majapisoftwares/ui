@@ -69,6 +69,17 @@
 }
 
 :root {
+  /* Safe area (docs/STANDARDS.md, "Área segura"): what the device covers at
+     each edge of a page that draws edge to edge (viewport-fit=cover). */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  /* The bottom inset still owed to content in the page flow: a container that
+     already pads for it (AppShell) sets this to 0px for what it holds. */
+  --safe-flow-bottom: var(--safe-bottom);
+  /* Behind the device's status bar, whose text is always white there. */
+  --status-bar: oklch(0.145 0 0);
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
@@ -172,6 +183,17 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+  /* The status bar's own strip, over every page; it has no height unless the
+     page really sits under the status bar. */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: 100;
+    height: var(--safe-top);
+    background: var(--status-bar);
+    pointer-events: none;
   }
   html {
     @apply font-sans;

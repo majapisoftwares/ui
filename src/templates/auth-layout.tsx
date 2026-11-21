@@ -11,7 +11,7 @@ export function AuthLayout({
   footer?: ReactNode;
 }) {
   return (
-    <main className="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10">
+    <main className="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted px-6 pt-[calc(1.5rem+var(--safe-top))] pb-[calc(1.5rem+var(--safe-bottom))] md:px-10 md:pt-[calc(2.5rem+var(--safe-top))] md:pb-[calc(2.5rem+var(--safe-bottom))]">
       <div className="flex w-full max-w-sm flex-col gap-6">
         {brand ? (
           <div className="flex items-center gap-2 self-center font-medium">

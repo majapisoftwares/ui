@@ -144,7 +144,7 @@ export function ChatComposer({
   return (
     <div
       data-slot="chat-composer"
-      className={cn("shrink-0 pb-[env(safe-area-inset-bottom)]", className)}
+      className={cn("shrink-0 pb-(--safe-flow-bottom)", className)}
       style={{ paddingInlineEnd: gutter, ...style }}
       {...props}
     >
