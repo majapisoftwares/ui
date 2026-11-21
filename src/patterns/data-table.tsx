@@ -2316,7 +2316,7 @@ function ColumnSettings<TData extends RowData>({
                 render={
                   <Button
                     variant="outline"
-                    size="icon-sm"
+                    size="icon"
                     className="relative"
                     aria-label={t.customizeColumns}
                   />
