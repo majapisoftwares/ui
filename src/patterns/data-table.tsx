@@ -105,6 +105,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../components/ui/select";
+import { ScrollArea } from "../components/ui/scroll-area";
 import { Separator } from "../components/ui/separator";
 import { Skeleton } from "../components/ui/skeleton";
 import {
@@ -1532,7 +1533,6 @@ export function DataTable<TData extends RowData>(props: DataTableProps<TData>) {
             <Button
               type="button"
               variant="outline"
-              size="sm"
               onClick={() => table.resetRowSelection()}
             >
               <XIcon data-icon="inline-start" />
@@ -2238,35 +2238,37 @@ function ColumnMultiFilter<TData extends RowData>({
           </ColumnMenuOption>
         </div>
       )}
-      <div
-        className="flex max-h-56 scroll-fade flex-col gap-1 overflow-auto rounded-2xl border p-1"
-        role="group"
-        aria-label={exclude ? t.valuesToExclude : t.valuesToShow}
-      >
-        {options.map((option) => (
-          <label
-            key={option.value}
-            className="hover:bg-accent flex items-center gap-2 rounded-xl px-2 py-1.5 text-sm font-normal"
-          >
-            <Checkbox
-              checked={selected.includes(option.value)}
-              onCheckedChange={(checked) =>
-                toggleValue(option.value, Boolean(checked))
-              }
-            />
-            <span
-              className={cn(
-                "min-w-0 flex-1 truncate",
-                exclude &&
-                  selected.includes(option.value) &&
-                  "text-muted-foreground line-through",
-              )}
+      <ScrollArea className="rounded-2xl border" viewportClassName="max-h-56">
+        <div
+          className="flex flex-col gap-1 p-1"
+          role="group"
+          aria-label={exclude ? t.valuesToExclude : t.valuesToShow}
+        >
+          {options.map((option) => (
+            <label
+              key={option.value}
+              className="hover:bg-accent flex items-center gap-2 rounded-xl px-2 py-1.5 text-sm font-normal"
             >
-              {option.label}
-            </span>
-          </label>
-        ))}
-      </div>
+              <Checkbox
+                checked={selected.includes(option.value)}
+                onCheckedChange={(checked) =>
+                  toggleValue(option.value, Boolean(checked))
+                }
+              />
+              <span
+                className={cn(
+                  "min-w-0 flex-1 truncate",
+                  exclude &&
+                    selected.includes(option.value) &&
+                    "text-muted-foreground line-through",
+                )}
+              >
+                {option.label}
+              </span>
+            </label>
+          ))}
+        </div>
+      </ScrollArea>
     </div>
   );
 }
@@ -2420,7 +2422,7 @@ function DataTablePagination<TData extends RowData>({
             value={`${table.getState().pagination.pageSize}`}
             onValueChange={(value) => table.setPageSize(Number(value))}
           >
-            <SelectTrigger id={inputId} size="sm" className="w-20">
+            <SelectTrigger id={inputId} className="w-20">
               <SelectValue />
             </SelectTrigger>
             <SelectContent side="top">

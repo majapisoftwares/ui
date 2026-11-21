@@ -8,6 +8,8 @@ import {
   SheetTitle,
   SheetDescription,
 } from "../components/ui/sheet";
+import { ScrollArea } from "../components/ui/scroll-area";
+
 export function DetailsSheet({
   open,
   onOpenChange,
@@ -23,7 +25,7 @@ export function DetailsSheet({
 }) {
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="overflow-x-hidden overflow-y-auto data-[side=left]:sm:max-w-xl data-[side=right]:sm:max-w-xl">
+      <SheetContent className="data-[side=left]:sm:max-w-xl data-[side=right]:sm:max-w-xl">
         <SheetHeader>
           <SheetTitle>{title}</SheetTitle>
           {description ? (
@@ -31,7 +33,9 @@ export function DetailsSheet({
           ) : null}
         </SheetHeader>
         {/* Same inset as SheetHeader (p-6). */}
-        <div className="min-w-0 px-6 pb-8">{children}</div>
+        <ScrollArea className="min-h-0 flex-1">
+          <div className="min-w-0 px-6 pb-8">{children}</div>
+        </ScrollArea>
       </SheetContent>
     </Sheet>
   );
