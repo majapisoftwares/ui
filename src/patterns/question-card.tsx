@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { CircleHelpIcon } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
@@ -24,12 +24,18 @@ export function QuestionCard({
   answered = false,
   answer: given = null,
   onAnswer,
+  renderText,
+  onFailure = toastError,
 }: {
   text: string;
   options: string[];
   answered?: boolean;
   answer?: string | null;
   onAnswer: (answer: string) => Promise<void>;
+  /** Draws the question (an app's own markdown, with its link handling). */
+  renderText?: (text: string) => ReactNode;
+  /** Reports a failed answer; a toast by default. */
+  onFailure?: (failure: unknown) => void;
 }) {
   const t = useMessages(messages);
   const [free, setFree] = useState<string | null>(null);
@@ -41,7 +47,7 @@ export function QuestionCard({
       await onAnswer(option);
       setPicked(option);
     } catch (failure) {
-      toastError(failure);
+      onFailure(failure);
     } finally {
       setSending(null);
     }
@@ -55,9 +61,15 @@ export function QuestionCard({
     >
       <div className="flex items-start gap-2 font-medium">
         <CircleHelpIcon className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
-        <ChatMarkdown className="min-w-0 flex-1 break-words">
-          {typeof text === "string" ? text : ""}
-        </ChatMarkdown>
+        {renderText ? (
+          <div className="min-w-0 flex-1 break-words">
+            {renderText(typeof text === "string" ? text : "")}
+          </div>
+        ) : (
+          <ChatMarkdown className="min-w-0 flex-1 break-words">
+            {typeof text === "string" ? text : ""}
+          </ChatMarkdown>
+        )}
       </div>
       {open && list.length ? (
         <div className="flex min-w-0 flex-wrap gap-2">
