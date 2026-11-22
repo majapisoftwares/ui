@@ -51,3 +51,26 @@ test("the field takes focus when a reply starts and when it moves to another mes
     }
   }
 });
+
+test("inline PromptInput collapses to one row by default and expands on mobile focus-within", async () => {
+  const { renderToStaticMarkup } = await import("react-dom/server");
+  const { PromptInput } = await import("../src/patterns/prompt-input");
+  const inlineHtml = renderToStaticMarkup(
+    createElement(PromptInput, {
+      onSubmit: () => undefined,
+      inline: true,
+      attachments: true,
+    }),
+  );
+  assert.match(inlineHtml, /\bflex-row\b/, "inline starts as a horizontal row on mobile and desktop");
+  assert.match(inlineHtml, /\bmax-md:focus-within:flex-col\b/, "expands to stacked layout on mobile focus");
+  assert.match(inlineHtml, /\bmax-md:group-focus-within\/input-group:flex\b/, "addon row becomes flex block below textarea on mobile focus");
+  const stackedHtml = renderToStaticMarkup(
+    createElement(PromptInput, {
+      onSubmit: () => undefined,
+      inline: false,
+      attachments: true,
+    }),
+  );
+  assert.doesNotMatch(stackedHtml, /\bmax-md:focus-within:flex-col\b/);
+});

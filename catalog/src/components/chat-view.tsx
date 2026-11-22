@@ -657,7 +657,7 @@ export function ChatView({ empty = false }: { empty?: boolean }) {
             onSubmit={send}
             quote={quoteOf(replyTo ?? undefined, { inComposer: true })}
             attachments
-            // One row on desktop: + | field | send.
+            // One row: + | field | send (expands to two rows on mobile when focused).
             inline
             autoFocus
           />

@@ -91,10 +91,12 @@ export interface PromptInputProps {
    */
   quote?: ReactNode;
   /**
-   * From the md breakpoint, one row: attach | field | actions | send (the
-   * field grows with its text; the buttons stay at its last line). On a phone
-   * the stacked layout stays. Quote and attachments sit above. An action
-   * marked `data-fill` (a recording wave) takes the field's place while shown.
+   * One row (attach | field | actions | send; the field grows with its text
+   * and the buttons stay at its last line). On a phone (< md) it starts as
+   * that compact row and expands when focused: the field takes the full width
+   * on top and the controls move to a row below, growing slightly. Quote and
+   * attachments sit above. An action marked `data-fill` (a recording wave)
+   * takes the field's place while shown.
    */
   inline?: boolean;
   className?: string;
@@ -322,18 +324,19 @@ export function PromptInput({
         data-dragging={dragging || undefined}
         className={cn(
           "data-dragging:border-ring data-dragging:ring-3 data-dragging:ring-ring/30",
-          // One row from md: the block-end addon's children join the row; quote and files keep a line of their own on top.
+          // One row: the block-end addon's children join the row; quote and files keep a line of their own on top.
+          // On a phone (< md), focusing the composer expands it into the two-row stacked layout and widens it slightly.
           inline &&
-            "md:flex-row md:flex-wrap md:items-end md:has-[>[data-align=block-end]]:flex-row md:has-[>[data-align=block-start]]:flex-row md:has-[[data-fill]]:[&>textarea]:hidden",
+            "flex-row flex-wrap items-end has-[>[data-align=block-end]]:flex-row has-[>[data-align=block-start]]:flex-row has-[[data-fill]]:[&>textarea]:hidden max-md:w-auto max-md:rounded-4xl max-md:transition-[margin,border-radius,box-shadow,background-color,border-color] max-md:duration-150 max-md:focus-within:-mx-1 max-md:focus-within:flex-col max-md:focus-within:flex-nowrap max-md:focus-within:items-stretch max-md:focus-within:rounded-3xl max-md:focus-within:has-[>[data-align=block-end]]:flex-col max-md:focus-within:has-[>[data-align=block-start]]:flex-col",
         )}
       >
         {quote ? (
-          <InputGroupAddon align="block-start" className={cn("cursor-default pb-0", inline && "md:basis-full")}>
+          <InputGroupAddon align="block-start" className={cn("cursor-default pb-0", inline && "basis-full")}>
             <div className="w-full min-w-0">{quote}</div>
           </InputGroupAddon>
         ) : null}
         {files.length > 0 ? (
-          <InputGroupAddon align="block-start" className={cn("cursor-default", inline && "md:basis-full")}>
+          <InputGroupAddon align="block-start" className={cn("cursor-default", inline && "basis-full")}>
             <AttachmentGroup
               aria-label={messages.attachments}
               className="w-full"
@@ -404,11 +407,18 @@ export function PromptInput({
           disabled={disabled}
           autoFocus={autoFocus}
           rows={1}
-          className={cn("max-h-48 min-h-12 px-4 pt-3.5", inline && "md:order-2 md:min-h-11 md:min-w-0 md:flex-1 md:basis-0 md:px-2 md:py-3")}
+          className={cn(
+            "max-h-48 min-h-12 px-4 pt-3.5",
+            inline &&
+              "order-2 min-h-11 min-w-0 flex-1 basis-0 px-2 py-2.5 md:py-3 max-md:group-focus-within/input-group:order-none max-md:group-focus-within/input-group:min-h-14 max-md:group-focus-within/input-group:basis-auto max-md:group-focus-within/input-group:px-4 max-md:group-focus-within/input-group:pt-3.5 max-md:group-focus-within/input-group:pb-2.5",
+          )}
         />
         <InputGroupAddon
           align="block-end"
-          className={cn("cursor-text", inline && "md:contents")}
+          className={cn(
+            "cursor-text",
+            inline && "contents max-md:group-focus-within/input-group:flex",
+          )}
           onClick={(event) => {
             if (!(event.target as HTMLElement).closest("button"))
               textareaRef.current?.focus();
@@ -431,7 +441,11 @@ export function PromptInput({
               <InputGroupButton
                 size="icon-sm"
                 variant="outline"
-                className={cn("size-11 rounded-full md:size-8", inline && "md:order-1 md:mb-1.5 md:ml-1.5 md:shrink-0")}
+                className={cn(
+                  "size-11 rounded-full md:size-8",
+                  inline &&
+                    "order-1 mb-1.5 ml-1.5 size-8 shrink-0 max-md:group-focus-within/input-group:order-none max-md:group-focus-within/input-group:mb-0 max-md:group-focus-within/input-group:ml-0 max-md:group-focus-within/input-group:size-11",
+                )}
                 aria-label={messages.attachFiles}
                 disabled={disabled}
                 onMouseDown={keepFocus}
@@ -445,7 +459,8 @@ export function PromptInput({
             className={cn(
               "ml-auto flex min-w-0 flex-1 items-center justify-end gap-2",
               // In one row the actions take only their room, unless one fills (a recording wave, in the field's place).
-              inline && "md:order-3 md:mb-1.5 md:mr-1.5 md:ml-0 md:flex-none md:has-[[data-fill]]:flex-1",
+              inline &&
+                "order-3 mr-1.5 mb-1.5 ml-0 flex-none has-[[data-fill]]:flex-1 max-md:[&_[data-slot=button]]:h-8 max-md:[&_[data-slot=button][data-size^=icon]]:w-8 max-md:group-focus-within/input-group:order-none max-md:group-focus-within/input-group:mr-0 max-md:group-focus-within/input-group:mb-0 max-md:group-focus-within/input-group:ml-auto max-md:group-focus-within/input-group:flex-1 max-md:group-focus-within/input-group:[&_[data-slot=button]]:h-11 max-md:group-focus-within/input-group:[&_[data-slot=button][data-size^=icon]]:w-11",
             )}
           >
             {actions}
@@ -454,7 +469,11 @@ export function PromptInput({
                 type={stopping ? "button" : "submit"}
                 size="icon-sm"
                 variant="default"
-                className="size-11 rounded-full md:size-8"
+                className={cn(
+                  "size-11 rounded-full md:size-8",
+                  inline &&
+                    "size-8 max-md:group-focus-within/input-group:size-11",
+                )}
                 aria-label={sendLabel}
                 disabled={stopping ? false : !canSend}
                 onMouseDown={keepFocus}
