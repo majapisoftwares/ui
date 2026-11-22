@@ -151,6 +151,61 @@ export function Preferences({
       delete root.dataset.localePending;
   }, [locale, ready]);
   useEffect(() => {
+    // iOS keeps reporting the bottom safe-area inset with the keyboard open,
+    // although the keyboard already covers the home indicator. Safari only
+    // shrinks the visual viewport (a pinch zoom does too, hence the scale);
+    // the installed Home Screen app shrinks the whole web view, so there the
+    // keyboard is told by a text field having focus on a touch device.
+    const root = document.documentElement;
+    const viewport = window.visualViewport;
+    const coarse = window.matchMedia?.("(pointer: coarse)");
+    const typeless = new Set([
+      "checkbox",
+      "radio",
+      "button",
+      "submit",
+      "reset",
+      "file",
+      "range",
+      "color",
+      "image",
+      "hidden",
+    ]);
+    const takesText = () => {
+      const el = document.activeElement;
+      if (!(el instanceof HTMLElement)) return false;
+      if (el instanceof HTMLTextAreaElement) return true;
+      if (el instanceof HTMLInputElement) return !typeless.has(el.type);
+      return el.isContentEditable;
+    };
+    const update = () => {
+      const shortened =
+        !!viewport &&
+        window.innerHeight - viewport.height > 120 &&
+        viewport.scale < 1.05;
+      if (shortened || (coarse?.matches && takesText()))
+        root.setAttribute("data-keyboard", "");
+      else root.removeAttribute("data-keyboard");
+    };
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    // Moving between fields blurs one before focusing the next.
+    const afterBlur = () => {
+      clearTimeout(timer);
+      timer = setTimeout(update, 80);
+    };
+    update();
+    viewport?.addEventListener("resize", update);
+    document.addEventListener("focusin", update);
+    document.addEventListener("focusout", afterBlur);
+    return () => {
+      clearTimeout(timer);
+      viewport?.removeEventListener("resize", update);
+      document.removeEventListener("focusin", update);
+      document.removeEventListener("focusout", afterBlur);
+      root.removeAttribute("data-keyboard");
+    };
+  }, []);
+  useEffect(() => {
     if (!ready) return;
     document.documentElement.classList.toggle("dark", theme === "dark");
     themeColor(theme);
