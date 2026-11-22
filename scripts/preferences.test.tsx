@@ -207,3 +207,105 @@ test("system theme follows prefers-color-scheme live and clears the saved choice
     for (const k of Object.keys(globals)) Reflect.deleteProperty(globalThis, k);
   }
 });
+
+test("keyboard inset clears on return and ignores restored focus without a pointer", async () => {
+  const dom = new JSDOM(
+    `<!doctype html><html><body><div id="root"></div><textarea id="field"></textarea></body></html>`,
+    { url: "https://example.test", pretendToBeVisual: true },
+  );
+  const win = dom.window;
+  Object.defineProperty(win, "matchMedia", {
+    configurable: true,
+    value: (query: string) => ({
+      matches: query.includes("pointer: coarse"),
+      media: query,
+      addEventListener() {},
+      removeEventListener() {},
+      addListener() {},
+      removeListener() {},
+      dispatchEvent() {
+        return false;
+      },
+      onchange: null,
+    }),
+  });
+  Object.defineProperty(win, "visualViewport", {
+    configurable: true,
+    value: { height: win.innerHeight, scale: 1, addEventListener() {}, removeEventListener() {} },
+  });
+  const keys = [
+    "window",
+    "document",
+    "navigator",
+    "HTMLElement",
+    "HTMLTextAreaElement",
+    "HTMLInputElement",
+    "Event",
+    "PointerEvent",
+    "FocusEvent",
+    "MutationObserver",
+    "ResizeObserver",
+    "IS_REACT_ACT_ENVIRONMENT",
+  ] as const;
+  const prev = new Map<string, PropertyDescriptor | undefined>();
+  for (const key of keys) {
+    prev.set(key, Object.getOwnPropertyDescriptor(globalThis, key));
+    Object.defineProperty(globalThis, key, {
+      configurable: true,
+      value:
+        key === "IS_REACT_ACT_ENVIRONMENT"
+          ? true
+          : win[key as keyof typeof win],
+    });
+  }
+  Object.defineProperty(globalThis, "localStorage", {
+    configurable: true,
+    value: win.localStorage,
+  });
+  let root: ReturnType<typeof hydrateRoot> | undefined;
+  try {
+    const markup = renderToString(createElement(Preferences, null, createElement("span")));
+    win.document.getElementById("root")!.innerHTML = markup;
+    await act(async () => {
+      root = hydrateRoot(
+        win.document.getElementById("root")!,
+        createElement(Preferences, null, createElement("span")),
+      );
+    });
+    const field = win.document.getElementById("field") as HTMLTextAreaElement;
+    await act(async () => {
+      field.focus();
+    });
+    assert.equal(
+      win.document.documentElement.hasAttribute("data-keyboard"),
+      false,
+      "restored focus without a pointer must not zero the safe-area inset",
+    );
+    await act(async () => {
+      win.document.dispatchEvent(new win.PointerEvent("pointerdown", { bubbles: true }));
+      field.focus();
+    });
+    assert.equal(
+      win.document.documentElement.hasAttribute("data-keyboard"),
+      true,
+      "a pointer then focus marks the keyboard on a touch device",
+    );
+    await act(async () => {
+      win.dispatchEvent(new win.Event("pageshow"));
+    });
+    assert.equal(
+      win.document.documentElement.hasAttribute("data-keyboard"),
+      false,
+      "pageshow clears a stale keyboard mark",
+    );
+    assert.notEqual(win.document.activeElement, field, "pageshow blurs restored focus without a real keyboard");
+  } finally {
+    await act(async () => root?.unmount());
+    win.close();
+    for (const [key, descriptor] of prev) {
+      if (descriptor) Object.defineProperty(globalThis, key, descriptor);
+      else Reflect.deleteProperty(globalThis, key);
+    }
+    Reflect.deleteProperty(globalThis, "localStorage");
+  }
+});

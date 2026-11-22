@@ -155,7 +155,9 @@ export function Preferences({
     // although the keyboard already covers the home indicator. Safari only
     // shrinks the visual viewport (a pinch zoom does too, hence the scale);
     // the installed Home Screen app shrinks the whole web view, so there the
-    // keyboard is told by a text field having focus on a touch device.
+    // keyboard is told by a text field having focus on a touch device — but
+    // only after a real pointer (focus restored on navigate/bfcache must not
+    // zero the inset, or the composer sits too low until the keyboard cycles).
     const root = document.documentElement;
     const viewport = window.visualViewport;
     const coarse = window.matchMedia?.("(pointer: coarse)");
@@ -178,12 +180,15 @@ export function Preferences({
       if (el instanceof HTMLInputElement) return !typeless.has(el.type);
       return el.isContentEditable;
     };
+    const shortened = () =>
+      !!viewport &&
+      window.innerHeight - viewport.height > 120 &&
+      viewport.scale < 1.05;
+    // Set by pointer/touch before focusin; cleared when the page is shown again
+    // or the route changes, so a restored focus does not look like a keyboard.
+    let pointed = false;
     const update = () => {
-      const shortened =
-        !!viewport &&
-        window.innerHeight - viewport.height > 120 &&
-        viewport.scale < 1.05;
-      if (shortened || (coarse?.matches && takesText()))
+      if (shortened() || (coarse?.matches && takesText() && pointed))
         root.setAttribute("data-keyboard", "");
       else root.removeAttribute("data-keyboard");
     };
@@ -191,17 +196,64 @@ export function Preferences({
     // Moving between fields blurs one before focusing the next.
     const afterBlur = () => {
       clearTimeout(timer);
-      timer = setTimeout(update, 80);
+      timer = setTimeout(() => {
+        if (!takesText()) pointed = false;
+        update();
+      }, 80);
+    };
+    const markPointer = () => {
+      pointed = true;
+      // Field may already be focused (restored); pointer alone must re-check.
+      if (takesText()) update();
+    };
+    const onReturn = () => {
+      pointed = false;
+      // Drop restored focus without a real keyboard so safe-area and composers
+      // recalculate (opening+closing the keyboard used to be the only fix).
+      if (takesText() && !shortened()) {
+        const el = document.activeElement;
+        if (el instanceof HTMLElement) el.blur();
+      }
+      update();
+    };
+    const onVisible = () => {
+      if (document.visibilityState !== "visible") return;
+      onReturn();
+    };
+    const hist = window.history;
+    const pushState = hist.pushState.bind(hist);
+    const replaceState = hist.replaceState.bind(hist);
+    hist.pushState = (...args: Parameters<History["pushState"]>) => {
+      const result = pushState(...args);
+      queueMicrotask(onReturn);
+      return result;
+    };
+    hist.replaceState = (...args: Parameters<History["replaceState"]>) => {
+      const result = replaceState(...args);
+      queueMicrotask(onReturn);
+      return result;
     };
     update();
     viewport?.addEventListener("resize", update);
+    document.addEventListener("pointerdown", markPointer, true);
     document.addEventListener("focusin", update);
     document.addEventListener("focusout", afterBlur);
+    document.addEventListener("visibilitychange", onVisible);
+    window.addEventListener("pageshow", onReturn);
+    window.addEventListener("focus", update);
+    window.addEventListener("popstate", onReturn);
     return () => {
       clearTimeout(timer);
+      hist.pushState = pushState;
+      hist.replaceState = replaceState;
       viewport?.removeEventListener("resize", update);
+      document.removeEventListener("pointerdown", markPointer, true);
       document.removeEventListener("focusin", update);
       document.removeEventListener("focusout", afterBlur);
+      document.removeEventListener("visibilitychange", onVisible);
+      window.removeEventListener("pageshow", onReturn);
+      window.removeEventListener("focus", update);
+      window.removeEventListener("popstate", onReturn);
       root.removeAttribute("data-keyboard");
     };
   }, []);
