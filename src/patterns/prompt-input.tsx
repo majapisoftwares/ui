@@ -357,7 +357,7 @@ export function PromptInput({
                       size="icon-xs"
                       aria-label={messages.removeAttachment(item.file.name)}
                       onClick={() => removeFile(item.id)}
-                      className="absolute -top-1.5 -right-1.5 rounded-full border shadow-sm"
+                      className="absolute top-1 right-1 rounded-full border shadow-sm"
                     >
                       <XIcon />
                     </Button>
