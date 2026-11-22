@@ -48,6 +48,7 @@
     "test:ai-elements": "tsx --test scripts/ai-elements.test.tsx",
     "test:navigation": "tsx --test scripts/navigation.test.tsx",
     "test:live-refresh": "tsx --test scripts/live-refresh.test.tsx",
+    "test:workbench-patterns": "tsx --test scripts/workbench-patterns.test.tsx",
     "test:release-plan": "node --test scripts/release-plan.test.mjs",
     "verify": "node scripts/verify.mjs"
   },

@@ -99,3 +99,13 @@ Listas e telas com dados se atualizam sozinhas: `useLiveRefresh(load, ms)` (`hoo
 `@ui-sdk/react` e `@ui-sdk/core` (ui-sdk.dev, Apache-2.0, beta fixada na versão exata) são a base de comportamento de todos os componentes: nenhum usa Base UI. Cada parte vem de `@ui-sdk/react/<componente>`, ganha os tokens da biblioteca por classes e mantém `data-slot`. Seletores de estado seguem o ui-sdk (`data-open`, `data-closed`, `data-highlighted`, `data-selected`, `data-pressed`, `data-starting-style`/`data-ending-style` para animações). `styles.css` declara `@layer ui-sdk;`. Antes de criar um comportamento novo, procure-o em `node_modules/@ui-sdk/react/docs/llms.txt`. Atualizar o ui-sdk (ainda beta) exige rodar `npm run verify` e revisar o changelog dele.
 
 O atalho da barra lateral adapta o símbolo ao dispositivo após a hidratação, preservando o texto inicial do servidor.
+
+## Guia de design do Workbench (padrões para app novo)
+
+Um app novo, criado do starter, já herda a experiência do Workbench. As regras abaixo valem para todo app e são cobertas por componentes, tokens ou `check:standards`:
+
+- **Rolagem:** toda área com rolagem interna é `ScrollArea` (fade nas bordas, sem cortar o conteúdo embaixo). Rolagem vertical nativa (`overflow-y-auto`, `overflow-auto`, `overflowY: "auto"`) é bloqueada pelo `check:standards`; só faixas laterais (`overflow-x-auto`) ficam nativas.
+- **Erros:** falhas de ações são `toastError`. Uma falha de renderização fica isolada na parte da tela com `patterns/error-boundary` (`ErrorBoundary name resetKeys fallback onError`): o resto continua usável, aparece um toast curto e `onError` reporta. Envolva mensagens, cards, painéis e o composer.
+- **Chat:** tela do agente e tela de sessão usam os mesmos componentes de `patterns/chat`, `patterns/prompt-input` (uma linha no celular até receber foco; botões respondem ao primeiro toque), `patterns/chat-markdown` (texto longo quebra, sem rolagem horizontal), `Attachment` com `Lightbox` para miniaturas de imagem, `patterns/question-card` (`QuestionCard`: botões de resposta com texto longo quebram dentro do card) e `ChatMessages` (desce sozinho quando está no fim e acompanha o streaming). No toque, `patterns/mobile-enter-newline` faz Enter pular linha e deixa o envio para o botão.
+- **Navegação:** `patterns/scroll-memory` (`ScrollMemory pathname`) restaura a rolagem da página no voltar/avançar.
+- **Tela:** só breadcrumb para navegar, sem texto explicativo nem nomes repetidos, listas com `useLiveRefresh`, en/pt-BR, Next.js mais recente, tema Claro/Escuro/Sistema em `Preferences`, área segura do iPhone no `AppShell`, `Sheet`, toast e composer.
