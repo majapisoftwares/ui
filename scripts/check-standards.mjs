@@ -52,6 +52,15 @@ export function navigationViolations(text) {
   return found;
 }
 
+// A native vertical scroll has no edge fade; every inner scroll area is the
+// library's ScrollArea. A sideways strip (overflow-x-auto) stays native.
+const nativeScrollClass =
+  /(?<![\w-])(?:[\w-]+:|\[[^\]\s]+\]:)*!?overflow-(?:y-)?(?:auto|scroll)(?![\w-])/;
+const nativeScrollStyle = /\boverflow(?:Y|-y)?\s*:\s*["']?(?:auto|scroll)\b/;
+export function nativeScroll(text) {
+  return nativeScrollClass.test(text) || nativeScrollStyle.test(text);
+}
+
 // A Button that reloads what's on screen: a refresh label, or an icon-only
 // button with a rotate icon. A retry after a failure, and actions with their
 // own label (Sync now, Reconnect), aren't refresh buttons.
@@ -111,6 +120,10 @@ async function visit(path) {
     )
       violations.push(
         `${name}: notify with toast from @majapisoftwares/ui/components/toast`,
+      );
+    if (consumer && nativeScroll(text))
+      violations.push(
+        `${name}: scrolling areas use ScrollArea (@majapisoftwares/ui/components/scroll-area), which has the edge fade`,
       );
     if (consumer)
       for (const rule of navigationViolations(text))
