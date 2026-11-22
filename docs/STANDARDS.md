@@ -97,3 +97,5 @@ Listas e telas com dados se atualizam sozinhas: `useLiveRefresh(load, ms)` (`hoo
 ## Fundação ui-sdk (Vercel)
 
 `@ui-sdk/react` e `@ui-sdk/core` (ui-sdk.dev, Apache-2.0, beta fixada na versão exata) são a base de comportamento de todos os componentes: nenhum usa Base UI. Cada parte vem de `@ui-sdk/react/<componente>`, ganha os tokens da biblioteca por classes e mantém `data-slot`. Seletores de estado seguem o ui-sdk (`data-open`, `data-closed`, `data-highlighted`, `data-selected`, `data-pressed`, `data-starting-style`/`data-ending-style` para animações). `styles.css` declara `@layer ui-sdk;`. Antes de criar um comportamento novo, procure-o em `node_modules/@ui-sdk/react/docs/llms.txt`. Atualizar o ui-sdk (ainda beta) exige rodar `npm run verify` e revisar o changelog dele.
+
+O atalho da barra lateral adapta o símbolo ao dispositivo após a hidratação, preservando o texto inicial do servidor.
