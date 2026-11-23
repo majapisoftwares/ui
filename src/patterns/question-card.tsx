@@ -26,6 +26,7 @@ export function QuestionCard({
   onAnswer,
   renderText,
   onFailure = toastError,
+  onOther,
 }: {
   text: string;
   options: string[];
@@ -36,6 +37,8 @@ export function QuestionCard({
   renderText?: (text: string) => ReactNode;
   /** Reports a failed answer; a toast by default. */
   onFailure?: (failure: unknown) => void;
+  /** "Other" hands the answer to the app (e.g. the chat composer as a reply) instead of opening an input in the card. */
+  onOther?: () => void;
 }) {
   const t = useMessages(messages);
   const [free, setFree] = useState<string | null>(null);
@@ -90,14 +93,14 @@ export function QuestionCard({
               size="sm"
               variant="ghost"
               disabled={sending !== null}
-              onClick={() => setFree("")}
+              onClick={() => (onOther ? onOther() : setFree(""))}
             >
               {t.other}
             </Button>
           ) : null}
         </div>
       ) : null}
-      {open && (free !== null || !list.length) ? (
+      {open && (free !== null || (!list.length && !onOther)) ? (
         <form
           className="flex gap-2"
           onSubmit={(event) => {
