@@ -339,7 +339,7 @@ export function PromptInput({
           <InputGroupAddon align="block-start" className={cn("cursor-default", inline && "basis-full")}>
             <AttachmentGroup
               aria-label={messages.attachments}
-              className="w-full"
+              className="w-full pt-0"
             >
               {files.map((item) =>
                 item.previewUrl ? (
