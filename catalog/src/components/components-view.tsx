@@ -199,6 +199,9 @@ const messages = defineMessages({
     toastSaved: "Changes saved",
     toastError: "Couldn't save",
     errorToast: "Error toast",
+    longErrorToast: "Long error",
+    toastLongError:
+      "The database system is not yet accepting connections. The request to https://api.example.com/v1/workspaces/acme/projects/launch/deployments failed after three attempts; the last one ended with ECONNREFUSED 10.0.12.40:5432.",
     upload: "Uploading",
     alertTitle: "Heads up",
     alertBody: "New version available.",
@@ -269,6 +272,9 @@ const messages = defineMessages({
     toastSaved: "Alterações salvas",
     toastError: "Não foi possível salvar",
     errorToast: "Toast de erro",
+    longErrorToast: "Erro longo",
+    toastLongError:
+      "O banco de dados ainda não está aceitando conexões. A requisição para https://api.example.com/v1/workspaces/acme/projects/launch/deployments falhou após três tentativas; a última terminou com ECONNREFUSED 10.0.12.40:5432.",
     upload: "Enviando",
     alertTitle: "Atenção",
     alertBody: "Nova versão disponível.",
@@ -564,6 +570,12 @@ export function ComponentsView() {
             onClick={() => toastError(new Error(t.toastError))}
           >
             {t.errorToast}
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => toastError(new Error(t.toastLongError))}
+          >
+            {t.longErrorToast}
           </Button>
         </div>
         <Alert>

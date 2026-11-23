@@ -26,6 +26,7 @@ import {
 
 import { useUiMessages } from "../../lib/i18n";
 import { Button } from "./button";
+import { ScrollArea } from "./scroll-area";
 
 type Content = React.ReactNode;
 
@@ -44,7 +45,10 @@ interface ToastAddOptions {
     | (string & {});
   /** `high` is announced right away (assertive), `low` waits for a pause (polite). */
   priority?: "high" | "low";
-  /** Milliseconds before it closes; `0` keeps it until dismissed. */
+  /**
+   * Milliseconds before it closes; `0` keeps it until dismissed. Error toasts
+   * ignore it: they always stay until dismissed.
+   */
   timeout?: number;
   /** One short action (Undo, Try again). `children` is the label. */
   actionProps?: { children?: Content; onClick?: () => unknown; href?: string };
@@ -82,9 +86,38 @@ type Toast_ = SdkToaster<Content> & {
   close: (id?: string) => void;
 };
 
+type QueuedToast = ReturnType<SdkToaster<Content>["toasts"]>[number];
+
+/**
+ * Error toasts never close on a timer: they stay until the person dismisses
+ * them (or the app closes them). It holds for the toasts as the region reads
+ * them, so it covers every way of showing one (`add`, `error`, `promise`,
+ * `update`, the deprecated sonner and snackbar calls) and any `timeout`.
+ */
+function keepErrors(read: () => readonly QueuedToast[]) {
+  const kept = new WeakMap<QueuedToast, QueuedToast>();
+  let source: readonly QueuedToast[] | undefined;
+  let result: readonly QueuedToast[] = [];
+  // The same array until the queue changes, as the region expects.
+  return () => {
+    const queued = read();
+    if (queued !== source) {
+      source = queued;
+      result = queued.map((item) => {
+        if (item.type !== "error" || item.duration === Infinity) return item;
+        const held = kept.get(item) ?? { ...item, duration: Infinity };
+        kept.set(item, held);
+        return held;
+      });
+    }
+    return result;
+  };
+}
+
 function createToastManager(): Toast_ {
   const queue = createSdkToaster<Content>();
   return Object.assign(queue, {
+    toasts: keepErrors(queue.toasts),
     add: (options: ToastAddOptions) => queue(toOptions(options)),
     close: (id?: string) => queue.dismiss(id),
   });
@@ -153,7 +186,7 @@ function ToastTitle({
   return (
     <ToastTitlePrimitive
       data-slot="toast-title"
-      className={cn("text-sm font-medium", className)}
+      className={cn("text-sm font-medium wrap-anywhere", className)}
       {...props}
     />
   );
@@ -166,7 +199,7 @@ function ToastDescription({
   return (
     <ToastDescriptionPrimitive
       data-slot="toast-description"
-      className={cn("text-sm text-muted-foreground", className)}
+      className={cn("text-sm wrap-anywhere text-muted-foreground", className)}
       {...props}
     />
   );
@@ -263,10 +296,16 @@ function Toaster({
           <Toast>
             <ToastContent>
               <ToastIcon type={item.type} />
-              <div className="flex min-w-0 flex-1 flex-col gap-1">
-                <ToastTitle />
-                <ToastDescription />
-              </div>
+              {/* A long message wraps and scrolls here, so three toasts still fit the screen. */}
+              <ScrollArea
+                className="min-w-0 flex-1"
+                viewportClassName="max-h-[20dvh]"
+              >
+                <div className="flex flex-col gap-1">
+                  <ToastTitle />
+                  <ToastDescription />
+                </div>
+              </ScrollArea>
               <ToastAction />
               <ToastClose />
             </ToastContent>
@@ -282,7 +321,7 @@ function errorMessage(error: unknown): string {
   return typeof error === "string" ? error : String(error);
 }
 
-/** Shows a failure (anything thrown) as an error toast. */
+/** Shows a failure (anything thrown) as an error toast, which stays until dismissed. */
 function toastError(error: unknown, title?: string) {
   return toast.add({
     type: "error",
