@@ -65,6 +65,8 @@ type SidebarContextProps = {
   openMobile: boolean;
   setOpenMobile: (open: boolean) => void;
   isMobile: boolean;
+  /** The mode the server rendered (the default: it can't read the cookie). Text that names the mode uses it until hydration ends. */
+  serverMode: SidebarMode;
   toggleSidebar: () => void;
   toggleCompact: () => void;
 };
@@ -192,6 +194,7 @@ function SidebarProvider({
     [setMode, setWidth],
   );
 
+  const serverMode = defaultMode ?? "open";
   const open = mode === "open";
   const setOpen = React.useCallback(
     (value: boolean) => setMode(value ? "open" : "compact"),
@@ -238,6 +241,7 @@ function SidebarProvider({
       open,
       setOpen,
       isMobile,
+      serverMode,
       openMobile,
       setOpenMobile,
       toggleSidebar,
@@ -254,6 +258,7 @@ function SidebarProvider({
       open,
       setOpen,
       isMobile,
+      serverMode,
       openMobile,
       toggleSidebar,
       toggleCompact,
@@ -512,10 +517,18 @@ function SidebarCollapse({
   onClick,
   ...props
 }: React.ComponentProps<typeof Button>) {
-  const { mode, toggleCompact, isMobile } = useSidebar();
+  const { mode, serverMode, toggleCompact, isMobile } = useSidebar();
   const messages = useUiMessages();
+  // The client starts from the saved mode (cookie) but the server rendered the
+  // default, so the tooltip names the server's mode until hydration ends
+  // (React #418 otherwise, whenever the sidebar was left compact or hidden).
+  const hydrated = React.useSyncExternalStore(
+    subscribeNoop,
+    () => true,
+    () => false,
+  );
   const label =
-    mode === "open" || isMobile
+    (hydrated ? mode : serverMode) === "open" || isMobile
       ? messages.collapseSidebar
       : messages.expandSidebar;
 
