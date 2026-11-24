@@ -42,6 +42,7 @@ const steps = [
   ["test:live-refresh", "npm run test:live-refresh"],
   ["test:toast", "npm run test:toast"],
   ["test:popup-width", "npm run test:popup-width"],
+  ["test:check-table-actions", "npm run test:check-table-actions"],
   ["test:release-plan", "npm run test:release-plan"],
   ["lint", "npm run lint"],
   ["check:standards", "npm run check:standards"],

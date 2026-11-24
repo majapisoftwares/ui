@@ -257,6 +257,7 @@ const dataTableMessages = defineMessages({
     valuesToShow: "Values to show",
     customizeColumns: "Customize columns",
     columnsTooltip: "Show, hide and reset columns",
+    rowActions: "Actions",
     columns: "Columns",
     resetColumns: "Reset columns",
     rowsPerPage: "Rows",
@@ -301,6 +302,7 @@ const dataTableMessages = defineMessages({
     valuesToShow: "Valores a mostrar",
     customizeColumns: "Personalizar colunas",
     columnsTooltip: "Mostrar, ocultar e restaurar colunas",
+    rowActions: "Ações",
     columns: "Colunas",
     resetColumns: "Restaurar colunas",
     rowsPerPage: "Linhas",
@@ -370,6 +372,11 @@ export type DataTableProps<TData extends RowData> = {
   initialSorting?: SortingState;
   lockedEndColumnIds?: string[];
   lockedStartColumnIds?: string[];
+  /**
+   * Row actions: icon buttons (DataTableRowAction) in a last column that is
+   * locked at the end and aligned right. Return null for rows without actions.
+   */
+  rowActions?: (row: TData) => React.ReactNode;
   manualFiltering?: boolean;
   manualPagination?: boolean;
   manualSorting?: boolean;
@@ -901,6 +908,8 @@ function getResetFiltersStorageKey(event: Event) {
   return typeof storageKey === "string" ? storageKey : null;
 }
 
+const rowActionsColumnId = "actions";
+
 function isLockedColumn(
   columnId: string,
   lockedStartColumnIds: string[],
@@ -1001,7 +1010,7 @@ function resolvePageSize(
 export function DataTable<TData extends RowData>(props: DataTableProps<TData>) {
   const {
     activeRowId,
-    columns,
+    columns: columnsProp,
     data,
     emptyMessage,
     emptyState,
@@ -1027,8 +1036,9 @@ export function DataTable<TData extends RowData>(props: DataTableProps<TData>) {
     initialColumnVisibility = emptyColumnVisibility,
     initialPageSize = 10,
     initialSorting = emptySorting,
-    lockedEndColumnIds = emptyLockedColumnIds,
+    lockedEndColumnIds: lockedEndColumnIdsProp = emptyLockedColumnIds,
     lockedStartColumnIds = emptyLockedColumnIds,
+    rowActions,
     manualFiltering = false,
     enableExcludeFilters,
     manualPagination = false,
@@ -1046,6 +1056,39 @@ export function DataTable<TData extends RowData>(props: DataTableProps<TData>) {
   } = props;
   const t = useMessages(dataTableMessages);
   const ui = useUiMessages();
+  const hasRowActions = Boolean(rowActions);
+  const columns = React.useMemo<ColumnDef<TData, unknown>[]>(
+    () =>
+      hasRowActions
+        ? [
+            ...columnsProp.filter(
+              (column) => getColumnId(column) !== rowActionsColumnId,
+            ),
+            {
+              id: rowActionsColumnId,
+              header: () => <span className="sr-only">{t.rowActions}</span>,
+              enableSorting: false,
+              enableHiding: false,
+              enableColumnFilter: false,
+              cell: ({ row }) => {
+                const actions = rowActions?.(row.original);
+                return actions ? (
+                  <DataTableRowActions>{actions}</DataTableRowActions>
+                ) : null;
+              },
+              meta: { align: "right", label: t.rowActions },
+            },
+          ]
+        : columnsProp,
+    [columnsProp, hasRowActions, rowActions, t.rowActions],
+  );
+  const lockedEndColumnIds = React.useMemo(
+    () =>
+      hasRowActions && !lockedEndColumnIdsProp.includes(rowActionsColumnId)
+        ? [...lockedEndColumnIdsProp, rowActionsColumnId]
+        : lockedEndColumnIdsProp,
+    [hasRowActions, lockedEndColumnIdsProp],
+  );
   // Persistence needs a key; without one the table keeps state in memory only.
   const storageKey = storageKeyProp ?? "";
   const enablePersistence =
@@ -2504,5 +2547,61 @@ export function DataTableSkeleton() {
         </div>
       </div>
     </div>
+  );
+}
+
+/** Groups a row's action buttons, right-aligned, for the last cell of a table row. */
+export function DataTableRowActions({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <TooltipProvider>
+      <div
+        className={cn("flex items-center justify-end gap-1", className)}
+        onClick={(event) => event.stopPropagation()}
+        onKeyDown={(event) => event.stopPropagation()}
+      >
+        {children}
+      </div>
+    </TooltipProvider>
+  );
+}
+
+/** One row action: an icon-only button with the standard Tooltip and aria-label. */
+export function DataTableRowAction({
+  icon,
+  label,
+  onClick,
+  disabled,
+  variant = "ghost",
+}: {
+  icon: React.ReactNode;
+  label: string;
+  onClick?: React.MouseEventHandler<HTMLElement>;
+  disabled?: boolean;
+  variant?: React.ComponentProps<typeof Button>["variant"];
+}) {
+  return (
+    <Tooltip>
+      <TooltipTrigger
+        render={
+          <Button
+            type="button"
+            variant={variant}
+            size="icon-sm"
+            aria-label={label}
+            disabled={disabled}
+            onClick={onClick}
+          />
+        }
+      >
+        {icon}
+      </TooltipTrigger>
+      <TooltipContent>{label}</TooltipContent>
+    </Tooltip>
   );
 }
