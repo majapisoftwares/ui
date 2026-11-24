@@ -41,6 +41,7 @@ const steps = [
   ["test:workbench-patterns", "npm run test:workbench-patterns"],
   ["test:live-refresh", "npm run test:live-refresh"],
   ["test:toast", "npm run test:toast"],
+  ["test:sidebar", "npm run test:sidebar"],
   ["test:popup-width", "npm run test:popup-width"],
   ["test:check-table-actions", "npm run test:check-table-actions"],
   ["test:release-plan", "npm run test:release-plan"],
