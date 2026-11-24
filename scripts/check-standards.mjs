@@ -82,6 +82,77 @@ export function refreshButton(text) {
   return false;
 }
 
+
+// Row actions of a table: icon-only buttons (DataTableRowAction, with the
+// library Tooltip and an aria-label) in the last column, right-aligned. A
+// Button in a table cell with a visible label, a native `title`, or in a
+// column that isn't the last breaks the pattern. Header/toolbar buttons and
+// link-variant buttons aren't row actions.
+export function tableActionViolations(text) {
+  const found = [];
+  const cellStarts = [...text.matchAll(/\bcell:\s*/g)].map((m) => m.index);
+  const tableCells = [...text.matchAll(/<TableCell\b[^>]*>/g)];
+  for (const match of text.matchAll(/<Button\b/g)) {
+    const close = text.indexOf("</Button>", match.index);
+    const block = text.slice(
+      match.index,
+      Math.min(close === -1 ? Infinity : close, match.index + 700),
+    );
+    if (/\bvariant="link"/.test(block)) continue;
+    const before = text.slice(0, match.index);
+    // Inside a column definition's cell?
+    const cellAt = cellStarts.filter((i) => i < match.index).at(-1);
+    let column;
+    if (cellAt !== undefined) {
+      const between = text.slice(cellAt, match.index);
+      if (!/\n\s*\]\s*;|<DataTable\b|\bheader:/.test(between)) {
+        const head = text.slice(Math.max(0, cellAt - 400), cellAt);
+        const id = [...head.matchAll(/\b(?:id|accessorKey):\s*"([^"]+)"/g)].at(-1);
+        const arrayAt = Math.max(
+          before.lastIndexOf("ColumnDef<"),
+          before.lastIndexOf("columns = ["),
+          before.lastIndexOf("columns: ["),
+        );
+        column = { id: id?.[1] };
+        if (arrayAt >= 0) {
+          const end = text.indexOf("];", match.index);
+          const entries = [
+            ...text
+              .slice(arrayAt, end === -1 ? undefined : end)
+              .matchAll(/\{\s*(?:id|accessorKey):\s*"([^"]+)"/g),
+          ].map((m) => m[1]);
+          column.last = entries.at(-1);
+        }
+      }
+    }
+    const cell = tableCells.filter((m) => m.index < match.index).at(-1);
+    const inTableCell =
+      cell && !text.slice(cell.index, match.index).includes("</TableCell>");
+    if (!column && !inTableCell) continue;
+    const where = column ? `column "${column.id ?? "?"}"` : "table cell";
+    const openTag = block.slice(0, Math.max(block.indexOf("\n>"), 0) || 400);
+    if (!/\bsize="icon[^"]*"/.test(openTag))
+      found.push(
+        `${where}: row actions are icon-only buttons (DataTableRowAction) with a Tooltip, not a text label`,
+      );
+    if (/\stitle=/.test(openTag))
+      found.push(
+        `${where}: use the Tooltip, not native title, for the action's name`,
+      );
+    if (column && column.id && column.last && column.id !== column.last)
+      found.push(`${where}: row actions sit in the last column, right-aligned`);
+    if (inTableCell) {
+      const rowEnd = text.indexOf("</TableRow>", match.index);
+      const after = text.slice(match.index, rowEnd === -1 ? undefined : rowEnd);
+      if (/<TableCell\b/.test(after))
+        found.push(`${where}: row actions sit in the last column, right-aligned`);
+      if (!/text-right|justify-end/.test(cell[0]))
+        found.push(`${where}: right-align the actions cell (text-right)`);
+    }
+  }
+  return [...new Set(found)];
+}
+
 async function visit(path) {
   for (const entry of await readdir(path, { withFileTypes: true })) {
     if (["node_modules", "dist", ".git"].includes(entry.name)) continue;
@@ -125,6 +196,9 @@ async function visit(path) {
       violations.push(
         `${name}: scrolling areas use ScrollArea (@majapisoftwares/ui/components/scroll-area), which has the edge fade`,
       );
+    if (consumer)
+      for (const rule of tableActionViolations(text))
+        violations.push(`${name}: ${rule}`);
     if (consumer)
       for (const rule of navigationViolations(text))
         violations.push(`${name}: ${rule}`);
