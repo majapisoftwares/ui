@@ -165,9 +165,11 @@ function useMessageScrollerController({
         autoScrollRef.current &&
         !scrollable.end &&
         spacerHeightRef.current === 0 &&
-        modeRef.current !== "settling-jump" &&
-        modeRef.current !== "anchored-to-message"
+        modeRef.current !== "settling-jump"
       ) {
+        // Also from "anchored-to-message": the spacer is what makes a freshly
+        // anchored turn look like it is at the end, so with spacer 0 a reader
+        // at the real end (scrollbar drag, scrollTo) must not be pulled back.
         modeRef.current = "following-bottom";
       } else if (
         modeRef.current === "following-bottom" &&
