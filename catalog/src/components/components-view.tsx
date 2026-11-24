@@ -27,6 +27,7 @@ import {
 } from "@majapisoftwares/ui/components/input-group";
 import {
   Field,
+  FieldGroup,
   FieldDescription,
   FieldLabel,
 } from "@majapisoftwares/ui/components/field";
@@ -319,6 +320,8 @@ function Section({
   );
 }
 
+const regions = ["sa-east-1","us-east-1","us-east-2","us-west-1","us-west-2","eu-west-1","eu-west-2","eu-central-1","ap-south-1","ap-northeast-1","ap-southeast-1","ca-central-1"];
+
 export function ComponentsView() {
   const t = useMessages(messages);
   const [volume, setVolume] = useState(60);
@@ -465,6 +468,26 @@ export function ComponentsView() {
               <DialogDescription>{t.editProfileBody}</DialogDescription>
             </DialogHeader>
             <Input aria-label={t.email} placeholder="name@example.com" />
+            <FieldGroup>
+              <Field>
+                <FieldLabel>{t.region}</FieldLabel>
+                <Select
+                  defaultValue="sa-east-1"
+                  items={regions.map((value) => ({ value, label: value }))}
+                >
+                  <SelectTrigger aria-label={t.region} className="w-full">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {regions.map((value) => (
+                      <SelectItem key={value} value={value}>
+                        {value}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </Field>
+            </FieldGroup>
             <DialogFooter>
               <DialogClose render={<Button variant="outline" />}>
                 {t.cancel}
