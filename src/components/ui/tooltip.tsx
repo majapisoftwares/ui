@@ -76,7 +76,10 @@ function TooltipContent({
       {...props}
     >
       {children}
-      <TooltipArrow className="absolute z-50 size-2.5 rotate-45 rounded-[2px] bg-foreground data-[side=bottom]:top-0 data-[side=bottom]:left-(--arrow-offset) data-[side=bottom]:-translate-x-1/2 data-[side=bottom]:-translate-y-1/2 data-[side=left]:top-(--arrow-offset) data-[side=left]:right-0 data-[side=left]:translate-x-1/2 data-[side=left]:-translate-y-1/2 data-[side=right]:top-(--arrow-offset) data-[side=right]:left-0 data-[side=right]:-translate-x-1/2 data-[side=right]:-translate-y-1/2 data-[side=top]:bottom-0 data-[side=top]:left-(--arrow-offset) data-[side=top]:-translate-x-1/2 data-[side=top]:translate-y-1/2" />
+      {/* ui-sdk writes the arrow's position along the edge inline (centred on the trigger,
+          clamped by arrowPadding), so the classes only pin it to its own side and
+          centre it across the edge: no translate on the along axis, or it is shifted twice. */}
+      <TooltipArrow className="absolute z-50 size-2.5 rotate-45 rounded-[2px] bg-foreground data-[side=bottom]:top-0 data-[side=bottom]:-translate-y-1/2 data-[side=left]:right-0 data-[side=left]:translate-x-1/2 data-[side=right]:left-0 data-[side=right]:-translate-x-1/2 data-[side=top]:bottom-0 data-[side=top]:translate-y-1/2" />
     </TooltipContentPrimitive>
   );
 }
