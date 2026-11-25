@@ -76,3 +76,101 @@ test("rowActions adds a locked, right-aligned last column of icon-only buttons w
     for (const [key, descriptor] of descriptors) { if (descriptor) Object.defineProperty(globalThis, key, descriptor); else Reflect.deleteProperty(globalThis, key); }
   }
 });
+
+test("row groups render children under a toggle that follows defaultExpandedRows and keeps the user's choice", async () => {
+  const dom = new JSDOM('<html><body><div id="root"></div></body></html>', { url: "https://example.test", pretendToBeVisual: true });
+  const descriptors = new Map<string, PropertyDescriptor | undefined>();
+  for (const key of ["window", "document", "navigator", "HTMLElement", "Element", "Node", "MutationObserver", "NodeFilter", "HTMLFieldSetElement", "HTMLFormElement", "HTMLInputElement", "HTMLButtonElement", "HTMLTextAreaElement", "HTMLSelectElement", "HTMLAnchorElement", "SVGElement", "Event", "KeyboardEvent", "MouseEvent", "PointerEvent", "FocusEvent", "CustomEvent", "DOMRect", "ResizeObserver", "IntersectionObserver", "CSS", "getComputedStyle", "requestAnimationFrame", "cancelAnimationFrame", "IS_REACT_ACT_ENVIRONMENT"]) {
+    descriptors.set(key, Object.getOwnPropertyDescriptor(globalThis, key));
+    let value = key === "IS_REACT_ACT_ENVIRONMENT" ? true : dom.window[key as keyof typeof dom.window];
+    if (typeof value === "function" && ["getComputedStyle", "requestAnimationFrame", "cancelAnimationFrame"].includes(key)) value = value.bind(dom.window);
+    Object.defineProperty(globalThis, key, { configurable: true, value });
+  }
+  Object.defineProperty(globalThis, "ResizeObserver", { configurable: true, value: class { observe() {} unobserve() {} disconnect() {} } });
+  const root = createRoot(dom.window.document.getElementById("root")!);
+  type Node = { id: string; name: string; collapsed?: boolean; children?: Node[] };
+  const groups = (options: { bCollapsed?: boolean; withC?: boolean } = {}): Node[] => {
+    const rows: Node[] = [
+      { id: "deploy-a", name: "Deploy A", children: [{ id: "a1", name: "Job A1" }, { id: "a2", name: "Job A2" }] },
+      { id: "deploy-b", name: "Deploy B", collapsed: options.bCollapsed ?? true, children: [{ id: "b1", name: "Job B1" }] },
+    ];
+    if (options.withC) rows.push({ id: "deploy-c", name: "Deploy C", children: [{ id: "c1", name: "Job C1" }] });
+    return rows;
+  };
+  const opened: string[] = [];
+  const render = (data: Node[]) => createElement(DataTable, {
+    columns: [{ accessorKey: "name", header: "Name" }],
+    data,
+    getRowId: (row: Node) => row.id,
+    getSubRows: (row: Node) => row.children,
+    defaultExpandedRows: (row: Node) => !row.collapsed,
+    onRowClick: (row: Node) => opened.push(row.id),
+  });
+  const toggles = () => [...dom.window.document.querySelectorAll<HTMLButtonElement>("tbody button")].filter((button) => ["Expand", "Collapse"].includes(button.getAttribute("aria-label") ?? ""));
+  try {
+    await act(async () => { root.render(render(groups())); });
+    const body = () => dom.window.document.body.textContent ?? "";
+    // Defaults: A expanded, B collapsed, the plain row has no toggle.
+    assert.ok(body().includes("Job A1"), "a group the default expands shows its children");
+    assert.ok(!body().includes("Job B1"), "a group the default collapses hides its children");
+    const [toggleA, toggleB] = toggles();
+    assert.equal(toggles().length, 2, "only rows with children get a toggle");
+    assert.equal(toggleA.getAttribute("aria-expanded"), "true");
+    assert.equal(toggleB.getAttribute("aria-expanded"), "false");
+    // The toggle opens and closes the group, and the click does not reach the row.
+    await act(async () => { toggleA.click(); });
+    assert.ok(!body().includes("Job A1"), "collapsing hides the children");
+    assert.equal(toggleA.getAttribute("aria-expanded"), "false");
+    assert.deepEqual(opened, [], "the toggle's click must not open the row");
+    // A data refresh (live data) re-applies the defaults, but keeps the user's choice.
+    await act(async () => { root.render(render(groups())); });
+    assert.ok(!body().includes("Job A1"), "the user's collapse survives a data refresh");
+    assert.ok(!body().includes("Job B1"), "an untouched row keeps its default");
+    // A default that flips in the data reaches rows the user never toggled.
+    await act(async () => { root.render(render(groups({ bCollapsed: false }))); });
+    assert.ok(body().includes("Job B1"), "a row the user never toggled follows its new default");
+    assert.ok(!body().includes("Job A1"), "the user's choice still holds");
+    // A new group starts expanded by the default.
+    await act(async () => { root.render(render(groups({ bCollapsed: false, withC: true }))); });
+    assert.ok(body().includes("Job C1"), "a new group starts expanded");
+  } finally {
+    await act(async () => root.unmount()); dom.window.close();
+    for (const [key, descriptor] of descriptors) { if (descriptor) Object.defineProperty(globalThis, key, descriptor); else Reflect.deleteProperty(globalThis, key); }
+  }
+});
+
+test("a page holds whole groups: children never split across pages", async () => {
+  const dom = new JSDOM('<html><body><div id="root"></div></body></html>', { url: "https://example.test", pretendToBeVisual: true });
+  const descriptors = new Map<string, PropertyDescriptor | undefined>();
+  for (const key of ["window", "document", "navigator", "HTMLElement", "Element", "Node", "MutationObserver", "NodeFilter", "HTMLFieldSetElement", "HTMLFormElement", "HTMLInputElement", "HTMLButtonElement", "HTMLTextAreaElement", "HTMLSelectElement", "HTMLAnchorElement", "SVGElement", "Event", "KeyboardEvent", "MouseEvent", "PointerEvent", "FocusEvent", "CustomEvent", "DOMRect", "ResizeObserver", "IntersectionObserver", "CSS", "getComputedStyle", "requestAnimationFrame", "cancelAnimationFrame", "IS_REACT_ACT_ENVIRONMENT"]) {
+    descriptors.set(key, Object.getOwnPropertyDescriptor(globalThis, key));
+    let value = key === "IS_REACT_ACT_ENVIRONMENT" ? true : dom.window[key as keyof typeof dom.window];
+    if (typeof value === "function" && ["getComputedStyle", "requestAnimationFrame", "cancelAnimationFrame"].includes(key)) value = value.bind(dom.window);
+    Object.defineProperty(globalThis, key, { configurable: true, value });
+  }
+  Object.defineProperty(globalThis, "ResizeObserver", { configurable: true, value: class { observe() {} unobserve() {} disconnect() {} } });
+  const root = createRoot(dom.window.document.getElementById("root")!);
+  type Node = { id: string; name: string; children?: { id: string; name: string }[] };
+  const data: Node[] = [
+    { id: "g1", name: "Group 1", children: [{ id: "g1-a", name: "Group 1 Job A" }, { id: "g1-b", name: "Group 1 Job B" }, { id: "g1-c", name: "Group 1 Job C" }] },
+    { id: "g2", name: "Group 2", children: [{ id: "g2-a", name: "Group 2 Job A" }] },
+  ];
+  try {
+    await act(async () => {
+      root.render(createElement(DataTable, {
+        columns: [{ accessorKey: "name", header: "Name" }],
+        data,
+        getRowId: (row: Node) => row.id,
+        getSubRows: (row: Node) => row.children,
+        pageSizeOptions: [1],
+        initialPageSize: 1,
+      }));
+    });
+    const body = () => dom.window.document.body.textContent ?? "";
+    assert.ok(body().includes("Group 1 Job C"), "the expanded group's children are on its page");
+    assert.ok(!body().includes("Group 2"), "the second group waits for the next page");
+  } finally {
+    await act(async () => root.unmount()); dom.window.close();
+    for (const [key, descriptor] of descriptors) { if (descriptor) Object.defineProperty(globalThis, key, descriptor); else Reflect.deleteProperty(globalThis, key); }
+  }
+});
