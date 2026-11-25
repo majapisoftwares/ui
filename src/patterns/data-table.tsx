@@ -35,6 +35,7 @@ import {
   ArrowUpDownIcon,
   ArrowUpNarrowWideIcon,
   CheckIcon,
+  ChevronDownIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
   ChevronsLeftIcon,
@@ -51,6 +52,7 @@ import {
   createTable,
   flexRender,
   getCoreRowModel,
+  getExpandedRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
@@ -59,10 +61,12 @@ import {
   type ColumnFiltersState,
   type ColumnOrderState,
   type ColumnSizingState,
+  type ExpandedState,
   type FilterFn,
   type Header,
   type OnChangeFn,
   type PaginationState,
+  type Row,
   type RowData,
   type RowSelectionState,
   type SortingState,
@@ -258,6 +262,8 @@ const dataTableMessages = defineMessages({
     customizeColumns: "Customize columns",
     columnsTooltip: "Show, hide and reset columns",
     rowActions: "Actions",
+    expand: "Expand",
+    collapse: "Collapse",
     columns: "Columns",
     resetColumns: "Reset columns",
     rowsPerPage: "Rows",
@@ -303,6 +309,8 @@ const dataTableMessages = defineMessages({
     customizeColumns: "Personalizar colunas",
     columnsTooltip: "Mostrar, ocultar e restaurar colunas",
     rowActions: "Ações",
+    expand: "Expandir",
+    collapse: "Recolher",
     columns: "Colunas",
     resetColumns: "Restaurar colunas",
     rowsPerPage: "Linhas",
@@ -366,6 +374,20 @@ export type DataTableProps<TData extends RowData> = {
   onRowClick?: (row: TData) => void;
   /** Accessible name for a clickable row; defaults to its id. */
   getRowLabel?: (row: TData) => string;
+  /**
+   * Children of a row: a row whose function returns rows renders as an
+   * expandable group, its children indented under it. Filtering and sorting
+   * treat the group as one row (children follow it), so search matches the
+   * group row: make its cells describe the children too. Sorting applies to
+   * each level on its own.
+   */
+  getSubRows?: (row: TData) => TData[] | undefined;
+  /**
+   * Rows with children start expanded unless this returns false. It follows
+   * the data: when it changes, groups it has not been applied to yet take it.
+   * A toggle by the user wins for as long as the row id stays in the data.
+   */
+  defaultExpandedRows?: (row: TData) => boolean | undefined;
   initialColumnOrder?: ColumnOrderState;
   initialColumnVisibility?: VisibilityState;
   initialPageSize?: number;
@@ -1032,6 +1054,8 @@ export function DataTable<TData extends RowData>(props: DataTableProps<TData>) {
     initialGlobalFilter = "",
     onRowClick,
     getRowLabel,
+    getSubRows,
+    defaultExpandedRows,
     initialColumnOrder,
     initialColumnVisibility = emptyColumnVisibility,
     initialPageSize = 10,
@@ -1194,6 +1218,48 @@ export function DataTable<TData extends RowData>(props: DataTableProps<TData>) {
     [resetPaginationPage],
   );
 
+  // Row groups (getSubRows): which group rows are expanded. A live refresh
+  // brings new groups, so the defaults follow the data on every change instead
+  // of being read once; a row the user has toggled keeps the user's choice.
+  // Nothing changes when neither data nor defaults did: the updater returns
+  // the same state, so this effect never loops.
+  const userToggledRowIds = React.useRef<Set<string>>(new Set());
+  const [expanded, setExpanded] = React.useState<ExpandedState>({});
+  React.useEffect(() => {
+    if (!getSubRows) return;
+    setExpanded((current) => {
+      // `true` (everything expanded) is not a state this table produces; treat
+      // it as an empty map, the only per-row keys it would read are its own.
+      const currentIds = typeof current === "object" ? current : {};
+      let changed = false;
+      const next = { ...currentIds };
+      const apply = (rows: TData[]) => {
+        for (const row of rows) {
+          const subRows = getSubRows(row);
+          if (!subRows?.length) continue;
+          const id = getRowId(row);
+          if (!userToggledRowIds.current.has(id)) {
+            const wanted = defaultExpandedRows?.(row) ?? true;
+            if (Boolean(currentIds[id]) !== wanted) {
+              next[id] = wanted;
+              changed = true;
+            }
+          }
+          apply(subRows);
+        }
+      };
+      apply(data);
+      return changed ? next : current;
+    });
+  }, [data, defaultExpandedRows, getRowId, getSubRows]);
+  const toggleRowExpanded = React.useCallback((row: Row<TData>) => {
+    userToggledRowIds.current.add(row.id);
+    setExpanded((current) => ({
+      ...(typeof current === "object" ? current : {}),
+      [row.id]: !row.getIsExpanded(),
+    }));
+  }, []);
+
   const dndContextId = React.useId();
   const sensors = useSensors(
     useSensor(MouseSensor, {
@@ -1334,6 +1400,8 @@ export function DataTable<TData extends RowData>(props: DataTableProps<TData>) {
     // TanStack schedules auto resets while evaluating row models during render.
     // Concurrent/Suspense renders may not have committed yet, so reset in an effect.
     autoResetPageIndex: false,
+    // Row groups follow defaultExpandedRows through the effect above.
+    autoResetExpanded: false,
     columnResizeMode: "onChange",
     defaultColumn: { minSize: 48 },
     columns,
@@ -1343,9 +1411,13 @@ export function DataTable<TData extends RowData>(props: DataTableProps<TData>) {
     enableRowSelection,
     filterFns,
     getCoreRowModel: getCoreRowModel(),
+    getExpandedRowModel: getExpandedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    // A page holds whole groups: children never split across pages.
+    paginateExpandedRows: false,
     getRowId,
+    getSubRows,
     getSortedRowModel: getSortedRowModel(),
     // An explicit undefined would replace TanStack's default and disable search.
     globalFilterFn: globalFilterFn ?? "includesString",
@@ -1362,6 +1434,7 @@ export function DataTable<TData extends RowData>(props: DataTableProps<TData>) {
     onColumnOrderChange: setColumnOrder,
     onColumnSizingChange: setColumnSizing,
     onColumnVisibilityChange: setColumnVisibility,
+    onExpandedChange: setExpanded,
     onGlobalFilterChange: handleGlobalFilterChange,
     onPaginationChange: setPagination,
     onRowSelectionChange: setRowSelection,
@@ -1373,6 +1446,7 @@ export function DataTable<TData extends RowData>(props: DataTableProps<TData>) {
       columnOrder,
       columnSizing,
       columnVisibility,
+      expanded,
       globalFilter,
       pagination,
       rowSelection,
@@ -1668,22 +1742,87 @@ export function DataTable<TData extends RowData>(props: DataTableProps<TData>) {
                         : undefined
                     }
                   >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell
-                        key={cell.id}
-                        className={cn(
-                          "align-top break-words whitespace-normal",
-                          getColumnAlignClass(cell.column),
-                          getColumnMeta(cell.column)?.cellClassName,
-                        )}
-                        style={{ width: cell.column.getSize() }}
-                      >
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext(),
-                        )}
-                      </TableCell>
-                    ))}
+                    {row.getVisibleCells().map((cell, cellIndex) => {
+                      const content = flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      );
+                      // The group's toggle sits in the first cell; its
+                      // children start where the toggle's content starts.
+                      const canExpand =
+                        cellIndex === 0 && row.getCanExpand();
+                      const indent =
+                        cellIndex === 0 && row.depth > 0
+                          ? `${row.depth * 1.75}rem`
+                          : undefined;
+                      if (!canExpand && !indent) {
+                        return (
+                          <TableCell
+                            key={cell.id}
+                            className={cn(
+                              "align-top break-words whitespace-normal",
+                              getColumnAlignClass(cell.column),
+                              getColumnMeta(cell.column)?.cellClassName,
+                            )}
+                            style={{ width: cell.column.getSize() }}
+                          >
+                            {content}
+                          </TableCell>
+                        );
+                      }
+                      return (
+                        <TableCell
+                          key={cell.id}
+                          className={cn(
+                            "align-top break-words whitespace-normal",
+                            getColumnAlignClass(cell.column),
+                            getColumnMeta(cell.column)?.cellClassName,
+                          )}
+                          style={{ width: cell.column.getSize() }}
+                        >
+                          <div
+                            className={cn(
+                              "flex items-start gap-1",
+                              canExpand && "-ml-1",
+                            )}
+                            style={indent ? { paddingLeft: indent } : undefined}
+                          >
+                            {canExpand ? (
+                              <Button
+                                aria-expanded={row.getIsExpanded()}
+                                aria-label={
+                                  row.getIsExpanded() ? t.collapse : t.expand
+                                }
+                                variant="ghost"
+                                size="icon-sm"
+                                className="-m-1 shrink-0"
+                                onClick={(event) => {
+                                  event.stopPropagation();
+                                  toggleRowExpanded(row);
+                                }}
+                                onKeyDown={(event) => {
+                                  // The row is clickable too: its handler
+                                  // must not run for the toggle's keys.
+                                  if (
+                                    event.key === "Enter" ||
+                                    event.key === " "
+                                  ) {
+                                    event.stopPropagation();
+                                  }
+                                }}
+                              >
+                                {row.getIsExpanded() ? (
+                                  <ChevronDownIcon />
+                                ) : (
+                                  <ChevronRightIcon />
+                                )}
+                              </Button>
+                            ) : null}
+                            {content}
+                          </div>
+                        </TableCell>
+                      );
+                    })}
                   </TableRow>
                 ))
               ) : (

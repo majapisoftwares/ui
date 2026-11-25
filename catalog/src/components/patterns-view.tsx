@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import type { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@majapisoftwares/ui/patterns/data-table";
 import { MetricStrip } from "@majapisoftwares/ui/patterns/page-header";
 import { Button } from "@majapisoftwares/ui/components/button";
@@ -18,11 +19,12 @@ import {
 } from "@majapisoftwares/ui/components/toggle-group";
 import { defineMessages, useMessages } from "@majapisoftwares/ui/lib/i18n";
 import { PlusIcon, ServerIcon } from "lucide-react";
-import { messages as shared } from "@/messages";
+import { messages as shared, type Row } from "@/messages";
 import { useColumns } from "@/components/columns";
 
 const states = [
   "ready",
+  "grouped",
   "loading",
   "empty",
   "noResults",
@@ -33,10 +35,14 @@ const states = [
 ] as const;
 type State = (typeof states)[number];
 
+/** A group row stands for one region; its children are the rows there. */
+type GroupedRow = Row & { children?: Row[] };
+
 const messages = defineMessages({
   en: {
     state: "State",
     ready: "Ready",
+    grouped: "Grouped",
     loading: "Loading",
     empty: "Empty",
     noResults: "No results",
@@ -53,6 +59,7 @@ const messages = defineMessages({
   "pt-BR": {
     state: "Estado",
     ready: "Pronto",
+    grouped: "Agrupado",
     loading: "Carregando",
     empty: "Vazio",
     noResults: "Sem resultados",
@@ -79,6 +86,21 @@ export function PatternsView() {
       : state === "partial"
         ? s.rows.filter((r) => r.region !== "us-east-1")
         : s.rows;
+  // One row per region; its children are the environments there.
+  const byRegion = new Map<string, Row[]>();
+  for (const row of rows) {
+    byRegion.set(row.region, [...(byRegion.get(row.region) ?? []), row]);
+  }
+  const groupedRows: GroupedRow[] = [...byRegion.entries()].map(
+    ([region, children]) => ({
+      id: `region:${region}`,
+      name: region,
+      region,
+      running: children.some((r) => r.running),
+      children,
+    }),
+  );
+  const grouped = state === "grouped";
   return (
     <div className="flex flex-col gap-6">
       <ToggleGroup
@@ -115,12 +137,14 @@ export function PatternsView() {
           ]}
         />
       ) : null}
-      <DataTable
+      <DataTable<GroupedRow>
         // Remount so the default search applies when switching states.
         key={state}
-        data={rows}
-        columns={columns}
+        data={grouped ? groupedRows : rows}
+        // Row and GroupedRow share the cells; only grouping reads children.
+        columns={columns as ColumnDef<GroupedRow, unknown>[]}
         getRowId={(r) => r.id}
+        getSubRows={grouped ? (r) => r.children : undefined}
         loading={state === "loading"}
         initialGlobalFilter={state === "noResults" ? "zzz" : ""}
         error={state === "error" || state === "stale" ? t.errorBody : undefined}
