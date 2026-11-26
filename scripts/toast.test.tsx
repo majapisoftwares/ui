@@ -1,9 +1,10 @@
 import assert from "node:assert/strict";
-import { test } from "node:test";
+import { mock, test } from "node:test";
 import { JSDOM } from "jsdom";
 import { act, createElement } from "react";
 
-const tick = (ms = 0) => new Promise((resolve) => setTimeout(resolve, ms));
+const realSetTimeout = setTimeout;
+const tick = (ms = 0) => new Promise((resolve) => realSetTimeout(resolve, ms));
 
 test("error toasts have no timer, however they are shown", async () => {
   const { createToastManager } = await import("../src/components/ui/toast");
@@ -146,10 +147,13 @@ test("on screen, an error stays after the others close, until its close button i
     await act(async () => {
       root.render(createElement(Toaster, { toaster: queue }));
     });
-    // Waits for the screen instead of a fixed time: CI machines are slow.
+    // The countdowns run on a clock the test moves, so no machine speed can
+    // make a toast leave early or late. Waiting for the screen to catch up
+    // still polls the real clock, but only for a condition, never for a time.
+    mock.timers.enable({ apis: ["setTimeout", "Date"] });
     const until = async (done: () => boolean) => {
-      for (let waited = 0; !done() && waited < 20_000; waited += 50)
-        await act(() => tick(50));
+      for (let polls = 0; !done() && polls < 2000; polls++)
+        await act(() => tick(10));
       assert.ok(done());
     };
     await act(async () => {
@@ -164,7 +168,11 @@ test("on screen, an error stays after the others close, until its close button i
     await until(() => /saved/.test(text()));
     assert.match(text(), /not accepting connections/);
 
+    await act(async () => mock.timers.tick(3000));
     await until(() => !/saved/.test(text()));
+    assert.match(text(), /not accepting connections/);
+    // Long after, still there: nothing but the button removes it.
+    await act(async () => mock.timers.tick(10 * 60_000));
     assert.match(text(), /not accepting connections/);
 
     const close = dom.window.document.querySelector<HTMLElement>(
@@ -175,6 +183,7 @@ test("on screen, an error stays after the others close, until its close button i
     await until(() => text() === "");
     assert.equal(queue.toasts().length, 0);
   } finally {
+    mock.timers.reset();
     await act(async () => root.unmount());
     for (const [key, descriptor] of saved) {
       if (descriptor) Object.defineProperty(globalThis, key, descriptor);
