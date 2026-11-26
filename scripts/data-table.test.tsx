@@ -199,3 +199,77 @@ test("the table is exactly as wide as its columns so a resized column keeps the 
     for (const [key, descriptor] of descriptors) { if (descriptor) Object.defineProperty(globalThis, key, descriptor); else Reflect.deleteProperty(globalThis, key); }
   }
 });
+
+async function withTable(
+  viewportWidth: number,
+  columns: Array<{ accessorKey: string; header: string; size: number }>,
+  run: (ctx: { dom: JSDOM; heads: () => HTMLElement[]; table: () => HTMLElement; drag: (index: number, delta: number) => Promise<void> }) => Promise<void>,
+) {
+  const dom = new JSDOM('<html><body><div id="root"></div></body></html>', { url: "https://example.test", pretendToBeVisual: true });
+  const descriptors = new Map<string, PropertyDescriptor | undefined>();
+  for (const key of ["window", "document", "navigator", "HTMLElement", "Element", "Node", "MutationObserver", "NodeFilter", "HTMLFieldSetElement", "HTMLFormElement", "HTMLInputElement", "HTMLButtonElement", "HTMLTextAreaElement", "HTMLSelectElement", "HTMLAnchorElement", "SVGElement", "Event", "KeyboardEvent", "MouseEvent", "TouchEvent", "PointerEvent", "FocusEvent", "CustomEvent", "DOMRect", "ResizeObserver", "IntersectionObserver", "CSS", "getComputedStyle", "requestAnimationFrame", "cancelAnimationFrame", "IS_REACT_ACT_ENVIRONMENT"]) {
+    descriptors.set(key, Object.getOwnPropertyDescriptor(globalThis, key));
+    let value = key === "IS_REACT_ACT_ENVIRONMENT" ? true : dom.window[key as keyof typeof dom.window];
+    if (typeof value === "function" && ["getComputedStyle", "requestAnimationFrame", "cancelAnimationFrame"].includes(key)) value = value.bind(dom.window);
+    Object.defineProperty(globalThis, key, { configurable: true, value });
+  }
+  Object.defineProperty(globalThis, "ResizeObserver", { configurable: true, value: class { observe() {} unobserve() {} disconnect() {} } });
+  // The scroll viewport is the table's parent; jsdom has no layout.
+  Object.defineProperty(dom.window.HTMLElement.prototype, "clientWidth", {
+    configurable: true,
+    get() { return (this as HTMLElement).dataset.slot === "scroll-area-viewport" ? viewportWidth : 0; },
+  });
+  const root = createRoot(dom.window.document.getElementById("root")!);
+  try {
+    await act(async () => {
+      root.render(createElement(DataTable, { columns, data: [{ a: "x", b: "y" }] }));
+    });
+    const doc = dom.window.document;
+    await run({
+      dom,
+      heads: () => [...doc.querySelectorAll<HTMLElement>("thead th:not([data-slot=table-filler])")],
+      table: () => doc.querySelector("table")!,
+      drag: async (index, delta) => {
+        const handle = doc.querySelectorAll("thead [role=separator]")[index]!;
+        const fire = (type: string, target: EventTarget, clientX: number) =>
+          target.dispatchEvent(new dom.window.MouseEvent(type, { bubbles: true, clientX }));
+        await act(async () => { fire("mousedown", handle, 100); });
+        await act(async () => { fire("mousemove", doc, 100 + delta); });
+        await act(async () => { fire("mouseup", doc, 100 + delta); });
+      },
+    });
+  } finally {
+    await act(async () => root.unmount()); dom.window.close();
+    for (const [key, descriptor] of descriptors) { if (descriptor) Object.defineProperty(globalThis, key, descriptor); else Reflect.deleteProperty(globalThis, key); }
+  }
+}
+
+const twoColumns = [{ accessorKey: "a", header: "A", size: 200 }, { accessorKey: "b", header: "B", size: 120 }];
+
+test("columns narrower than the container grow to fill it", async () => {
+  await withTable(1000, twoColumns, async ({ heads, table }) => {
+    assert.equal(table().style.width, "1000px");
+    assert.deepEqual(heads().map((head) => head.style.width), ["625px", "375px"]);
+  });
+});
+
+test("columns wider than the container keep their sizes and scroll", async () => {
+  await withTable(200, twoColumns, async ({ heads, table }) => {
+    assert.equal(table().style.width, "320px");
+    assert.deepEqual(heads().map((head) => head.style.width), ["200px", "120px"]);
+  });
+});
+
+test("a dragged column follows the pointer exactly, wherever there is spare room", async () => {
+  await withTable(1000, twoColumns, async ({ heads, table, drag }) => {
+    await drag(0, -100);
+    assert.deepEqual(heads().map((head) => head.style.width), ["525px", "375px"], "only the dragged column moved");
+    assert.equal(table().style.width, "1000px", "the spare room is a filler, not a stretch of the other columns");
+    assert.ok(table().querySelector("[data-slot=table-filler]"));
+
+    await drag(0, 400);
+    assert.deepEqual(heads().map((head) => head.style.width), ["925px", "375px"]);
+    assert.equal(table().style.width, "1300px", "beyond the container the table scrolls");
+    assert.equal(table().querySelector("[data-slot=table-filler]"), null);
+  });
+});

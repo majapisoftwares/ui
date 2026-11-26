@@ -7,6 +7,7 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 
 import * as React from "react";
+import { flushSync } from "react-dom";
 import {
   closestCenter,
   DndContext,
@@ -48,6 +49,7 @@ import {
   SearchIcon,
   XIcon,
 } from "lucide-react";
+import { fillColumnWidths } from "./data-table-sizing";
 import {
   createTable,
   flexRender,
@@ -1008,6 +1010,15 @@ function useDataTableInstance<TData extends RowData>(
 
 const emptyColumnFilters: ColumnFiltersState = [];
 const emptyColumnSizing: ColumnSizingState = {};
+
+type DataTableSizing = {
+  widths: Record<string, number>;
+  freeze: () => void;
+};
+const DataTableSizingContext = React.createContext<DataTableSizing>({
+  widths: {},
+  freeze: () => {},
+});
 const emptyColumnVisibility: VisibilityState = {};
 const emptySorting: SortingState = [];
 const emptyLockedColumnIds: string[] = [];
@@ -1454,6 +1465,44 @@ export function DataTable<TData extends RowData>(props: DataTableProps<TData>) {
     },
   });
 
+  const [availableWidth, setAvailableWidth] = React.useState(0);
+  // The scroll viewport's width: the table fills it when its columns are narrower.
+  const measureTable = React.useCallback((element: HTMLTableElement | null) => {
+    const viewport = element?.parentElement;
+    if (!viewport) return;
+    const update = () => setAvailableWidth(viewport.clientWidth);
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(viewport);
+    return () => observer.disconnect();
+  }, []);
+  const visibleLeafColumns = table.getVisibleLeafColumns();
+  const { widths: columnWidths, filler: fillerWidth } = fillColumnWidths(
+    visibleLeafColumns.map((column) => ({
+      id: column.id,
+      size: column.getSize(),
+      fixed: column.id in columnSizing || !column.getCanResize(),
+    })),
+    availableWidth,
+  );
+  const tableWidth =
+    Object.values(columnWidths).reduce((sum, width) => sum + width, 0) +
+    fillerWidth;
+  const sizing: DataTableSizing = {
+    widths: columnWidths,
+    // Starting a drag pins what is on screen, so the column follows the
+    // pointer from its rendered width instead of jumping to its base size.
+    freeze: () => {
+      const pinned: ColumnSizingState = {};
+      for (const column of visibleLeafColumns) {
+        if (column.getCanResize()) pinned[column.id] = columnWidths[column.id];
+      }
+      flushSync(() =>
+        setColumnSizing((current) => ({ ...pinned, ...current })),
+      );
+    },
+  };
+
   React.useEffect(() => {
     if (!manualPagination) resetPaginationPage();
   }, [data, manualPagination, resetPaginationPage]);
@@ -1659,103 +1708,131 @@ export function DataTable<TData extends RowData>(props: DataTableProps<TData>) {
         </div>
       )}
 
-      <DndContext
-        // Stable id: dnd-kit's global counter differs between server and client.
-        id={dndContextId}
-        collisionDetection={closestCenter}
-        modifiers={[restrictToHorizontalAxis]}
-        onDragEnd={handleDragEnd}
-        sensors={sensors}
-      >
-        <div
-          className={cn(
-            "bg-card overflow-hidden rounded-2xl border",
-            fillHeight && "flex min-h-0 flex-1 flex-col",
-          )}
+      <DataTableSizingContext value={sizing}>
+        <DndContext
+          // Stable id: dnd-kit's global counter differs between server and client.
+          id={dndContextId}
+          collisionDetection={closestCenter}
+          modifiers={[restrictToHorizontalAxis]}
+          onDragEnd={handleDragEnd}
+          sensors={sensors}
         >
-          <Table
-            containerClassName={cn(
-              // The empty state sizes itself to the visible width (cqw).
-              "@container",
-              // Bottom-only fade: a top fade would dissolve the sticky header.
-              fillHeight && "min-h-0 flex-1",
+          <div
+            className={cn(
+              "bg-card overflow-hidden rounded-2xl border",
+              fillHeight && "flex min-h-0 flex-1 flex-col",
             )}
-            className="table-fixed"
-            style={{ width: table.getTotalSize() }}
           >
-            {/* Solid background: rows scroll underneath the sticky header. */}
-            <TableHeader className="bg-muted sticky top-0 z-10">
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id}>
-                  <SortableContext
-                    items={columnOrder}
-                    strategy={horizontalListSortingStrategy}
-                  >
-                    {headerGroup.headers.map((header) => (
-                      <DataTableHead
-                        key={header.id}
-                        header={header}
-                        lockedEndColumnIds={lockedEndColumnIds}
-                        lockedStartColumnIds={lockedStartColumnIds}
+            <Table
+              containerClassName={cn(
+                // The empty state sizes itself to the visible width (cqw).
+                "@container",
+                // Bottom-only fade: a top fade would dissolve the sticky header.
+                fillHeight && "min-h-0 flex-1",
+              )}
+              ref={measureTable}
+              className="table-fixed"
+              style={{ width: tableWidth }}
+            >
+              {/* Solid background: rows scroll underneath the sticky header. */}
+              <TableHeader className="bg-muted sticky top-0 z-10">
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <TableRow key={headerGroup.id}>
+                    <SortableContext
+                      items={columnOrder}
+                      strategy={horizontalListSortingStrategy}
+                    >
+                      {headerGroup.headers.map((header) => (
+                        <DataTableHead
+                          key={header.id}
+                          header={header}
+                          lockedEndColumnIds={lockedEndColumnIds}
+                          lockedStartColumnIds={lockedStartColumnIds}
+                        />
+                      ))}
+                    </SortableContext>
+                    {fillerWidth > 0 ? (
+                      <TableHead
+                        aria-hidden
+                        data-slot="table-filler"
+                        className="p-0"
+                        style={{ width: fillerWidth }}
                       />
-                    ))}
-                  </SortableContext>
-                </TableRow>
-              ))}
-            </TableHeader>
-            <TableBody>
-              {loading ? (
-                Array.from({ length: 3 }, (_, index) => (
-                  <TableRow key={index}>
-                    {table.getVisibleLeafColumns().map((column) => (
-                      <TableCell key={column.id}>
-                        <Skeleton className="h-5 w-full" />
-                      </TableCell>
-                    ))}
+                    ) : null}
                   </TableRow>
-                ))
-              ) : table.getRowModel().rows?.length ? (
-                table.getRowModel().rows.map((row) => (
-                  <TableRow
-                    key={row.id}
-                    data-active={row.id === activeRowId || undefined}
-                    aria-current={row.id === activeRowId ? "true" : undefined}
-                    data-state={row.getIsSelected() && "selected"}
-                    className={onRowClick ? "cursor-pointer" : undefined}
-                    tabIndex={onRowClick ? 0 : undefined}
-                    aria-label={
-                      onRowClick
-                        ? `${t.open}: ${getRowLabel?.(row.original) ?? row.id}`
-                        : undefined
-                    }
-                    onClick={
-                      onRowClick ? () => onRowClick(row.original) : undefined
-                    }
-                    onKeyDown={
-                      onRowClick
-                        ? (event) => {
-                            if (event.key === "Enter" || event.key === " ") {
-                              event.preventDefault();
-                              onRowClick(row.original);
+                ))}
+              </TableHeader>
+              <TableBody>
+                {loading ? (
+                  Array.from({ length: 3 }, (_, index) => (
+                    <TableRow key={index}>
+                      {table.getVisibleLeafColumns().map((column) => (
+                        <TableCell key={column.id}>
+                          <Skeleton className="h-5 w-full" />
+                        </TableCell>
+                      ))}
+                      {fillerWidth > 0 ? <TableCell className="p-0" /> : null}
+                    </TableRow>
+                  ))
+                ) : table.getRowModel().rows?.length ? (
+                  table.getRowModel().rows.map((row) => (
+                    <TableRow
+                      key={row.id}
+                      data-active={row.id === activeRowId || undefined}
+                      aria-current={row.id === activeRowId ? "true" : undefined}
+                      data-state={row.getIsSelected() && "selected"}
+                      className={onRowClick ? "cursor-pointer" : undefined}
+                      tabIndex={onRowClick ? 0 : undefined}
+                      aria-label={
+                        onRowClick
+                          ? `${t.open}: ${getRowLabel?.(row.original) ?? row.id}`
+                          : undefined
+                      }
+                      onClick={
+                        onRowClick ? () => onRowClick(row.original) : undefined
+                      }
+                      onKeyDown={
+                        onRowClick
+                          ? (event) => {
+                              if (event.key === "Enter" || event.key === " ") {
+                                event.preventDefault();
+                                onRowClick(row.original);
+                              }
                             }
-                          }
-                        : undefined
-                    }
-                  >
-                    {row.getVisibleCells().map((cell, cellIndex) => {
-                      const content = flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      );
-                      // The group's toggle sits in the first cell; its
-                      // children start where the toggle's content starts.
-                      const canExpand =
-                        cellIndex === 0 && row.getCanExpand();
-                      const indent =
-                        cellIndex === 0 && row.depth > 0
-                          ? `${row.depth * 1.75}rem`
-                          : undefined;
-                      if (!canExpand && !indent) {
+                          : undefined
+                      }
+                    >
+                      {row.getVisibleCells().map((cell, cellIndex) => {
+                        const content = flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext(),
+                        );
+                        // The group's toggle sits in the first cell; its
+                        // children start where the toggle's content starts.
+                        const canExpand = cellIndex === 0 && row.getCanExpand();
+                        const indent =
+                          cellIndex === 0 && row.depth > 0
+                            ? `${row.depth * 1.75}rem`
+                            : undefined;
+                        if (!canExpand && !indent) {
+                          return (
+                            <TableCell
+                              key={cell.id}
+                              className={cn(
+                                "align-top break-words whitespace-normal",
+                                getColumnAlignClass(cell.column),
+                                getColumnMeta(cell.column)?.cellClassName,
+                              )}
+                              style={{
+                                width:
+                                  sizing.widths[cell.column.id] ??
+                                  cell.column.getSize(),
+                              }}
+                            >
+                              {content}
+                            </TableCell>
+                          );
+                        }
                         return (
                           <TableCell
                             key={cell.id}
@@ -1764,114 +1841,117 @@ export function DataTable<TData extends RowData>(props: DataTableProps<TData>) {
                               getColumnAlignClass(cell.column),
                               getColumnMeta(cell.column)?.cellClassName,
                             )}
-                            style={{ width: cell.column.getSize() }}
+                            style={{
+                              width:
+                                sizing.widths[cell.column.id] ??
+                                cell.column.getSize(),
+                            }}
                           >
-                            {content}
+                            <div
+                              className={cn(
+                                "flex items-start gap-1",
+                                canExpand && "-ml-1",
+                              )}
+                              style={
+                                indent ? { paddingLeft: indent } : undefined
+                              }
+                            >
+                              {canExpand ? (
+                                <Button
+                                  aria-expanded={row.getIsExpanded()}
+                                  aria-label={
+                                    row.getIsExpanded() ? t.collapse : t.expand
+                                  }
+                                  variant="ghost"
+                                  size="icon-sm"
+                                  className="-m-1 shrink-0"
+                                  onClick={(event) => {
+                                    event.stopPropagation();
+                                    toggleRowExpanded(row);
+                                  }}
+                                  onKeyDown={(event) => {
+                                    // The row is clickable too: its handler
+                                    // must not run for the toggle's keys.
+                                    if (
+                                      event.key === "Enter" ||
+                                      event.key === " "
+                                    ) {
+                                      event.stopPropagation();
+                                    }
+                                  }}
+                                >
+                                  {row.getIsExpanded() ? (
+                                    <ChevronDownIcon />
+                                  ) : (
+                                    <ChevronRightIcon />
+                                  )}
+                                </Button>
+                              ) : null}
+                              {content}
+                            </div>
                           </TableCell>
                         );
-                      }
-                      return (
+                      })}
+                      {fillerWidth > 0 ? (
                         <TableCell
-                          key={cell.id}
-                          className={cn(
-                            "align-top break-words whitespace-normal",
-                            getColumnAlignClass(cell.column),
-                            getColumnMeta(cell.column)?.cellClassName,
-                          )}
-                          style={{ width: cell.column.getSize() }}
-                        >
-                          <div
-                            className={cn(
-                              "flex items-start gap-1",
-                              canExpand && "-ml-1",
-                            )}
-                            style={indent ? { paddingLeft: indent } : undefined}
-                          >
-                            {canExpand ? (
-                              <Button
-                                aria-expanded={row.getIsExpanded()}
-                                aria-label={
-                                  row.getIsExpanded() ? t.collapse : t.expand
-                                }
-                                variant="ghost"
-                                size="icon-sm"
-                                className="-m-1 shrink-0"
-                                onClick={(event) => {
-                                  event.stopPropagation();
-                                  toggleRowExpanded(row);
-                                }}
-                                onKeyDown={(event) => {
-                                  // The row is clickable too: its handler
-                                  // must not run for the toggle's keys.
-                                  if (
-                                    event.key === "Enter" ||
-                                    event.key === " "
-                                  ) {
-                                    event.stopPropagation();
-                                  }
-                                }}
-                              >
-                                {row.getIsExpanded() ? (
-                                  <ChevronDownIcon />
-                                ) : (
-                                  <ChevronRightIcon />
-                                )}
-                              </Button>
-                            ) : null}
-                            {content}
-                          </div>
-                        </TableCell>
-                      );
-                    })}
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell
-                    colSpan={table.getVisibleLeafColumns().length}
-                    className="text-muted-foreground h-24 text-center"
-                  >
-                    {/* A table wider than the screen: the message stays in view instead of centring on the full width. */}
-                    <div className="sticky left-3 w-[calc(100cqw-1.5rem)] whitespace-normal">
-                      {isFiltered ? (
-                        <Empty>
-                          <EmptyHeader>
-                            <EmptyTitle>
-                              {emptyMessage ?? ui.noResults}
-                            </EmptyTitle>
-                          </EmptyHeader>
-                          <EmptyContent>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={resetFilters}
-                            >
-                              {t.clearFilters}
-                            </Button>
-                          </EmptyContent>
-                        </Empty>
-                      ) : (
-                        (emptyState ?? (
+                          aria-hidden
+                          data-slot="table-filler"
+                          className="p-0"
+                          style={{ width: fillerWidth }}
+                        />
+                      ) : null}
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell
+                      colSpan={
+                        visibleLeafColumns.length + (fillerWidth > 0 ? 1 : 0)
+                      }
+                      className="text-muted-foreground h-24 text-center"
+                    >
+                      {/* A table wider than the screen: the message stays in view instead of centring on the full width. */}
+                      <div className="sticky left-3 w-[calc(100cqw-1.5rem)] whitespace-normal">
+                        {isFiltered ? (
                           <Empty>
                             <EmptyHeader>
-                              <EmptyMedia variant="icon">
-                                <InboxIcon />
-                              </EmptyMedia>
                               <EmptyTitle>
-                                {emptyMessage ?? ui.noData}
+                                {emptyMessage ?? ui.noResults}
                               </EmptyTitle>
                             </EmptyHeader>
+                            <EmptyContent>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={resetFilters}
+                              >
+                                {t.clearFilters}
+                              </Button>
+                            </EmptyContent>
                           </Empty>
-                        ))
-                      )}
-                    </div>
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </div>
-      </DndContext>
+                        ) : (
+                          (emptyState ?? (
+                            <Empty>
+                              <EmptyHeader>
+                                <EmptyMedia variant="icon">
+                                  <InboxIcon />
+                                </EmptyMedia>
+                                <EmptyTitle>
+                                  {emptyMessage ?? ui.noData}
+                                </EmptyTitle>
+                              </EmptyHeader>
+                            </Empty>
+                          ))
+                        )}
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
+        </DndContext>
+      </DataTableSizingContext>
 
       <DataTablePagination
         formatRowCount={formatRowCount}
@@ -1895,6 +1975,7 @@ function DataTableHead<TData extends RowData>({
   lockedStartColumnIds: string[];
 }) {
   const t = useMessages(dataTableMessages);
+  const sizing = React.useContext(DataTableSizingContext);
   const column = header.column;
   const table = header.getContext().table;
   const align = getColumnAlign(column);
@@ -1987,7 +2068,10 @@ function DataTableHead<TData extends RowData>({
       style={{
         transform: CSS.Translate.toString(transform),
         transition,
-        width: header.getSize(),
+        width:
+          header.colSpan === 1
+            ? (sizing.widths[column.id] ?? header.getSize())
+            : header.getSize(),
       }}
     >
       {header.isPlaceholder ? null : (
@@ -2024,8 +2108,14 @@ function DataTableHead<TData extends RowData>({
             column.getIsResizing() && "bg-primary",
           )}
           onDoubleClick={() => column.resetSize()}
-          onMouseDown={header.getResizeHandler()}
-          onTouchStart={header.getResizeHandler()}
+          onMouseDown={(event) => {
+            sizing.freeze();
+            header.getResizeHandler()(event);
+          }}
+          onTouchStart={(event) => {
+            sizing.freeze();
+            header.getResizeHandler()(event);
+          }}
         />
       ) : null}
     </TableHead>
