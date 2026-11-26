@@ -54,7 +54,8 @@
     "test:popup-width": "node --test scripts/popup-width.test.mjs",
     "test:check-table-actions": "node --test scripts/check-table-actions.test.mjs",
     "test:release-plan": "node --test scripts/release-plan.test.mjs",
-    "verify": "node scripts/verify.mjs"
+    "verify": "node scripts/verify.mjs",
+    "test:tooltip": "tsx --test scripts/tooltip.test.tsx"
   },
   "peerDependencies": {
     "react": "19.3.1",
@@ -69,6 +70,7 @@
     "@dnd-kit/sortable": "10.0.0",
     "@dnd-kit/utilities": "3.2.2",
     "@fontsource-variable/geist": "^5.3.0",
+    "@radix-ui/react-tooltip": "1.4.1",
     "@tanstack/react-table": "8.21.3",
     "@ui-sdk/core": "0.1.0-beta.10",
     "@ui-sdk/react": "0.1.0-beta.10",
