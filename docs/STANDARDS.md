@@ -100,6 +100,8 @@ Listas e telas com dados se atualizam sozinhas: `useLiveRefresh(load, ms)` (`hoo
 
 `@ui-sdk/react` e `@ui-sdk/core` (ui-sdk.dev, Apache-2.0, beta fixada na versão exata) são a base de comportamento de todos os componentes: nenhum usa Base UI. Cada parte vem de `@ui-sdk/react/<componente>`, ganha os tokens da biblioteca por classes e mantém `data-slot`. Seletores de estado seguem o ui-sdk (`data-open`, `data-closed`, `data-highlighted`, `data-selected`, `data-pressed`, `data-starting-style`/`data-ending-style` para animações). `styles.css` declara `@layer ui-sdk;`. Antes de criar um comportamento novo, procure-o em `node_modules/@ui-sdk/react/docs/llms.txt`. Atualizar o ui-sdk (ainda beta) exige rodar `npm run verify` e revisar o changelog dele.
 
+Exceção registrada: o `components/tooltip` segue o tooltip mais recente do shadcn e usa `@radix-ui/react-tooltip` (único componente Radix da biblioteca, liberado no `check:standards`). Motivo: a seta do ui-sdk renderizava desalinhada e destacada do balão; a do Radix (`TooltipPrimitive.Arrow`) sai na cor e no raio do balão, sem emenda, nos quatro lados. A API pública não muda: `delay`/`closeDelay` (o `closeDelay`, que o Radix não tem, segura o fechamento), `disabled` e o `render` do gatilho continuam.
+
 O atalho da barra lateral adapta o símbolo ao dispositivo após a hidratação, preservando o texto inicial do servidor.
 
 ## Guia de design do Workbench (padrões para app novo)

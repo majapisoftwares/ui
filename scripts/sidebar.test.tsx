@@ -95,11 +95,11 @@ for (const cookie of ["compact:256", "closed:256"]) {
       });
       assert.deepEqual(errors, []);
 
-      // The tooltip text is in the DOM (hidden) and names the saved mode.
+      // The Radix tooltip renders no content while closed, so the mode's
+      // label can no longer mismatch the server's HTML at all.
       assert.equal(
-        container.querySelector('[data-slot="tooltip-content"] span')
-          ?.textContent,
-        "Expand sidebar",
+        container.querySelector('[data-slot="tooltip-content"]'),
+        null,
       );
     } finally {
       for (const key of globals) {

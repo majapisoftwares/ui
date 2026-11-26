@@ -82,7 +82,6 @@ export function refreshButton(text) {
   return false;
 }
 
-
 // Row actions of a table: icon-only buttons (DataTableRowAction, with the
 // library Tooltip and an aria-label) in the last column, right-aligned. A
 // Button in a table cell with a visible label, a native `title`, or in a
@@ -107,7 +106,9 @@ export function tableActionViolations(text) {
       const between = text.slice(cellAt, match.index);
       if (!/\n\s*\]\s*;|<DataTable\b|\bheader:/.test(between)) {
         const head = text.slice(Math.max(0, cellAt - 400), cellAt);
-        const id = [...head.matchAll(/\b(?:id|accessorKey):\s*"([^"]+)"/g)].at(-1);
+        const id = [...head.matchAll(/\b(?:id|accessorKey):\s*"([^"]+)"/g)].at(
+          -1,
+        );
         const arrayAt = Math.max(
           before.lastIndexOf("ColumnDef<"),
           before.lastIndexOf("columns = ["),
@@ -145,7 +146,9 @@ export function tableActionViolations(text) {
       const rowEnd = text.indexOf("</TableRow>", match.index);
       const after = text.slice(match.index, rowEnd === -1 ? undefined : rowEnd);
       if (/<TableCell\b/.test(after))
-        found.push(`${where}: row actions sit in the last column, right-aligned`);
+        found.push(
+          `${where}: row actions sit in the last column, right-aligned`,
+        );
       if (!/text-right|justify-end/.test(cell[0]))
         found.push(`${where}: right-align the actions cell (text-right)`);
     }
@@ -164,7 +167,11 @@ async function visit(path) {
     if (!/\.[jt]sx?$/.test(entry.name)) continue;
     const text = await readFile(file, "utf8"),
       name = relative(root, file).replaceAll("\\", "/");
-    if (/from\s+["'](?:radix-ui|@radix-ui\/)/.test(text))
+    // Tooltip is the one Radix exception: its arrow (docs/STANDARDS.md).
+    if (
+      /from\s+["'](?:radix-ui|@radix-ui\/)/.test(text) &&
+      name !== "components/ui/tooltip.tsx"
+    )
       violations.push(`${name}: the foundation uses ui-sdk`);
     if (/from\s+["']@base-ui\//.test(text))
       violations.push(
