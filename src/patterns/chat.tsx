@@ -165,7 +165,7 @@ export interface ChatMessageProps extends Omit<
   "align"
 > {
   from: "user" | "assistant";
-  /** Files or images sent with a person's message, above the bubble. */
+  /** Files or images sent with the message (the person's, or files the agent hands over), above the text. */
   attachments?: ReactNode;
   /** The message this one replies to (a `ChatQuote`), above its text. */
   quote?: ReactNode;
@@ -221,6 +221,7 @@ export function ChatMessage({
   return (
     <Message data-from="assistant" {...props}>
       <MessageContent>
+        {attachments}
         {quote ? <div className="max-w-md">{quote}</div> : null}
         {children}
         {footer ? (

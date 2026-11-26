@@ -242,6 +242,8 @@ function seed(t: Copy): DemoMessage[] {
       id: "a1",
       role: "assistant",
       time: "21:04",
+      // A file the agent hands over renders with attachments too, as a document.
+      files: [{ name: "build-fix.patch", size: 2_048 }],
       parts: [
         { type: "reasoning", text: t.seed.reasoning, duration: 4 },
         { type: "tool", id: "t1", title: t.seed.readLog, status: "done", icon: "file", description: "0.2s" },
@@ -569,6 +571,23 @@ export function ChatView({ empty = false }: { empty?: boolean }) {
               <MessageScrollerItem key={message.id} messageId={message.id}>
                 <ChatMessage
                   from="assistant"
+                  attachments={
+                    message.files?.length ? (
+                      <AttachmentGroup>
+                        {message.files.map((file) => (
+                          <Attachment key={file.name} size="sm">
+                            <AttachmentMedia variant="icon">
+                              <FileIcon />
+                            </AttachmentMedia>
+                            <AttachmentContent>
+                              <AttachmentTitle>{file.name}</AttachmentTitle>
+                              <AttachmentDescription>{formatBytes(file.size)}</AttachmentDescription>
+                            </AttachmentContent>
+                          </Attachment>
+                        ))}
+                      </AttachmentGroup>
+                    ) : undefined
+                  }
                   footer={
                     done && (text || failed) ? (
                       <MessageActions>
