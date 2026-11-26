@@ -1681,7 +1681,7 @@ export function DataTable<TData extends RowData>(props: DataTableProps<TData>) {
               fillHeight && "min-h-0 flex-1",
             )}
             className="table-fixed"
-            style={{ minWidth: "100%", width: table.getTotalSize() }}
+            style={{ width: table.getTotalSize() }}
           >
             {/* Solid background: rows scroll underneath the sticky header. */}
             <TableHeader className="bg-muted sticky top-0 z-10">

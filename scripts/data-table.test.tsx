@@ -174,3 +174,28 @@ test("a page holds whole groups: children never split across pages", async () =>
     for (const [key, descriptor] of descriptors) { if (descriptor) Object.defineProperty(globalThis, key, descriptor); else Reflect.deleteProperty(globalThis, key); }
   }
 });
+
+test("the table is exactly as wide as its columns so a resized column keeps the width it was dragged to", async () => {
+  const dom = new JSDOM('<html><body><div id="root"></div></body></html>', { url: "https://example.test", pretendToBeVisual: true });
+  const descriptors = new Map<string, PropertyDescriptor | undefined>();
+  for (const key of ["window", "document", "navigator", "HTMLElement", "Element", "Node", "MutationObserver", "NodeFilter", "HTMLFieldSetElement", "HTMLFormElement", "HTMLInputElement", "HTMLButtonElement", "HTMLTextAreaElement", "HTMLSelectElement", "HTMLAnchorElement", "SVGElement", "Event", "KeyboardEvent", "MouseEvent", "PointerEvent", "FocusEvent", "CustomEvent", "DOMRect", "ResizeObserver", "IntersectionObserver", "CSS", "getComputedStyle", "requestAnimationFrame", "cancelAnimationFrame", "IS_REACT_ACT_ENVIRONMENT"]) {
+    descriptors.set(key, Object.getOwnPropertyDescriptor(globalThis, key));
+    let value = key === "IS_REACT_ACT_ENVIRONMENT" ? true : dom.window[key as keyof typeof dom.window];
+    if (typeof value === "function" && ["getComputedStyle", "requestAnimationFrame", "cancelAnimationFrame"].includes(key)) value = value.bind(dom.window);
+    Object.defineProperty(globalThis, key, { configurable: true, value });
+  }
+  Object.defineProperty(globalThis, "ResizeObserver", { configurable: true, value: class { observe() {} unobserve() {} disconnect() {} } });
+  const root = createRoot(dom.window.document.getElementById("root")!);
+  try {
+    await act(async () => {
+      root.render(createElement(DataTable, { columns: [{ accessorKey: "a", header: "A", size: 200 }, { accessorKey: "b", header: "B", size: 120 }], data: [{ a: "x", b: "y" }] }));
+    });
+    const table = dom.window.document.querySelector("table")!;
+    assert.ok(table.className.includes("table-fixed"));
+    assert.equal(table.style.width, "320px");
+    assert.equal(table.style.minWidth, "");
+  } finally {
+    await act(async () => root.unmount()); dom.window.close();
+    for (const [key, descriptor] of descriptors) { if (descriptor) Object.defineProperty(globalThis, key, descriptor); else Reflect.deleteProperty(globalThis, key); }
+  }
+});
