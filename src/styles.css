@@ -212,7 +212,8 @@ html[data-keyboard] {
     background: var(--status-bar);
     pointer-events: none;
   }
+  /* The canvas behind the page (status bar zone, overscroll, a shifted viewport) follows the theme without waiting for the body. */
   html {
-    @apply font-sans;
+    @apply bg-background font-sans;
   }
 }
