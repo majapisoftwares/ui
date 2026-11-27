@@ -328,9 +328,11 @@ export function AppShell({
           <SidebarRail />
         </Sidebar>
         <SidebarInset className={fillHeight ? "h-svh min-h-0" : undefined}>
-          {/* Behind the status bar the header is see-through (blurred), so the
-              page passes under it; its own bar stays nearly solid. */}
-          <header className="sticky top-0 z-10 box-content flex h-14 shrink-0 items-center gap-2 border-b bg-[linear-gradient(to_bottom,transparent_var(--safe-top),color-mix(in_oklch,var(--background)_92%,transparent)_var(--safe-top))] px-4 pt-(--safe-top) backdrop-blur-md md:px-6">
+          {/* The page passes under the header, blurred. The blur is its own layer
+              below the status bar's zone: iOS draws a backdrop filter that
+              covers that zone as a solid white/black slab now and then, and
+              the zone must always show the page. */}
+          <header className="sticky top-0 z-10 box-content flex h-14 shrink-0 items-center gap-2 border-b px-4 pt-(--safe-top) before:pointer-events-none before:absolute before:inset-x-0 before:top-(--safe-top) before:bottom-0 before:-z-10 before:bg-background/60 before:backdrop-blur-md before:content-[''] md:px-6">
             <HeaderTrigger />
             <div className="min-w-0 flex-1">
               {breadcrumbs?.length ? (
