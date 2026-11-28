@@ -50,9 +50,9 @@ const steps = [
   ["check:standards", "npm run check:standards"],
   ["build", "npm run build"],
   ["test:starter", "npm run test:starter"],
-  ["catalog:lint", "npm run lint -w catalog"],
-  ["catalog:typecheck", "npm run typecheck -w catalog"],
-  ["catalog:check-ui", "npm run check:ui -w catalog"],
+  ["catalog:lint", "npm run catalog:lint"],
+  ["catalog:typecheck", "npm run catalog:typecheck"],
+  ["catalog:check-ui", "npm run catalog:check-ui"],
   ["starter", "npm run verify", { cwd: "starters/next-app", needs: "starters/next-app/node_modules" }],
 ];
 

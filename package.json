@@ -54,6 +54,9 @@
     "test:popup-width": "node --test scripts/popup-width.test.mjs",
     "test:check-table-actions": "node --test scripts/check-table-actions.test.mjs",
     "test:release-plan": "node --test scripts/release-plan.test.mjs",
+    "catalog:lint": "npm run lint -w catalog",
+    "catalog:typecheck": "npm run typecheck -w catalog",
+    "catalog:check-ui": "npm run check:ui -w catalog",
     "verify": "node scripts/verify.mjs",
     "test:tooltip": "tsx --test scripts/tooltip.test.tsx"
   },
