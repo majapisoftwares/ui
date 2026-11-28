@@ -10,7 +10,28 @@
   "ci": {
     "workbench": true,
     "checks": [
-      "verify"
+      "typecheck",
+      "test:preferences",
+      "test:data-table",
+      "test:chat-quote",
+      "test:chat-markdown",
+      "test:ai-elements",
+      "test:navigation",
+      "test:workbench-patterns",
+      "test:live-refresh",
+      "test:toast",
+      "test:sidebar",
+      "test:tooltip",
+      "test:popup-width",
+      "test:check-table-actions",
+      "test:release-plan",
+      "lint",
+      "check:standards",
+      "build",
+      "test:starter",
+      "catalog:lint",
+      "catalog:typecheck",
+      "catalog:check-ui"
     ],
     "deploy": "workbench-ci"
   },
